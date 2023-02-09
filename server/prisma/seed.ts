@@ -11,7 +11,7 @@ async function main() {
       password: 'test',
       firstName: 'test',
       lastName: 'test',
-      email: 'test',
+      email: 'test@gmail.com',
       phone: 'test',
       address: 'test',
     },

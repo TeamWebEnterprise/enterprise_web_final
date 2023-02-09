@@ -1,38 +1,91 @@
 import { Injectable } from '@nestjs/common';
+import { User } from '@prisma/client';
+import { Console } from 'console';
 import { PrismaService } from 'prisma/prisma.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserInput } from './dto/create-user.input';
+import * as bcrypt from 'bcrypt';
+import { CheckUserInput } from './dto/check-user.input';
 
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
-  create(createUserDto: CreateUserDto) {
-    return this.prisma.user.create({
-      data: {
-        username: 'test',
-        password: 'test',
-        firstName: 'test',
-        lastName: 'test',
-        email: 'test',
-        phone: 'test',
-        address: 'test',
+
+  async findOne(id: number): Promise<User> {
+    return this.prisma.user.findUnique({
+      where: {
+        id: id,
       },
     });
   }
 
-  findAll() {
-    return this.prisma.user.findMany();
+  async findByEmail(email: string): Promise<User> {
+    return this.prisma.user.findFirst({
+      where: {
+        email,
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findByUsername(username: string): Promise<User> {
+    return this.prisma.user.findFirst({
+      where: {
+        username,
+      },
+    });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async createUser(createUserInput: CreateUserInput) {
+    try {
+      const password = await bcrypt.hash(createUserInput.password, 10);
+      return this.prisma.user.create({
+        data: { ...createUserInput, password: password },
+      });
+    } catch {
+      (e) => {
+        throw e;
+      };
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async checkCreateUser(createUserInput: CheckUserInput) {
+    console.log(createUserInput);
+    const existUsername = await this.prisma.user.findFirst({
+      where: {
+        username: createUserInput.username,
+      },
+    });
+
+    const existEmail = await this.prisma.user.findFirst({
+      where: {
+        email: createUserInput.email,
+      },
+    });
+    const existPhone = await this.prisma.user.findFirst({
+      where: {
+        phone: createUserInput.phone,
+      },
+    });
+
+    let resultUsernameCheck = true;
+    let resultEmailCheck = true;
+    let resultPhoneCheck = true;
+
+    if (existUsername) {
+      resultUsernameCheck = false;
+    }
+    if (existEmail) {
+      resultEmailCheck = false;
+    }
+    if (existPhone) {
+      resultPhoneCheck = false;
+    }
+
+    const result = {
+      acceptEmailCheck: resultEmailCheck,
+      acceptPhoneCheck: resultPhoneCheck,
+      acceptUsernameCheck: resultUsernameCheck,
+    };
+
+    return result;
   }
 }
