@@ -16,6 +16,8 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { CreateUserInput } from './dto/create-user.input';
 import { UserService } from 'src/user/user.service';
 import { CheckUserInput } from './dto/check-user.input';
+import { Roles } from 'src/decorater/roles.decorator';
+import { Role } from 'src/user/entities/role.enum';
 
 @Controller('auth')
 export class AuthController {
@@ -40,7 +42,16 @@ export class AuthController {
 
   @Post('register')
   async register(@Body() createUserInput: CreateUserInput) {
-    console.log(createUserInput);
     return this.userService.createUser(createUserInput);
+  }
+
+  @Post('refresh')
+  async refreshToken(@Body() body: RefreshTokenDto) {
+    return this.authService.refresh(body.refreshToken);
+  }
+
+  @Delete('logout')
+  async logout(@Body() body: RefreshTokenDto) {
+    return this.authService.logout(body.refreshToken);
   }
 }

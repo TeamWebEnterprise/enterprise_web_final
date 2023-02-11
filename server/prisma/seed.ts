@@ -7,8 +7,8 @@ async function main() {
   await prisma.user.deleteMany();
   const alice = await prisma.user.create({
     data: {
-      username: 'test',
-      password: 'test',
+      username: 'username',
+      password: '$2b$10$uLCHSu5mIiAh6v0ezzogr.VTMZwtwKQvJOQ3C9iL4fYl8l6vkDzqu',
       firstName: 'test',
       lastName: 'test',
       email: 'test@gmail.com',
