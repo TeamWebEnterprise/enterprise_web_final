@@ -10,6 +10,16 @@ import { CheckUserInput } from './dto/check-user.input';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
+  async findAll() {
+    return this.prisma.user.findMany({
+      select: {
+        username: true,
+        email: true,
+        phone: true,
+      },
+    });
+  }
+
   async findOne(id: number): Promise<User> {
     return this.prisma.user.findUnique({
       where: {

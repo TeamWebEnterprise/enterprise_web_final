@@ -21,7 +21,6 @@ export class AuthService {
     if (!checkPassword) {
       return null;
     }
-    console.log(checkPassword);
     return user;
   }
 
@@ -38,6 +37,7 @@ export class AuthService {
 
     const accessToken = {
       userId: refreshToken.userId,
+      roles: refreshToken.roles,
     };
 
     return sign(accessToken, process.env.ACCESS_SECRET, { expiresIn: '1h' });
@@ -79,6 +79,7 @@ export class AuthService {
           : this.refreshTokens[this.refreshTokens.length - 1].id + 1,
       ...values,
       userId: user.id,
+      roles: user.roles,
     });
     this.refreshTokens.push(refreshObject);
 
@@ -87,6 +88,7 @@ export class AuthService {
       accessToken: sign(
         {
           userId: user.id,
+          roles: user.roles,
         },
         process.env.ACCESS_SECRET,
         {

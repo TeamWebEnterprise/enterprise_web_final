@@ -1,15 +1,19 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Body, Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { CreateUserInput } from './dto/create-user.input';
+import { Roles } from 'src/decorater/roles.decorator';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from 'src/roles.guard';
+import { CONSTANTS } from 'src/constants';
+import { Role } from './entities/role.enum';
 
 @Controller('user')
-export class UserController {}
+export class UserController {
+  constructor(private userService: UserService) {}
+
+  @Get('users')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMINSTRATOR)
+  async findAll(@Req() req) {
+    return this.userService.findAll();
+  }
+}
