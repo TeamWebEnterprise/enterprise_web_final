@@ -6,9 +6,10 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './roles.guard';
+import { IdieaModule } from './idiea/idiea.module';
 
 @Module({
-  imports: [UserModule, AuthModule, ConfigModule.forRoot()],
+  imports: [UserModule, AuthModule, ConfigModule.forRoot(), IdieaModule],
   controllers: [AppController],
   providers: [
     AppService,
