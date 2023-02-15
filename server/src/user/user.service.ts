@@ -1,6 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
-import { Console } from 'console';
 import { PrismaService } from 'prisma/prisma.service';
 import { CreateUserInput } from './dto/create-user.input';
 import * as bcrypt from 'bcrypt';
@@ -45,6 +44,19 @@ export class UserService {
   }
 
   async createUser(createUserInput: CreateUserInput) {
+    const userCheckAvailble = await this.prisma.user.findFirst({
+      where: {
+        OR: [
+          { username: createUserInput.username },
+          { email: createUserInput.email },
+          { phone: createUserInput.phone },
+        ],
+      },
+    });
+
+    if (userCheckAvailble) {
+      throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
+    }
     try {
       const password = await bcrypt.hash(createUserInput.password, 10);
       return this.prisma.user.create({
@@ -97,5 +109,16 @@ export class UserService {
     };
 
     return result;
+  }
+
+  async markEmailAsConfirmed(email: string) {
+    return this.prisma.user.update({
+      where: {
+        email: email,
+      },
+      data: {
+        isEmailValidated: true,
+      },
+    });
   }
 }

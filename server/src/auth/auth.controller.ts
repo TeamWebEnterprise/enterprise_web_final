@@ -18,12 +18,14 @@ import { UserService } from 'src/user/user.service';
 import { CheckUserInput } from './dto/check-user.input';
 import { Roles } from 'src/decorater/roles.decorator';
 import { Role } from 'src/user/entities/role.enum';
+import { EmailverifyService } from 'src/emailverify/emailverify.service';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private userService: UserService,
+    private emailverifyService: EmailverifyService,
   ) {}
 
   @UseGuards(LocalAuthGuard)
@@ -42,7 +44,13 @@ export class AuthController {
 
   @Post('register')
   async register(@Body() createUserInput: CreateUserInput) {
-    return this.userService.createUser(createUserInput);
+    console.log(createUserInput);
+    const newUser = await this.userService.createUser(createUserInput);
+    await this.emailverifyService.sendEmailVerify(
+      createUserInput.email,
+      createUserInput.lastName,
+    );
+    return 'sucessfull!';
   }
 
   @Post('refresh')
