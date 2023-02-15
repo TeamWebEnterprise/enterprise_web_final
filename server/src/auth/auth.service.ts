@@ -1,15 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import RefreshToken from './entities/refresh-token.entity';
 import { sign, verify } from 'jsonwebtoken';
 import { User } from '@prisma/client';
 import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcrypt';
+import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()
 export class AuthService {
   private refreshTokens: RefreshToken[] = [];
 
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private mailerService: MailerService,
+  ) {}
 
   async validateUser(username: string, password: string) {
     const user = await this.userService.findByUsername(username);
@@ -92,7 +96,7 @@ export class AuthService {
         },
         process.env.ACCESS_SECRET,
         {
-          expiresIn: '1h',
+          expiresIn: '15m',
         },
       ),
     };
@@ -108,5 +112,29 @@ export class AuthService {
     this.refreshTokens = this.refreshTokens.filter(
       (refreshToken) => refreshToken.id !== refreshToken.id,
     );
+  }
+
+  async sendMailForResetPassword(userId: number) {
+    const user = await this.userService.findOne(userId);
+    if (!user) {
+      throw new BadRequestException();
+    }
+
+    const payload = { email: user.email };
+
+    const token = sign(payload, process.env.JWT_RESETPASSWORD_TOKEN_SECRET);
+
+    const url = `${process.env.RESET_PASSWORD_URL}/${token}`;
+
+    return this.mailerService
+      .sendMail({
+        to: user.email,
+        from: 'quocldgcd191316@fpt.edu.vn',
+        subject: 'Reset password for IdieaApp acount',
+        text: 'Reset password',
+        html: `<b>Reset password</b></br><p>Hi ${user.lastName}, Your recently requested to reset your password for your AppIdiea account. Click the button below to reset it..</p></br><a href="${url}">Reset your password</a>`,
+      })
+      .then(() => {})
+      .catch(() => {});
   }
 }
