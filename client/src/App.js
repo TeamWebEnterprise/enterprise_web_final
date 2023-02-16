@@ -1,10 +1,10 @@
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
-import { Home } from "./Pages/Home/Home";
-import { Login } from "./Pages/Login/Login";
-import { Register } from "./Pages/Register/Register";
-import { ForgotPW } from "./Pages/ForgotPassWord/ForgotPW";
-import { Profile } from "./Pages/Profile/Profile";
+import { Home } from "./pages/Home/Home";
+import { Login } from "./pages/Login/Login";
+import { Register } from "./pages/Register/Register";
+import { ForgotPW } from "./pages/ForgotPassWord/ForgotPW";
+import { Profile } from "./pages/Profile/Profile";
 function App() {
   return (
     <>
