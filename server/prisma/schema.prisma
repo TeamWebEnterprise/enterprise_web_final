@@ -22,12 +22,21 @@ model User {
   address          String
   dateOfBirth      DateTime      @default(now())
   cretedAt         DateTime      @default(now())
+  avatar           AvatarImage?  @relation(fields: [avatarImageId], references: [id])
   roles            String[]      @default(["Staff"])
   Like             Like[]
   Comment          Comment[]
   Department       Department?   @relation(fields: [departmentId], references: [id])
   departmentId     Int?
   QADepartment     QADepartment?
+  avatarImageId    Int
+}
+
+model AvatarImage {
+  id   Int    @id @default(autoincrement())
+  key  String
+  url  String
+  User User[]
 }
 
 model Department {
@@ -61,11 +70,11 @@ model Idiea {
 }
 
 model Document {
-  id      Int    @id @default(autoincrement())
-  name    String
-  type    String
-  size    Int
-  Idiea   Idiea? @relation(fields: [idieaId], references: [id])
+  id      Int     @id @default(autoincrement())
+  key     String
+  url     String
+  public  Boolean @default(true)
+  Idiea   Idiea?  @relation(fields: [idieaId], references: [id])
   idieaId Int?
 }
 
