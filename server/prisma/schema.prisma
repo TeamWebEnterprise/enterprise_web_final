@@ -65,6 +65,8 @@ model Document {
   name    String
   type    String
   size    Int
+  key     String
+  url     String
   Idiea   Idiea? @relation(fields: [idieaId], references: [id])
   idieaId Int?
 }

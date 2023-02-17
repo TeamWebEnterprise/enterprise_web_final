@@ -9,6 +9,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { getMaxListeners } from 'process';
 import { EmailverifyModule } from './emailverify/emailverify.module';
+import { FileModule } from './file/file.module';
 import path from 'path';
 
 @Module({
@@ -32,6 +33,7 @@ import path from 'path';
       },
     }),
     EmailverifyModule,
+    FileModule,
   ],
   controllers: [AppController],
   providers: [AppService],
