@@ -1,13 +1,13 @@
-import { CategoryDetail } from '@prisma/client';
-
 export class CreateIdieaDto {
   content: string;
 
-  anonymous: boolean;
+  anonymous: string;
 
   updatedAt?: string;
 
   closeIdieaAt?: Date;
 
   closeCommentAt?: Date;
+
+  idCategory?: number[];
 }
