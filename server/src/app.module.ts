@@ -10,6 +10,7 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 import { getMaxListeners } from 'process';
 import { EmailverifyModule } from './emailverify/emailverify.module';
 import { FileModule } from './file/file.module';
+import { CategoryModule } from './category/category.module';
 import path from 'path';
 
 @Module({
@@ -34,6 +35,7 @@ import path from 'path';
     }),
     EmailverifyModule,
     FileModule,
+    CategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

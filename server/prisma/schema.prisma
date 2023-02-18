@@ -11,39 +11,41 @@ datasource db {
 }
 
 model User {
-  id               Int           @id @default(autoincrement())
-  username         String        @unique
+  id               Int      @id @default(autoincrement())
+  username         String   @unique
   password         String
   firstName        String
   lastName         String
-  email            String        @unique
-  isEmailValidated Boolean       @default(false)
-  phone            String        @unique
+  email            String   @unique
+  isEmailValidated Boolean  @default(false)
+  phone            String   @unique
   address          String
-  dateOfBirth      DateTime      @default(now())
-  cretedAt         DateTime      @default(now())
-  avatar           AvatarImage?  @relation(fields: [avatarImageId], references: [id])
-  roles            String[]      @default(["Staff"])
-  Like             Like[]
-  Comment          Comment[]
-  Department       Department?   @relation(fields: [departmentId], references: [id])
-  departmentId     Int?
-  QADepartment     QADepartment?
-  avatarImageId    Int
+  dateOfBirth      DateTime @default(now())
+  cretedAt         DateTime @default(now())
+
+  roles         String[]      @default(["Staff"])
+  Like          Like[]        @relation("userLike")
+  Comment       Comment[]     @relation("userComment")
+  Department    Department?   @relation("department", fields: [departmentId], references: [id])
+  departmentId  Int?
+  QADepartment  QADepartment? @relation("qa")
+  avatar        AvatarImage?  @relation("avatar", fields: [avatarImageId], references: [id])
+  avatarImageId Int?          @unique
 }
 
 model AvatarImage {
-  id   Int    @id @default(autoincrement())
-  key  String
-  url  String
-  User User[]
+  id  Int    @id @default(autoincrement())
+  key String
+  url String
+
+  User User? @relation("avatar")
 }
 
 model Department {
   id             Int           @id @default(autoincrement())
   defartmentName String
   qADepartment   QADepartment?
-  user           User[]
+  user           User[]        @relation("department")
 }
 
 model QADepartment {
@@ -51,22 +53,22 @@ model QADepartment {
   position     String     @default("QA")
   epartment    Department @relation(fields: [departmentId], references: [id])
   departmentId Int        @unique
-  user         User       @relation(fields: [userId], references: [id])
+  user         User       @relation("qa", fields: [userId], references: [id])
   userId       Int        @unique
 }
 
 model Idiea {
-  id              Int              @id @default(autoincrement())
-  content         String
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-  closeIdieaAt    DateTime?
-  closeCommentAt  DateTime?
-  anonymous       Boolean
-  documents       Document[]
-  categoryDetails CategoryDetail[]
-  likes           Like[]
-  comments        Comment[]
+  id             Int        @id @default(autoincrement())
+  content        String
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  closeIdieaAt   DateTime?
+  closeCommentAt DateTime?
+  anonymous      Boolean
+  documents      Document[] @relation("document")
+  categories     Category[]
+  likes          Like[]     @relation("idieaLike")
+  comments       Comment[]  @relation("idieaComment")
 }
 
 model Document {
@@ -74,7 +76,7 @@ model Document {
   key     String
   url     String
   public  Boolean @default(true)
-  Idiea   Idiea?  @relation(fields: [idieaId], references: [id])
+  Idiea   Idiea?  @relation("document", fields: [idieaId], references: [id])
   idieaId Int?
 }
 
@@ -82,37 +84,28 @@ model Comment {
   id        Int     @id @default(autoincrement())
   content   String
   anonymous Boolean
-  user      User    @relation(fields: [userId], references: [id])
+  user      User    @relation("userComment", fields: [userId], references: [id])
   userId    Int
-  idiea     Idiea   @relation(fields: [idieaId], references: [id])
+  idiea     Idiea   @relation("idieaComment", fields: [idieaId], references: [id])
   idieaId   Int
 }
 
 model Like {
   id       Int     @id @default(autoincrement())
   positive Boolean @default(true)
-  user     User    @relation(fields: [userId], references: [id])
+  user     User    @relation("userLike", fields: [userId], references: [id])
   userId   Int
-  idiea    Idiea   @relation(fields: [idieaId], references: [id])
+  idiea    Idiea   @relation("idieaLike", fields: [idieaId], references: [id])
   idieaId  Int
 
   @@unique([userId, idieaId])
 }
 
 model Category {
-  id             Int              @id @default(autoincrement())
-  categoryName   String
-  description    String?
-  categoryDetals CategoryDetail[]
-}
-
-model CategoryDetail {
-  id Int @id @default(autoincrement())
-
-  Idiea      Idiea?    @relation(fields: [idieaId], references: [id])
-  idieaId    Int?
-  Category   Category? @relation(fields: [categoryId], references: [id])
-  categoryId Int?
+  id           Int     @id @default(autoincrement())
+  categoryName String
+  description  String?
+  idieas       Idiea[]
 }
 
 model RefeshToken {

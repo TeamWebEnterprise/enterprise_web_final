@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { sign, verify } from 'jsonwebtoken';
 import { MailerService } from '@nestjs-modules/mailer';
 import { UserService } from 'src/user/user.service';
+import { SendMailNotifyForCreateNewIdieaDto } from './dto/send-mail-notify-for-idiea.input';
 
 @Injectable()
 export class EmailverifyService {
@@ -56,5 +57,34 @@ export class EmailverifyService {
       }
       throw new BadRequestException('Bad confirmation token');
     }
+  }
+
+  //Send Mail notify for create idiea
+
+  async sendMailNotifyForCreateNewIdiea(
+    sendMailNotifyForCreateNewIdieaDto: SendMailNotifyForCreateNewIdieaDto,
+  ) {
+    const user = await this.userService.findOne(
+      sendMailNotifyForCreateNewIdieaDto.userId,
+    );
+
+    if (!user) {
+      throw new BadRequestException();
+    }
+
+    return this.mailerService
+      .sendMail({
+        to: user.email,
+        from: 'quocldgcd191316@fpt.edu.vn',
+        subject: 'CREATE IDIEA SUCCESSFULLY',
+        text: 'IdieaApp',
+        html: `<b>Congratulations! Your idea has been created....</b></br><p>Hi ${user.lastName}, Summarize your post</p>
+        </br><p>Content: ${sendMailNotifyForCreateNewIdieaDto.content}<p>
+        </br><p>Close commnet at: ${sendMailNotifyForCreateNewIdieaDto.closeCommentAt}<p>
+        </br><p>Close edit at: ${sendMailNotifyForCreateNewIdieaDto.closeIdieaAt}<p>
+        `,
+      })
+      .then(() => {})
+      .catch(() => {});
   }
 }
