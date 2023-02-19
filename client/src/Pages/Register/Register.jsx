@@ -27,7 +27,7 @@ export const Register = () => {
   const [validPhone, setValidPhone] = useState(false);
   const [phoneFocus, setPhoneFocus] = useState(false);
 
-  const [dateofbirth, setDateOfBirth] = useState(Date);
+  const [dateOfbirth, setDateOfBirth] = useState(Date);
 
   const [email, setEmail] = useState("");
   const [validEmail, setValidEmail] = useState(false);
@@ -86,8 +86,8 @@ export const Register = () => {
     console.log(address);
   }, [address]);
   useEffect(() => {
-    console.log(dateofbirth);
-  }, [dateofbirth]);
+    console.log(dateOfbirth);
+  }, [dateOfbirth]);
 
   useEffect(() => {
     const result = PWD_REGEX.test(password);
@@ -183,15 +183,16 @@ export const Register = () => {
         <section className='bg-[#437BE8] min-h-screen flex items-center justify-center '>
           <p
             ref={errRef}
-            className={errMsg ? "errmsg" : "offscreen"}
+            className={errMsg ? "errmsg + w-screen" : "offscreen"}
             aria-live='assertive'
+            //className='w-screen bg-red-600 opacity-75 text-center text-lg text-pink-50 font-medium'
           >
             {errMsg}
           </p>
 
           <div className='flex items-center justify-center'>
             <div className='sm:max-w-2xl ml-5 mr-5 rounded-xl bg-white md:flex max-w-7xl m-10'>
-              <div className='lg:block hidden p-10 text-center bg-[#FAFAFA] rounded-xl shadow-lg'>
+              <div className='md:block hidden p-10 text-center bg-[#FAFAFA] rounded-xl shadow-lg'>
                 <h2 className='text-2xl font-bold text-[#2A175B] text-center'>
                   Create new account
                 </h2>
@@ -262,12 +263,12 @@ export const Register = () => {
                 className='flex flex-col p-10 mr-5 ml-5 md:p-2 max-w-7xl m-10'
                 onSubmit={handleSubmit}
               >
-                <h2 className='text-center text-2xl font-semibold mt-2'>
-                  Register
+                <h2 className='text-center text-3xl font-semibold mt-2 mb-2'>
+                  Sign Up
                 </h2>
-                <div className='w-full flex '>
+                <div className='sm:flex-none md:flex'>
                   <input
-                    className=' w-1/2 p-5 pb-2 pl-0 mr-3 border-b-2 outline-none'
+                    className='sm: w-full m-0 p-5 pb-2 pl-0 border-b-2 outline-none md: w-1/2 mr-3'
                     type='text'
                     autoComplete='off'
                     onChange={(e) => setFirstName(e.target.value)}
@@ -280,7 +281,7 @@ export const Register = () => {
                     placeholder='firstname'
                   ></input>
                   <input
-                    className='w-1/2 p-5 pb-2 pl-0 mr-3 border-b-2 outline-none'
+                    className='sm: w-full m-0 p-5 pb-2 pl-0 border-b-2 outline-none md: w-1/2 mr-3'
                     type='text'
                     autoComplete='off'
                     required
@@ -293,18 +294,18 @@ export const Register = () => {
                     onBlur={() => setLastNameFocus(false)}
                   ></input>
                 </div>
-                <div className='w-full flex '>
+                <div className='sm:flex-none md:flex'>
                   <input
-                    className='w-1/2 p-5 pb-2 pl-0 mr-3 border-b-2 outline-none'
+                    className='sm: w-full m-0 p-5 pb-2 pl-0 border-b-2 outline-none md: w-1/2 mr-3'
                     type='date'
                     autoComplete='off'
                     required
                     placeholder='dateofbirth'
                     onChange={(e) => setDateOfBirth(e.target.value)}
-                    value={dateofbirth}
+                    value={dateOfbirth}
                   ></input>
                   <input
-                    className='w-1/2 p-5 pb-2 pl-0 mr-3 border-b-2 outline-none'
+                    className='sm: w-full m-0 p-5 pb-2 pl-0 border-b-2 outline-none md: w-1/2 mr-3'
                     type='tel'
                     autoComplete='off'
                     required
@@ -318,7 +319,7 @@ export const Register = () => {
                   ></input>
                 </div>
                 <input
-                  className='w-full p-5 pb-2 pl-0 mr-3 border-b-2 outline-none'
+                  className='w-full p-5 pb-2 pl-0 mr-5 border-b-2 outline-none max-w-xl'
                   type='text'
                   autoComplete='off'
                   required
@@ -326,9 +327,9 @@ export const Register = () => {
                   onChange={(e) => setAddress(e.target.value)}
                   value={address}
                 ></input>
-                <div className='w-full flex '>
+                <div className='sm:flex-none md:flex '>
                   <input
-                    className='w-1/2 p-5 pb-2 pl-0 mr-3 border-b-2 outline-none'
+                    className='sm: w-full m-0 p-5 pb-2 pl-0 border-b-2 outline-none md: w-1/2 mr-3'
                     type='email'
                     autoComplete='off'
                     required
@@ -341,7 +342,7 @@ export const Register = () => {
                     onBlur={() => setEmailFocus(false)}
                   ></input>
                   <input
-                    className='w-1/2 p-5 pb-2 pl-0 mr-3 border-b-2 outline-none'
+                    className='sm: w-full m-0 p-5 pb-2 pl-0 border-b-2 outline-none md: w-1/2 mr-3'
                     type='text'
                     autoComplete='off'
                     required
