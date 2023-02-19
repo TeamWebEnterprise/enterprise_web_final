@@ -1,6 +1,5 @@
-import { Box, createTheme, Stack, ThemeProvider } from "@mui/material";
+import { createTheme, ThemeProvider } from "@mui/material";
 import { useState } from "react";
-import Navbar from "./components/Navbar/Navbar";
 import { Home } from "./pages/Home/Home";
 
 function App() {

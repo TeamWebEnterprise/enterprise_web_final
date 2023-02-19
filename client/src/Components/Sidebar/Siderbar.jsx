@@ -4,7 +4,6 @@ import {
           Group,
           Home,
           ModeNight,
-          Person,
           Settings,
           Storefront,
         } from "@mui/icons-material";
