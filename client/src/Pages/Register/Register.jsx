@@ -1,10 +1,14 @@
 import { useRef, useState, useEffect } from "react";
-import ReactDOM from "react-dom/client";
+import axios from "../../api/axios";
 import "./Register.css";
+
 const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{1,23}$/;
 const PWD_REGEX = /([?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const PHONE_REGEX = /^(?=.*[0-9]).{10,11}$/;
 const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+
+const REGISTER_URL = "/auth/register";
+
 export const Register = () => {
   const userRef = useRef();
   const errRef = useRef();
@@ -29,11 +33,11 @@ export const Register = () => {
   const [validEmail, setValidEmail] = useState(false);
   const [emailFocus, setEmailFocus] = useState(false);
 
-  const [user, setUser] = useState("");
+  const [username, setUserName] = useState("");
   const [validName, setValidName] = useState(false);
   const [userFocus, setUserFocus] = useState(false);
 
-  const [pwd, setPwd] = useState("");
+  const [password, setPassword] = useState("");
   const [validPwd, setValidPwd] = useState(false);
   const [pwdFocus, setPwdFocus] = useState(false);
 
@@ -41,7 +45,7 @@ export const Register = () => {
   const [validMatch, setValidMatch] = useState(false);
   const [matchFocus, setMatchFocus] = useState(false);
 
-  const [errMsg, setErrMsg] = useState('');
+  const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
@@ -73,47 +77,110 @@ export const Register = () => {
   }, [email]);
 
   useEffect(() => {
-    const result = USER_REGEX.test(user);
+    const result = USER_REGEX.test(username);
     console.log(result);
-    console.log(user);
-  }, [user]);
+    console.log(username);
+  }, [username]);
 
   useEffect(() => {
-    const result = PWD_REGEX.test(pwd);
+    console.log(address);
+  }, [address]);
+  useEffect(() => {
+    console.log(dateofbirth);
+  }, [dateofbirth]);
+
+  useEffect(() => {
+    const result = PWD_REGEX.test(password);
     console.log(result);
-    console.log(pwd);
+    console.log(password);
     setValidPwd(result);
-    const match = pwd === matchPwd;
+    const match = password === matchPwd;
     setValidMatch(match);
-  }, [pwd, matchPwd]);
+  }, [password, matchPwd]);
 
   useEffect(() => {
     setErrMsg("");
-  }, [user, pwd, matchPwd]);
+  }, [username, password, matchPwd]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const v1 = USER_REGEX.test(user);
-    const v2 = PWD_REGEX.test(pwd);
+    const v1 = USER_REGEX.test(username);
+    const v2 = PWD_REGEX.test(password);
     if (!v1 || !v2) {
-        setErrMsg("Invalid Entry");
-        return;
+      setErrMsg("Invalid Entry");
+      return;
     }
-    console.log(user,pwd);
-    setSuccess(true);
-  }
+    console.log(
+      username +
+        " " +
+        password +
+        " " +
+        firstName +
+        " " +
+        lastName +
+        " " +
+        email +
+        " " +
+        phone +
+        " " +
+        address,
+    );
+    try {
+      const response = await axios.post(
+        REGISTER_URL,
+        JSON.stringify({
+          username,
+          password,
+          firstName,
+          lastName,
+          email,
+          phone,
+          address,
+        }),
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        },
+      );
+
+      console.log(response?.data);
+      console.log(response?.accessToken);
+      console.log(JSON.stringify(response));
+      setSuccess(true);
+    } catch (err) {
+      if (err?.response) {
+        setErrMsg("No server Response");
+      } else if (err.response?.status === 409) {
+        setErrMsg("Username taken");
+      } else {
+        setErrMsg("Registration Failed");
+      }
+      errRef.current.focus();
+    }
+  };
   return (
     <>
       {success ? (
         <section>
-          <h1 className="text-5xl text-center text-green-600" >Success</h1>
-          <p className="text-2xl text-center text-blue-600">Please check your <a className="text-2xl text-center text-green-600 underline" href="https://mail.google.com/mail/">Mail</a> to activate account  </p>
+          <h1 className='text-5xl text-center text-green-600'>Success</h1>
+          <p className='text-2xl text-center text-blue-600'>
+            Please check your{" "}
+            <a
+              className='text-2xl text-center text-green-600 underline'
+              href='https://mail.google.com/mail/'
+            >
+              Mail
+            </a>{" "}
+            to activate account{" "}
+          </p>
           <p>
-            <a className="text-3xl text-center text-green-600" href='/login'>Login</a>
+            <a className='text-3xl text-center text-green-600' href='/login'>
+              Login
+            </a>
           </p>
         </section>
       ) : (
-        <section className='bg-[#437BE8] min-h-screen items-center justify-center '>
+        <section className='bg-[#437BE8] min-h-screen flex items-center justify-center '>
           <p
             ref={errRef}
             className={errMsg ? "errmsg" : "offscreen"}
@@ -121,22 +188,14 @@ export const Register = () => {
           >
             {errMsg}
           </p>
-          <div className='lg:flex mx-auto max-w-2xl p-5 gap-5 items-center justify-center pt-10'>
-            <img
-              className=' md:w-1/2'
-              src='https://oecglobal.com/images/stories/PDF/University_of_Greenwich_logo.png'
-            ></img>
-            <h2 className='md:w-1/2 border-l-2 pl-5 text-[#2A175B] text-4xl font-bold'>
-              Create new Greenwich account
-            </h2>
-          </div>
+
           <div className='flex items-center justify-center'>
-            <div className='bg-[#FFFFFFFF] flex mx-auto flex shadow-lg max-w-6xl p-5 rounded-xl'>
-              <div className='lg:block hidden w-1/3 p-10 text-center bg-[#FAFAFA] rounded-xl shadow-lg'>
-                <h2 className='text-5xl font-bold text-[#2A175B] text-center'>
+            <div className='sm:max-w-2xl ml-5 mr-5 rounded-xl bg-white md:flex max-w-7xl m-10'>
+              <div className='lg:block hidden p-10 text-center bg-[#FAFAFA] rounded-xl shadow-lg'>
+                <h2 className='text-2xl font-bold text-[#2A175B] text-center'>
                   Create new account
                 </h2>
-                <p className='flex gap-2 m-6 text-xl'>
+                <p className='flex gap-2 m-6 text-md text-left'>
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     viewBox='0 0 24 24'
@@ -147,7 +206,7 @@ export const Register = () => {
                   </svg>
                   Create your idea
                 </p>
-                <p className='flex gap-2 m-6 text-xl'>
+                <p className='flex gap-2 m-6 text-md text-left'>
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     viewBox='0 0 24 24'
@@ -158,7 +217,7 @@ export const Register = () => {
                   </svg>
                   Vote
                 </p>
-                <p className='flex gap-2 m-6 text-xl'>
+                <p className='flex gap-2 m-6 text-md text-left'>
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     viewBox='0 0 24 24'
@@ -174,7 +233,7 @@ export const Register = () => {
                   </svg>
                   Comment
                 </p>
-                <p className='flex gap-2 m-6 text-xl'>
+                <p className='flex gap-2 m-6 text-md text-left'>
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     viewBox='0 0 24 24'
@@ -200,12 +259,15 @@ export const Register = () => {
                 </div>
               </div>
               <form
-                className='w-2/3 p-10 items-center '
+                className='flex flex-col p-10 mr-5 ml-5 md:p-2 max-w-7xl m-10'
                 onSubmit={handleSubmit}
               >
+                <h2 className='text-center text-2xl font-semibold mt-2'>
+                  Register
+                </h2>
                 <div className='w-full flex '>
                   <input
-                    className='w-1/2 p-5 pb-2 pl-0 mr-3 border-b-2 outline-none'
+                    className=' w-1/2 p-5 pb-2 pl-0 mr-3 border-b-2 outline-none'
                     type='text'
                     autoComplete='off'
                     onChange={(e) => setFirstName(e.target.value)}
@@ -238,6 +300,8 @@ export const Register = () => {
                     autoComplete='off'
                     required
                     placeholder='dateofbirth'
+                    onChange={(e) => setDateOfBirth(e.target.value)}
+                    value={dateofbirth}
                   ></input>
                   <input
                     className='w-1/2 p-5 pb-2 pl-0 mr-3 border-b-2 outline-none'
@@ -255,10 +319,12 @@ export const Register = () => {
                 </div>
                 <input
                   className='w-full p-5 pb-2 pl-0 mr-3 border-b-2 outline-none'
-                  type='search'
+                  type='text'
                   autoComplete='off'
                   required
                   placeholder='address'
+                  onChange={(e) => setAddress(e.target.value)}
+                  value={address}
                 ></input>
                 <div className='w-full flex '>
                   <input
@@ -280,8 +346,8 @@ export const Register = () => {
                     autoComplete='off'
                     required
                     ref={userRef}
-                    onChange={(e) => setUser(e.target.value)}
-                    value={user}
+                    onChange={(e) => setUserName(e.target.value)}
+                    value={username}
                     placeholder='username'
                     aria-invalid={validName ? "false" : "true"}
                     aria-describedby='uidnote'
@@ -293,8 +359,8 @@ export const Register = () => {
                   className='w-full p-5 pb-2 pl-0 mr-3 border-b-2 outline-none'
                   type='password'
                   autoComplete='off'
-                  onChange={(e) => setPwd(e.target.value)}
-                  value={pwd}
+                  onChange={(e) => setPassword(e.target.value)}
+                  value={password}
                   aria-invalid={validPwd ? "false" : "true"}
                   aria-describedby='pwdnote'
                   onFocus={() => setPwdFocus(true)}
@@ -353,8 +419,6 @@ export const Register = () => {
                       ? "mt-8 mx-auto w-full bg-gray-300 rounded-xl text-white py-2"
                       : "mt-8 mx-auto w-full bg-blue-700 rounded-xl text-white py-2 hover:scale-110 duration-200"
                   }
-                  
-                  
                 >
                   Sign Up
                 </button>
