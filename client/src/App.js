@@ -1,22 +1,20 @@
-import "./App.css";
-import { Route, Routes } from "react-router-dom";
+import { Box, createTheme, Stack, ThemeProvider } from "@mui/material";
+import { useState } from "react";
+import Navbar from "./components/Navbar/Navbar";
 import { Home } from "./pages/Home/Home";
-import { Login } from "./pages/Login/Login";
-import { Register } from "./pages/Register/Register";
-import { ForgotPW } from "./pages/ForgotPassWord/ForgotPW";
-import { Profile } from "./pages/Profile/Profile";
+
 function App() {
+  const [mode, setMode] = useState("light");
+
+  const darkTheme = createTheme({
+    palette: {
+      mode: mode,
+    },
+  });
   return (
-    <>
-      <Routes>
-        <Route path="/" element={<Home />}></Route>
-        <Route path="/login" element={<Login />}></Route>
-        <Route path="/register" element={<Register />}></Route>
-        <Route path="/forgotPW" element={<ForgotPW />}></Route>
-        <Route path="/profile" element={<Profile />}></Route>
-      </Routes>
-      
-    </>
+    <ThemeProvider theme={darkTheme}>
+      <Home theme={darkTheme} setMode={setMode} mode={mode}/>
+    </ThemeProvider>
   );
 }
 
