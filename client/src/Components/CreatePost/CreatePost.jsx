@@ -19,10 +19,6 @@ import {
   VideoCameraBack,
 } from "@mui/icons-material";
 import { Box } from "@mui/system";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 
 const SytledModal = styled(Modal)({
   display: "flex",
@@ -92,25 +88,6 @@ const CreatePost = () => {
             variant="contained"
             aria-label="outlined primary button group"
           >
-
-            {/* <Button sx={{ width: "355px" }}>
-              <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">
-                  Categories
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  // value={age}
-                  // label="Age"
-                  // onChange={handleChange}
-                >
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
-                </Select>
-              </FormControl>
-            </Button> */}
             <Button>Post</Button>
           </ButtonGroup>
           
