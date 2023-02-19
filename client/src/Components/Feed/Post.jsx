@@ -4,6 +4,7 @@ import ThumbDownAltRoundedIcon from "@mui/icons-material/ThumbDownAltRounded";
 import SmsRoundedIcon from "@mui/icons-material/SmsRounded";
 import RecommendRoundedIcon from "@mui/icons-material/RecommendRounded";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import { useState } from "react";
 import {
   Avatar,
@@ -27,6 +28,7 @@ import {
   DialogActions,
   Button,
   Divider,
+  Checkbox,
 } from "@mui/material";
 const Post = () => {
   const [open, setOpen] = useState(false);
@@ -197,25 +199,31 @@ const Post = () => {
       </Accordion>
 
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Subscribe</DialogTitle>
+        <DialogTitle>Create comment</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            To subscribe to this website, please enter your email address here.
-            We will send updates occasionally.
+            Leave your comments in the box below...
           </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Email Address"
-            type="email"
-            fullWidth
-            variant="standard"
-          />
+          <Box display="flex">
+            <TextField
+              fullWidth
+              size="small"
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Content"
+              variant="standard"
+            />
+            <Checkbox
+              sx={{ height: "50px", width: "60px", marginTop: "10px" }}
+              icon={<AdminPanelSettingsIcon />}
+              checkedIcon={<AdminPanelSettingsIcon />}
+            />
+          </Box>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose}>Subscribe</Button>
+          <Button onClick={handleClose}>Send</Button>
         </DialogActions>
       </Dialog>
     </Card>
