@@ -20,8 +20,8 @@ export class CommentService {
     });
     return getCommentById;
   }
-  async listComments(idieaId: number, params: { skip?: number; take?: number }) {
-    const { skip, take } = params;
+  async listComments(idieaId: number, params: { take?: number }) {
+    const { take } = params;
     const findNoteById = await this.prismaService.idiea.findUnique({
       where: {
         id: idieaId,
@@ -30,14 +30,26 @@ export class CommentService {
     if (!findNoteById) {
       throw new ForbiddenException('can not found blog');
     }
-    const getAllCommentInAIdea = await this.prismaService.comment.findMany({
+    const getAllComments = await this.prismaService.comment.findMany({
+      // include lay nhung bang lien ket
+      include: {
+        user: {
+          select: {
+            username: true,
+          },
+        },
+      },
       where: {
         idieaId,
       },
-      skip,
       take,
     });
-    return getAllCommentInAIdea;
+    await getAllComments.forEach((x) => {
+      if (x.anonymous) {
+        x.user.username = 'anonymous';
+      }
+    });
+    return getAllComments;
   }
   async updateComment(commentId: number, updateComment: UpdateComment) {
     const getCommentById = await this.prismaService.comment.findUnique({

@@ -18,7 +18,7 @@ import { JwtAuthGuardApi } from '../auth/guards/jwt-auth.guard';
 import { Role } from '../user/entities/role.enum';
 import { Exception } from 'handlebars';
 
-const _recordsPerPage = 3;
+const _recordsPerPage = 5;
 @UseGuards(JwtAuthGuardApi)
 @Controller('comment')
 export class CommentController {
@@ -32,34 +32,21 @@ export class CommentController {
     const id: number = req.user.userId;
     return await this.commentService.addComment(addComment, id);
   }
-  @Get('list/note')
-  async getAllCommentsInAnIdea(
+  @Get('/list')
+  async getAllComments(
     @Query('id', ParseIntPipe) idieaId: number,
     @Query('amount', ParseIntPipe) amount: number,
     @Req() req,
     @Query()
-    {
-      skip = (amount - 1) * _recordsPerPage,
-      take = _recordsPerPage,
-    }: PaginationParams,
+    { take = amount * _recordsPerPage }: PaginationParams,
   ) {
     try {
-      const totalCommentsInIdea = await this.commentService.listComments(
-        idieaId,
-        {
-          skip,
-          take,
-        },
-      );
-      // const totalComment = totalCommentsInNote.length;
-      // const numberOfNote = Math.ceil(totalComment / _recordsPerPage);
-      return totalCommentsInIdea;
-    } catch (err) {
-      throw new ForbiddenException(
-        'you can not allow to do that because you are not the Author ',
-      );
+      return await this.commentService.listComments(idieaId, { take });
+    } catch (e) {
+      throw new ForbiddenException('can not found comments');
     }
   }
+
   @Put('edit')
   async updateComment(
     @Body() updateComment: UpdateComment,
