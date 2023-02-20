@@ -1,11 +1,17 @@
 import { useRef, useState, useEffect, useContext } from "react";
 import axios from "../../api/axios";
+import useAuth from "../../hooks/useAuth";
 import AuthContext from "../../context/AuthProvider";
 import { Home } from "../Home/Home";
+import {Link ,useNavigation,useLocation, useNavigate} from 'react-router-dom'
 const LOGIN_URL = "/auth/login";
 
 export const Login = () => {
-  const { setAuth } = useContext(AuthContext);
+  const { setAuth } = useAuth();
+
+  const  navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
   const userRef = useRef();
   const errRef = useRef();
 
@@ -95,7 +101,7 @@ export const Login = () => {
                 ></input>
                 <div className=' form-check mt-1'>
                   <input
-                    class='form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer'
+                    class=' rounded-full form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer'
                     type='checkbox'
                     value=''
                     id='flexCheckDefault'

@@ -27,7 +27,7 @@ export const Register = () => {
   const [validPhone, setValidPhone] = useState(false);
   const [phoneFocus, setPhoneFocus] = useState(false);
 
-  const [dateOfbirth, setDateOfBirth] = useState(Date);
+  const [dateOfBirth, setDateOfBirth] = useState(Date);
 
   const [email, setEmail] = useState("");
   const [validEmail, setValidEmail] = useState(false);
@@ -86,8 +86,8 @@ export const Register = () => {
     console.log(address);
   }, [address]);
   useEffect(() => {
-    console.log(dateOfbirth);
-  }, [dateOfbirth]);
+    console.log(dateOfBirth);
+  }, [dateOfBirth]);
 
   useEffect(() => {
     const result = PWD_REGEX.test(password);
@@ -106,6 +106,7 @@ export const Register = () => {
     e.preventDefault();
     const v1 = USER_REGEX.test(username);
     const v2 = PWD_REGEX.test(password);
+    const birth = dateOfBirth + "T03:36:29.314Z";
     if (!v1 || !v2) {
       setErrMsg("Invalid Entry");
       return;
@@ -123,7 +124,9 @@ export const Register = () => {
         " " +
         phone +
         " " +
-        address,
+        address +
+        " " +
+        birth,
     );
     try {
       const response = await axios.post(
@@ -136,6 +139,7 @@ export const Register = () => {
           email,
           phone,
           address,
+          dateOfBirth: birth,
         }),
         {
           headers: { "Content-Type": "application/json" },
@@ -180,12 +184,12 @@ export const Register = () => {
           </p>
         </section>
       ) : (
-        <section className='bg-[#437BE8] min-h-screen flex items-center justify-center '>
+        <section className='bg-[#437BE8] min-h-screen items-center justify-center md:p-14 '>
+        
           <p
             ref={errRef}
-            className={errMsg ? "errmsg + w-screen" : "offscreen"}
+            className={errMsg ? "setErrMsg + w-screen " : "offscreen"}
             aria-live='assertive'
-            //className='w-screen bg-red-600 opacity-75 text-center text-lg text-pink-50 font-medium'
           >
             {errMsg}
           </p>
@@ -266,67 +270,6 @@ export const Register = () => {
                 <h2 className='text-center text-3xl font-semibold mt-2 mb-2'>
                   Sign Up
                 </h2>
-                <div className='sm:flex-none md:flex'>
-                  <input
-                    className='sm: w-full m-0 p-5 pb-2 pl-0 border-b-2 outline-none md: w-1/2 mr-3'
-                    type='text'
-                    autoComplete='off'
-                    onChange={(e) => setFirstName(e.target.value)}
-                    value={firstName}
-                    aria-invalid={validFirstName ? "false" : "true"}
-                    aria-describedby='firstnamenote'
-                    onFocus={() => setFirstNameFocus(true)}
-                    onBlur={() => setFirstNameFocus(false)}
-                    required
-                    placeholder='firstname'
-                  ></input>
-                  <input
-                    className='sm: w-full m-0 p-5 pb-2 pl-0 border-b-2 outline-none md: w-1/2 mr-3'
-                    type='text'
-                    autoComplete='off'
-                    required
-                    placeholder='lastname'
-                    onChange={(e) => setLastName(e.target.value)}
-                    value={lastName}
-                    aria-invalid={validLastName ? "false" : "true"}
-                    aria-describedby='lastnamenote'
-                    onFocus={() => setLastNameFocus(true)}
-                    onBlur={() => setLastNameFocus(false)}
-                  ></input>
-                </div>
-                <div className='sm:flex-none md:flex'>
-                  <input
-                    className='sm: w-full m-0 p-5 pb-2 pl-0 border-b-2 outline-none md: w-1/2 mr-3'
-                    type='date'
-                    autoComplete='off'
-                    required
-                    placeholder='dateofbirth'
-                    onChange={(e) => setDateOfBirth(e.target.value)}
-                    value={dateOfbirth}
-                  ></input>
-                  <input
-                    className='sm: w-full m-0 p-5 pb-2 pl-0 border-b-2 outline-none md: w-1/2 mr-3'
-                    type='tel'
-                    autoComplete='off'
-                    required
-                    placeholder='phone'
-                    onChange={(e) => setPhone(e.target.value)}
-                    value={phone}
-                    aria-invalid={validPhone ? "false" : "true"}
-                    aria-describedby='phonenote'
-                    onFocus={() => setPhoneFocus(true)}
-                    onBlur={() => setPhoneFocus(false)}
-                  ></input>
-                </div>
-                <input
-                  className='w-full p-5 pb-2 pl-0 mr-5 border-b-2 outline-none max-w-xl'
-                  type='text'
-                  autoComplete='off'
-                  required
-                  placeholder='address'
-                  onChange={(e) => setAddress(e.target.value)}
-                  value={address}
-                ></input>
                 <div className='sm:flex-none md:flex '>
                   <input
                     className='sm: w-full m-0 p-5 pb-2 pl-0 border-b-2 outline-none md: w-1/2 mr-3'
@@ -356,6 +299,69 @@ export const Register = () => {
                     onBlur={() => setUserFocus(false)}
                   ></input>
                 </div>
+                <div className='sm:flex-none md:flex'>
+                  <input
+                    className='sm: w-full m-0 p-5 pb-2 pl-0 border-b-2 outline-none md: w-1/2 mr-3'
+                    type='date'
+                    autoComplete='off'
+                    required
+                    placeholder='dateofbirth'
+                    onChange={(e) => setDateOfBirth(e.target.value)}
+                    value={dateOfBirth}
+                  ></input>
+                  <input
+                    className='sm: w-full m-0 p-5 pb-2 pl-0 border-b-2 outline-none md: w-1/2 mr-3'
+                    type='tel'
+                    autoComplete='off'
+                    required
+                    placeholder='phone'
+                    onChange={(e) => setPhone(e.target.value)}
+                    value={phone}
+                    aria-invalid={validPhone ? "false" : "true"}
+                    aria-describedby='phonenote'
+                    onFocus={() => setPhoneFocus(true)}
+                    onBlur={() => setPhoneFocus(false)}
+                  ></input>
+                </div>
+                <div className='sm:flex-none md:flex'>
+                  <input
+                    className='sm: w-full m-0 p-5 pb-2 pl-0 border-b-2 outline-none md: w-1/2 mr-3'
+                    type='text'
+                    autoComplete='off'
+                    onChange={(e) => setFirstName(e.target.value)}
+                    value={firstName}
+                    aria-invalid={validFirstName ? "false" : "true"}
+                    aria-describedby='firstnamenote'
+                    onFocus={() => setFirstNameFocus(true)}
+                    onBlur={() => setFirstNameFocus(false)}
+                    required
+                    placeholder='firstname'
+                  ></input>
+                  <input
+                    className='sm: w-full m-0 p-5 pb-2 pl-0 border-b-2 outline-none md: w-1/2 mr-3'
+                    type='text'
+                    autoComplete='off'
+                    required
+                    placeholder='lastname'
+                    onChange={(e) => setLastName(e.target.value)}
+                    value={lastName}
+                    aria-invalid={validLastName ? "false" : "true"}
+                    aria-describedby='lastnamenote'
+                    onFocus={() => setLastNameFocus(true)}
+                    onBlur={() => setLastNameFocus(false)}
+                  ></input>
+                </div>
+
+                <input
+                  className='w-full p-5 pb-2 pl-0 mr-5 border-b-2 outline-none max-w-xl'
+                  type='text'
+                  autoComplete='off'
+                  required
+                  placeholder='address'
+                  onChange={(e) => setAddress(e.target.value)}
+                  value={address}
+                ></input>
+
                 <input
                   className='w-full p-5 pb-2 pl-0 mr-3 border-b-2 outline-none'
                   type='password'
