@@ -12,12 +12,14 @@ import { EmailverifyModule } from './emailverify/emailverify.module';
 import { FileModule } from './file/file.module';
 import { CategoryModule } from './category/category.module';
 import path from 'path';
+import { CommentModule } from './comment/comment.module';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
     UserModule,
     AuthModule,
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
     IdieaModule,
     MailerModule.forRoot({
       transport:
@@ -36,6 +38,8 @@ import path from 'path';
     EmailverifyModule,
     FileModule,
     CategoryModule,
+    CommentModule,
+    PrismaModule,
   ],
   controllers: [AppController],
   providers: [AppService],
