@@ -6,7 +6,7 @@ import { Register } from "./Pages/Register/Register";
 import { ForgotPW } from "./Pages/ForgotPassWord/ForgotPW";
 import { Profile } from "./Pages/Profile/Profile";
 import RequireAuth from "./context/RequireAuth";
-
+import PersistLogin from "./Pages/Login/PresistLogin";
 function App() {
   return (
     <>
@@ -14,10 +14,11 @@ function App() {
         <Route path='/login' element={<Login />}></Route>
         <Route path='/register' element={<Register />}></Route>
         <Route path='/forgotPW' element={<ForgotPW />}></Route>
-
-        <Route element={<RequireAuth />}>
-          <Route path='/' element={<Home />}></Route>
-          <Route path='/profile' element={<Profile />}></Route>
+        <Route element={<PersistLogin />}>
+          <Route element={<RequireAuth />}>
+            <Route path='/' element={<Home />}></Route>
+            <Route path='/profile' element={<Profile />}></Route>
+          </Route>
         </Route>
       </Routes>
     </>
