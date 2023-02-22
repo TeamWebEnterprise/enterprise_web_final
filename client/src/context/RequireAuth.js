@@ -6,7 +6,7 @@ const RequireAuth = () => {
   const location = useLocation();
 
   return(
-    auth?.username //.role?.find(role =>allowedRoles?.includes(role));
+    auth?.refreshToken//.role?.find(role =>allowedRoles?.includes(role));
     ?<Outlet/>
     :<Navigate to='/login' state={{ from: location }} replace/>
   );

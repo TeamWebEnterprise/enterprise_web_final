@@ -1,12 +1,11 @@
 import { useRef, useState, useEffect, useContext } from "react";
 import axios from "../../api/axios";
 import useAuth from "../../hooks/useAuth";
-import AuthContext from "../../context/AuthProvider";
-import { Home } from "../Home/Home";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+
 const LOGIN_URL = "/auth/login";
 
-export const Login = () => {
+const Login = () => {
   const { setAuth } = useAuth();
 
   const navigate = useNavigate();
@@ -20,10 +19,6 @@ export const Login = () => {
   const [password, setPassword] = useState("");
 
   const [errMsg, setErrMsg] = useState("");
-
-  useEffect(() => {
-    userRef.current.focus();
-  }, []);
 
   useEffect(() => {
     setErrMsg("");
@@ -40,13 +35,10 @@ export const Login = () => {
           withCredentials: true,
         },
       );
-      //console.log(JSON.stringify(response?.data));
-      const role = response?.data?.accessToken;
+      console.log(JSON.stringify(response?.data));
       const refreshToken = response?.data?.refreshToken;
-      console.log(refreshToken)
-      
 
-      setAuth({username,refreshToken });
+      setAuth({ username, password, refreshToken });
       setUserName("");
       setPassword("");
       navigate(from, { replace: true });
@@ -155,3 +147,4 @@ export const Login = () => {
     </section>
   );
 };
+export default Login;
