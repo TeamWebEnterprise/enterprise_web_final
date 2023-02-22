@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["selectRelationCount"]
 }
 
 datasource db {
@@ -31,6 +32,7 @@ model User {
   QADepartment  QADepartment? @relation("qa")
   avatar        AvatarImage?  @relation("avatar", fields: [avatarImageId], references: [id])
   avatarImageId Int?          @unique
+  Idiea         Idiea[]       @relation("idieas")
 }
 
 model AvatarImage {
@@ -69,6 +71,8 @@ model Idiea {
   categories     Category[]
   likes          Like[]     @relation("idieaLike")
   comments       Comment[]  @relation("idieaComment")
+  user           User       @relation("idieas", fields: [userId], references: [id])
+  userId         Int
 }
 
 model Document {
@@ -81,12 +85,13 @@ model Document {
 }
 
 model Comment {
-  id        Int     @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   content   String
   anonymous Boolean
-  user      User    @relation("userComment", fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  user      User     @relation("userComment", fields: [userId], references: [id])
   userId    Int
-  idiea     Idiea   @relation("idieaComment", fields: [idieaId], references: [id])
+  idiea     Idiea    @relation("idieaComment", fields: [idieaId], references: [id])
   idieaId   Int
 }
 
