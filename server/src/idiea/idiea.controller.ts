@@ -3,26 +3,22 @@ import {
   Get,
   Post,
   Body,
-  Patch,
-  Param,
-  Delete,
   UseGuards,
   Req,
   UseInterceptors,
-  UploadedFile,
   UploadedFiles,
+  Query,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { IdieaService } from './idiea.service';
 import { CreateIdieaDto } from './dto/create-idiea.dto';
-import { UpdateIdieaDto } from './dto/update-idiea.dto';
-import { Idiea } from '@prisma/client';
 import { JwtAuthGuardApi } from 'src/auth/guards/jwt-auth.guard';
-import { CategoryService } from 'src/category/category.service';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { FileService } from 'src/file/file.service';
 import { EmailverifyService } from 'src/emailverify/emailverify.service';
+import { CreateLikeDto } from './dto/create-like.input';
 
-@Controller('idiea')
+@Controller('idieas')
 export class IdieaController {
   constructor(
     private readonly idieaService: IdieaService,
@@ -39,7 +35,10 @@ export class IdieaController {
     @UploadedFiles() files: Express.Multer.File[],
   ) {
     //create new Idiea
-    const newIdiea = await this.idieaService.createNewIdiea(createIdieaDto);
+    const newIdiea = await this.idieaService.createNewIdiea(
+      createIdieaDto,
+      req.user.userId,
+    );
 
     //create new Document and connect to this Idiea
     files.forEach(async (file) => {
@@ -60,8 +59,23 @@ export class IdieaController {
     return newIdiea;
   }
 
-  @Get()
-  findAll() {
-    return this.idieaService.findAll();
+  @Get('all')
+  findAll(
+    @Query('order-field') orderField: string,
+    @Query('orderby') orderBy: string,
+    @Query('page', ParseIntPipe) page: number,
+  ) {
+    return this.idieaService.findAll(orderField, orderBy, page);
+  }
+
+  @Get('all-by-likes')
+  findAllSortByLike(@Query('page', ParseIntPipe) page: number) {
+    return this.idieaService.findAllSortByLike(page);
+  }
+
+  @UseGuards(JwtAuthGuardApi)
+  @Post('like')
+  likeIdiea(@Req() req, @Body() createLikeDto: CreateLikeDto) {
+    return this.idieaService.like(req.user.userId, createLikeDto);
   }
 }
