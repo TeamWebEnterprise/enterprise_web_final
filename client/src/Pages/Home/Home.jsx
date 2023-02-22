@@ -1,5 +1,5 @@
 import { Box, Stack } from "@mui/material";
-import Navbar from "../../components/Navbar/NavBar";
+import Navbar from "../../components/NavBar/NavBar";
 import Sidebar from "../../components/Sidebar/Siderbar";
 import Feed from "../../components/Feed/Feed";
 import CreatePost from "../../components/CreatePost/CreatePost";
@@ -17,9 +17,6 @@ export const Home = ({ mode, setMode }) => {
       <Stack direction="row" justifyContent="space-between">
         <Sidebar setMode={setMode} mode={mode} />
         <Feed />
-        <Box flex={3} p={2} sx={{ display: { xs: "none", sm: "block" } }}>
-          Rightbar
-        </Box>
         <Rightbar />
       </Stack>
       <CreatePost />
