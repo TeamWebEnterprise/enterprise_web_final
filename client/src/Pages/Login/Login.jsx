@@ -1,59 +1,25 @@
-import { useRef, useState, useEffect, useContext } from "react";
-import axios from "../../api/axios";
-import useAuth from "../../hooks/useAuth";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useRef, useState } from "react";
 
-const LOGIN_URL = "/auth/login";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { loginUser } from "../../redux/apiRequest";
 
 const Login = () => {
-  const { setAuth } = useAuth();
-
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
-
   const userRef = useRef();
   const errRef = useRef();
 
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
-
-  const [errMsg, setErrMsg] = useState("");
-
-  useEffect(() => {
-    setErrMsg("");
-  }, [username, password]);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post(
-        LOGIN_URL,
-        JSON.stringify({ username, password }),
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        },
-      );
-      console.log(JSON.stringify(response?.data));
-      const refreshToken = response?.data?.refreshToken;
-
-      setAuth({ username, password, refreshToken });
-      setUserName("");
-      setPassword("");
-      navigate(from, { replace: true });
-    } catch (err) {
-      if (!err?.response) {
-        setErrMsg("No Server Response");
-      } else if (err.response?.status === 400) {
-        setErrMsg("Missing Username or Password");
-      } else if (err.response?.status === 401) {
-        setErrMsg("Unauthorized");
-      } else {
-        setErrMsg("Login Failed");
-      }
-      errRef.current.focus();
-    }
+    const newUser = {
+      username: username,
+      password: password,
+    };
+    loginUser(newUser, dispatch, navigate);
   };
 
   return (

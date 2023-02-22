@@ -111,23 +111,6 @@ export const Register = () => {
       setErrMsg("Invalid Entry");
       return;
     }
-    console.log(
-      username +
-        " " +
-        password +
-        " " +
-        firstName +
-        " " +
-        lastName +
-        " " +
-        email +
-        " " +
-        phone +
-        " " +
-        address +
-        " " +
-        birth,
-    );
     try {
       const response = await axios.post(
         REGISTER_URL,
@@ -147,9 +130,6 @@ export const Register = () => {
         },
       );
 
-      console.log(response?.data);
-      console.log(response?.accessToken);
-      console.log(JSON.stringify(response));
       setSuccess(true);
     } catch (err) {
       if (err?.response) {
@@ -185,7 +165,6 @@ export const Register = () => {
         </section>
       ) : (
         <section className='bg-[#437BE8] min-h-screen items-center justify-center md:p-14 '>
-        
           <p
             ref={errRef}
             className={errMsg ? "setErrMsg + w-screen " : "offscreen"}
