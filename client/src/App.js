@@ -6,6 +6,7 @@ import { Register } from "./Pages/Register/Register";
 import { ForgotPW } from "./Pages/ForgotPassWord/ForgotPW";
 import { Profile } from "./Pages/Profile/Profile";
 
+
 function App() {
   return (
     <>

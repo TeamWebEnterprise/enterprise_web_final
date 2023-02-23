@@ -102,7 +102,7 @@ export class AuthService {
     };
   }
 
-  async logout(refreshStr): Promise<void> {
+  async logout(refreshStr): Promise<string> {
     const refreshToken = await this.retrieveRefreshToken(refreshStr);
 
     if (!refreshToken) {
@@ -112,6 +112,7 @@ export class AuthService {
     this.refreshTokens = this.refreshTokens.filter(
       (refreshToken) => refreshToken.id !== refreshToken.id,
     );
+    return "Logout Success!"
   }
 
   async sendMailForResetPassword(userId: number) {

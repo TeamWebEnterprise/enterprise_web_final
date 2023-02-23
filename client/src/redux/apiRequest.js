@@ -1,6 +1,13 @@
 import axios from "../api/axios";
 
-import {  loginStart, loginFailed, loginSuccess,logOutStart, logOutFailed, logOutSuccess } from "./authSlice";
+import {
+  loginStart,
+  loginFailed,
+  loginSuccess,
+  logoutStart,
+  logoutFailed,
+  logoutSuccess,
+} from "./authSlice";
 
 export const loginUser = async (user, dispatch, navigate) => {
   dispatch(loginStart());
@@ -13,15 +20,28 @@ export const loginUser = async (user, dispatch, navigate) => {
   }
 };
 
-export const logOut = async (dispatch, navigate,accessToken,axiosJWT) => {
-  dispatch(logOutStart());
+export const logout = async (
+  dispatch,
+  navigate,
+  refreshToken,
+  accessToken,
+  axios,
+) => {
+  dispatch(logoutStart());
+  console.log(refreshToken);
   try {
-    await axiosJWT.post("/auth/logout", {
-      headers : {body:accessToken},})
-      
-    dispatch(logOutSuccess());
-    navigate('/login');
+    try {
+      await axios.post("/auth/logout", {
+        data: { refreshToken: String(refreshToken) },
+        Headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      });
+    } catch (e) {
+      console.log(e);
+    }
+
+    navigate("/login");
+    dispatch(logoutSuccess());
   } catch (err) {
-    dispatch(logOutFailed());
+    dispatch(logoutFailed());
   }
 };
