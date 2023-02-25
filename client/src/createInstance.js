@@ -3,7 +3,9 @@ import jwt_decode from "jwt-decode";
 
 const refreshToken = async () => {
   try {
-    const res = await axios.post("/auth/refresh");
+    const res = await axios.post("/auth/refresh",{
+      withCredentials:true
+    });
     console.log(res.data);
     return res.data;
   } catch (err) {
@@ -25,7 +27,7 @@ export const createAxios = (user, dispatch, sateSuccess) => {
           accessToken: data.accessToken,
         };
         dispatch(sateSuccess(refreshTokenUser));
-        config = data.refreshToken;
+        config.headers['token'] ='Bearer'+ data.refreshToken;
       }
       return config;
     },

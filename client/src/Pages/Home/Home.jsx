@@ -18,13 +18,13 @@ export const Home = () => {
     }
   }, []);
   const handleLogOut = () => {
-    logout(dispatch, navigate, refreshToken);
+    logout(dispatch, navigate, accessToken,axiosJWT);
   };
   return (
     <div>
       {user ? (
         <>
-          <Link onClick={handleLogOut}>Logout</Link>
+          <Link to='/login' onClick={handleLogOut}>Logout</Link>
         </>
       ) : (
         <>

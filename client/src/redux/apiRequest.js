@@ -25,23 +25,25 @@ export const logout = async (
   navigate,
   refreshToken,
   accessToken,
-  axios,
+  axiosJWT,
 ) => {
   dispatch(logoutStart());
   console.log(refreshToken);
   try {
     try {
-      await axios.post("/auth/logout", {
+      await axiosJWT.delete("/auth/logout", {
+        headers: { token: `Bearer ${accessToken}` },
         data: { refreshToken: String(refreshToken) },
-        Headers: { "Content-Type": "application/x-www-form-urlencoded" },
       });
     } catch (e) {
       console.log(e);
     }
 
-    navigate("/login");
     dispatch(logoutSuccess());
+    navigate("/login");
   } catch (err) {
     dispatch(logoutFailed());
   }
 };
+
+

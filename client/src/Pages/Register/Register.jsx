@@ -12,6 +12,7 @@ const REGISTER_URL = "/auth/register";
 export const Register = () => {
   const userRef = useRef();
   const errRef = useRef();
+  const [loading, setLoading] = useState(false);
 
   const [firstName, setFirstName] = useState("");
   const [validFirstName, setValidFirstName] = useState(false);
@@ -53,46 +54,26 @@ export const Register = () => {
   }, []);
 
   useEffect(() => {
-    const result = USER_REGEX.test(firstName);
-    console.log(result);
-    console.log(firstName);
-  }, [firstName]);
-
-  useEffect(() => {
-    const result = USER_REGEX.test(lastName);
-    console.log(result);
-    console.log(lastName);
-  }, [lastName]);
-
-  useEffect(() => {
     const result = PHONE_REGEX.test(phone);
-    console.log(result);
-    console.log(phone);
   }, [phone]);
 
-  useEffect(() => {
-    const result = EMAIL_REGEX.test(email);
-    console.log(result);
-    console.log(email);
-  }, [email]);
+  useEffect(() => {}, [email]);
 
   useEffect(() => {
-    const result = USER_REGEX.test(username);
-    console.log(result);
-    console.log(username);
+    const check = async () => {
+      try {
+        await axios.post("/auth/checkregister", JSON.stringify({ username }), {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        });
+      } catch (err) {
+        setValidName(true);
+      }
+    };
   }, [username]);
 
   useEffect(() => {
-    console.log(address);
-  }, [address]);
-  useEffect(() => {
-    console.log(dateOfBirth);
-  }, [dateOfBirth]);
-
-  useEffect(() => {
     const result = PWD_REGEX.test(password);
-    console.log(result);
-    console.log(password);
     setValidPwd(result);
     const match = password === matchPwd;
     setValidMatch(match);
@@ -112,7 +93,7 @@ export const Register = () => {
       return;
     }
     try {
-      const response = await axios.post(
+      await axios.post(
         REGISTER_URL,
         JSON.stringify({
           username,
@@ -131,6 +112,7 @@ export const Register = () => {
       );
 
       setSuccess(true);
+      setLoading(true);
     } catch (err) {
       if (err?.response) {
         setErrMsg("No server Response");
@@ -277,6 +259,18 @@ export const Register = () => {
                     onFocus={() => setUserFocus(true)}
                     onBlur={() => setUserFocus(false)}
                   ></input>
+
+                  {/* {!validName ? <p>user is already</p>:<p> is't oke</p>} */}
+                  {/* <p
+                    id='confirmnote'
+                    className={
+                      userFocus && !validName
+                        ? " flex-none text-sm text-red-500 p-0.5 relative"
+                        : "register__validpwd--off"
+                    }
+                  >
+                    Must match the first password input field.
+                  </p> */}
                 </div>
                 <div className='sm:flex-none md:flex'>
                   <input
@@ -406,7 +400,13 @@ export const Register = () => {
                       : "mt-8 mx-auto w-full bg-blue-700 rounded-xl text-white py-2 hover:scale-110 duration-200"
                   }
                 >
-                  Sign Up
+                  <>
+                    {loading ? (
+                      <p>Loading</p>
+                    ) : (
+                      <p>Sign Up</p>
+                    )}
+                  </>
                 </button>
               </form>
             </div>
