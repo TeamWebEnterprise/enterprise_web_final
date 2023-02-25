@@ -23,6 +23,7 @@ model User {
   address          String
   dateOfBirth      DateTime @default(now())
   cretedAt         DateTime @default(now())
+  active           Boolean  @default(true)
 
   roles         String[]      @default(["Staff"])
   Like          Like[]        @relation("userLike")
@@ -36,23 +37,25 @@ model User {
 }
 
 model AvatarImage {
-  id  Int    @id @default(autoincrement())
-  key String
-  url String
-
-  User User? @relation("avatar")
+  id     Int     @id @default(autoincrement())
+  key    String
+  url    String
+  active Boolean @default(true)
+  User   User?   @relation("avatar")
 }
 
 model Department {
   id             Int           @id @default(autoincrement())
   defartmentName String
   qADepartment   QADepartment?
+  active         Boolean       @default(true)
   user           User[]        @relation("department")
 }
 
 model QADepartment {
   id           Int        @id @default(autoincrement())
   position     String     @default("QA")
+  active       Boolean    @default(true)
   epartment    Department @relation(fields: [departmentId], references: [id])
   departmentId Int        @unique
   user         User       @relation("qa", fields: [userId], references: [id])
@@ -67,6 +70,7 @@ model Idiea {
   closeIdieaAt   DateTime?
   closeCommentAt DateTime?
   anonymous      Boolean
+  active         Boolean    @default(true)
   documents      Document[] @relation("document")
   categories     Category[]
   likes          Like[]     @relation("idieaLike")
@@ -80,6 +84,7 @@ model Document {
   key     String
   url     String
   public  Boolean @default(true)
+  active  Boolean @default(true)
   Idiea   Idiea?  @relation("document", fields: [idieaId], references: [id])
   idieaId Int?
 }
@@ -89,6 +94,7 @@ model Comment {
   content   String
   anonymous Boolean
   createdAt DateTime @default(now())
+  active    Boolean  @default(true)
   user      User     @relation("userComment", fields: [userId], references: [id])
   userId    Int
   idiea     Idiea    @relation("idieaComment", fields: [idieaId], references: [id])
@@ -98,6 +104,7 @@ model Comment {
 model Like {
   id       Int     @id @default(autoincrement())
   positive Boolean @default(true)
+  active   Boolean @default(true)
   user     User    @relation("userLike", fields: [userId], references: [id])
   userId   Int
   idiea    Idiea   @relation("idieaLike", fields: [idieaId], references: [id])
@@ -110,6 +117,7 @@ model Category {
   id           Int     @id @default(autoincrement())
   categoryName String
   description  String?
+  active       Boolean @default(true)
   idieas       Idiea[]
 }
 

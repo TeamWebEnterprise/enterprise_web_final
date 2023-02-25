@@ -89,6 +89,9 @@ export class IdieaService {
         },
         take: 5,
         skip: (page - 1) * 5,
+        where: {
+          active: true,
+        },
       });
 
       getAllIdieas.forEach((idiea) => {
@@ -156,6 +159,9 @@ export class IdieaService {
         },
         take: 5,
         skip: (page - 1) * 5,
+        where: {
+          active: true,
+        },
       });
 
       getAllIdieas.forEach((idiea) => {
@@ -186,12 +192,25 @@ export class IdieaService {
       });
 
       if (checkExistingLike) {
-        return await this.prisma.like.update({
-          where: { id: checkExistingLike.id },
-          data: {
-            positive: Boolean(createLikeDto.positive === 'true'),
-          },
-        });
+        if (
+          Boolean(createLikeDto.positive === 'true') ==
+          checkExistingLike.positive
+        ) {
+          return await this.prisma.like.update({
+            where: { id: checkExistingLike.id },
+            data: {
+              active: !checkExistingLike.active,
+            },
+          });
+        } else {
+          return await this.prisma.like.update({
+            where: { id: checkExistingLike.id },
+            data: {
+              active: true,
+              positive: Boolean(createLikeDto.positive === 'true'),
+            },
+          });
+        }
       } else {
         return this.prisma.like.create({
           data: {

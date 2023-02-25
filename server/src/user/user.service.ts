@@ -11,25 +11,38 @@ import * as bcrypt from 'bcrypt';
 import { CheckUserInput } from './dto/check-user.input';
 import SetNewPasswordDto from 'src/auth/dto/set-new-password.input';
 import { verify } from 'jsonwebtoken';
+import { throwError } from 'rxjs';
+import { UpdateUserDto } from './dto/update-user-admin.input';
+import { Exception } from 'handlebars';
 
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
   async findAll() {
-    return this.prisma.user.findMany({
-      select: {
-        username: true,
-        email: true,
-        phone: true,
-      },
-    });
+    try {
+      const data = await this.prisma.user.findMany({
+        where: {
+          active: true,
+        },
+        include: {
+          Idiea: true,
+        },
+      });
+
+      await data.forEach((dataItem) => {
+        delete dataItem.password;
+      });
+      return data;
+    } catch (error) {
+      throwError;
+    }
   }
 
   async findOne(id: number): Promise<User> {
     return this.prisma.user.findUnique({
       where: {
-        id: id,
+        id: Number(id),
       },
     });
   }
@@ -73,6 +86,80 @@ export class UserService {
       (e) => {
         throw e;
       };
+    }
+  }
+
+  //Update User by Admin
+  async updateUserAdmin(updateUserDto: UpdateUserDto) {
+    try {
+      const existingUser = await this.findOne(updateUserDto.userId);
+
+      if (!existingUser) {
+        return new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+      }
+
+      return await this.prisma.user.update({
+        where: {
+          id: Number(updateUserDto.userId),
+        },
+        data: {
+          roles: updateUserDto.roles,
+        },
+      });
+    } catch (error) {
+      throw BadRequestException;
+    }
+  }
+
+  //Delete User by admin
+
+  async deleteUserByAmin(userId: number) {
+    try {
+      return await this.prisma.user.update({
+        include: {
+          Idiea: true,
+          Like: true,
+          Comment: true,
+        },
+        where: {
+          id: Number(userId),
+        },
+        data: {
+          Idiea: {
+            updateMany: {
+              data: {
+                active: false,
+              },
+              where: {
+                userId: Number(userId),
+              },
+            },
+          },
+          Like: {
+            updateMany: {
+              data: {
+                active: false,
+              },
+              where: {
+                userId: Number(userId),
+              },
+            },
+          },
+          Comment: {
+            updateMany: {
+              data: {
+                active: false,
+              },
+              where: {
+                userId: Number(userId),
+              },
+            },
+          },
+          active: false,
+        },
+      });
+    } catch (e) {
+      return BadRequestException;
     }
   }
 
