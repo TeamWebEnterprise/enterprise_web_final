@@ -60,6 +60,9 @@ export class IdieaService {
               categoryName: true,
               id: true,
             },
+            where: {
+              active: true,
+            },
           },
           comments: {
             select: {
@@ -77,10 +80,16 @@ export class IdieaService {
             orderBy: {
               createdAt: 'desc',
             },
+            where: {
+              active: true,
+            },
           },
           likes: {
             select: {
               positive: true,
+            },
+            where: {
+              active: true,
             },
           },
         },
@@ -128,6 +137,9 @@ export class IdieaService {
               categoryName: true,
               id: true,
             },
+            where: {
+              active: true,
+            },
           },
           comments: {
             select: {
@@ -145,10 +157,16 @@ export class IdieaService {
             orderBy: {
               createdAt: 'desc',
             },
+            where: {
+              active: true,
+            },
           },
           likes: {
             select: {
               positive: true,
+            },
+            where: {
+              active: true,
             },
           },
         },
