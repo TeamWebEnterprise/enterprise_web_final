@@ -30,6 +30,7 @@ const Feed = () => {
     window.scrollTo({
       top: 0,
       behavior: "smooth",
+      duration: 500,
     });
   };
 
@@ -83,6 +84,8 @@ const Feed = () => {
                 categories={item.categories}
                 numberOfLike={countLike(item.likes)}
                 comments={item.comments}
+                id={item.id}
+                likes={item.likes}
               />
             ))}
             <Box
