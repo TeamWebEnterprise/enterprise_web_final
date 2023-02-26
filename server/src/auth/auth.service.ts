@@ -44,7 +44,7 @@ export class AuthService {
       roles: refreshToken.roles,
     };
 
-    return sign(accessToken, process.env.ACCESS_SECRET, { expiresIn: '1h' });
+    return sign(accessToken, process.env.ACCESS_SECRET, { expiresIn: '15s' });
   }
 
   private retrieveRefreshToken(
@@ -96,7 +96,7 @@ export class AuthService {
         },
         process.env.ACCESS_SECRET,
         {
-          expiresIn: '15m',
+          expiresIn: '15s',
         },
       ),
     };

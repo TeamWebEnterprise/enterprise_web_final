@@ -86,6 +86,7 @@ export class IdieaService {
           },
           likes: {
             select: {
+              userId: true,
               positive: true,
             },
             where: {
@@ -163,6 +164,7 @@ export class IdieaService {
           },
           likes: {
             select: {
+              userId: true,
               positive: true,
             },
             where: {
