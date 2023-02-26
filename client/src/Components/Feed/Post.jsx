@@ -32,6 +32,10 @@ import {
   Divider,
   Checkbox,
 } from "@mui/material";
+import { useSelector } from "react-redux";
+import { CreateAxiosNoDispatch } from "../../createInstance";
+import { comment, like } from "../../utils/idieasApi";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const Post = ({
   content,
@@ -41,18 +45,84 @@ const Post = ({
   comments,
   numberOfLike,
   id,
+  likes,
 }) => {
-  const [open, setOpen] = useState(false);
+  const user = useSelector((state) => state.auth.login.currentUser);
+  const accessToken = user?.accessToken;
+  const axiosJWT = CreateAxiosNoDispatch(user);
+  const queryClient = useQueryClient();
 
+  //Handle liked
+  const { mutate: mutationLike } = useMutation(
+    ({ id, positive }) => {
+      return like(axiosJWT, accessToken, id, positive);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["idieas"]);
+      },
+    }
+  );
+  let check;
+  let positiveCheck;
+  let resultCheck;
+  check = likes.some((like) => {
+    if (like.userId === user.id) {
+      positiveCheck = Boolean(like.positive === true);
+      return true;
+    }
+    return false;
+  });
+  if (check === true) {
+    if (positiveCheck === true) {
+      resultCheck = true;
+    } else {
+      resultCheck = false;
+    }
+  }
+  const handleLike = () => {
+    mutationLike({ id: id, positive: "true" });
+  };
+  const handleDislike = () => {
+    mutationLike({ id: id, positive: "false" });
+  };
+
+  //Handle Comment
+  const [inputComment, setInputComment] = useState("");
+  const [commentAnonymous, setCommentAnonymous] = useState(false);
+
+  const { mutate: mutationComment } = useMutation(
+    ({ anonymous, content, idieaId }) =>
+      comment(axiosJWT, accessToken, anonymous, content, idieaId),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["idieas"]);
+      },
+    }
+  );
+  const handleCheckAnonymousComment = () => {
+    setCommentAnonymous(!commentAnonymous);
+  };
+
+  const handleCommentSubmit = () => {
+    mutationComment({
+      anonymous: commentAnonymous,
+      content: inputComment,
+      idieaId: id,
+    });
+    setOpen(false);
+    setCommentAnonymous(false);
+  };
+
+  const [open, setOpen] = useState(false);
   const handleClickOpen = () => {
     setOpen(true);
   };
-
   const handleClose = () => {
     setOpen(false);
   };
 
-  const [alignment, setAlignment] = useState("");
+  const [alignment, setAlignment] = useState(resultCheck);
   const handleAlignment = (event, newAlignment) => {
     setAlignment(newAlignment);
   };
@@ -147,11 +217,19 @@ const Post = ({
             onChange={handleAlignment}
             aria-label="text alignment"
           >
-            <ToggleButton sx={{ border: "none" }} value="like">
+            <ToggleButton
+              onClick={handleLike}
+              sx={{ border: "none" }}
+              value={true}
+            >
               <ThumbUpRoundedIcon />
             </ToggleButton>
 
-            <ToggleButton sx={{ border: "none" }} value="unlike">
+            <ToggleButton
+              onClick={handleDislike}
+              sx={{ border: "none" }}
+              value={false}
+            >
               <ThumbDownAltRoundedIcon />
             </ToggleButton>
           </ToggleButtonGroup>
@@ -202,8 +280,13 @@ const Post = ({
               id="name"
               label="Content"
               variant="standard"
+              value={inputComment}
+              onChange={(e) => {
+                setInputComment(e.target.value);
+              }}
             />
             <Checkbox
+              onClick={handleCheckAnonymousComment}
               sx={{ height: "50px", width: "60px", marginTop: "10px" }}
               icon={<AdminPanelSettingsIcon />}
               checkedIcon={<AdminPanelSettingsIcon />}
@@ -212,7 +295,7 @@ const Post = ({
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose}>Send</Button>
+          <Button onClick={handleCommentSubmit}>Send</Button>
         </DialogActions>
       </Dialog>
     </Card>

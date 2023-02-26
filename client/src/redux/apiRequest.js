@@ -26,7 +26,7 @@ export const logout = async (
   navigate,
   refreshToken,
   accessToken,
-  axiosJWT,
+  axiosJWT
 ) => {
   dispatch(logoutStart());
   console.log(refreshToken);

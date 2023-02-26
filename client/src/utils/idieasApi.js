@@ -14,3 +14,46 @@ export const getIdieas = (orderField, orderBy, page) => {
     )
     .then((res) => res.data);
 };
+
+export const like = async (axiosJWT, accessToken, idieaId, positive) => {
+  try {
+    await axiosJWT.post(
+      "/idieas/like",
+      {
+        idieaId: idieaId,
+        positive: positive,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const comment = async (
+  axiosJWT,
+  accessToken,
+  anonymous,
+  content,
+  idieaId
+) => {
+  try {
+    await axiosJWT.post(
+      "/comment/add",
+      {
+        anonymous: anonymous,
+        content: content,
+        idieaId: idieaId,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+  } catch (error) {}
+};
