@@ -32,7 +32,8 @@ export class CommentController {
     const id: number = req.user.userId;
     return await this.commentService.addComment(addComment, id);
   }
-  @Get('/list')
+
+  @Get('list')
   async getAllComments(
     @Query('id', ParseIntPipe) idieaId: number,
     @Query('amount', ParseIntPipe) amount: number,
