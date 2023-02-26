@@ -1,19 +1,34 @@
 import { useRef, useState } from "react";
-
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../redux/apiRequest";
+import * as React from "react";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import TextField from "@mui/material/TextField";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import Link from "@mui/material/Link";
+import Paper from "@mui/material/Paper";
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Typography from "@mui/material/Typography";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 const Login = () => {
   const userRef = useRef();
   const errRef = useRef();
-
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  React.useEffect(() => {}, [username, password]);
+
   const handleSubmit = async (e) => {
+    console.log(username, password);
     e.preventDefault();
     const newUser = {
       username: username,
@@ -21,96 +36,121 @@ const Login = () => {
     };
     loginUser(newUser, dispatch, navigate);
   };
-
+  const theme = createTheme();
+  function Copyright(props) {
+    return (
+      <Typography
+        variant='body2'
+        color='text.secondary'
+        align='center'
+        {...props}
+      >
+        {"Copyright © "}
+        <Link color='inherit' href='https://mui.com/'>
+          Inspiration Station
+        </Link>{" "}
+        {new Date().getFullYear()}
+        {"."}
+      </Typography>
+    );
+  }
   return (
-    <section className=" bg-[#437BE8] min-h-screen flex items-center justify-center shadow-gray-500 shadow-lg">
-      <div className="sm:max-w-2xl ml-5 mr-5 rounded-xl md:rounded-2xl bg-[#FFFFFFFF] mx-auto flex shadow-lg max-w-6xl p-5 ">
-        <div className="px-5">
-          <h2 className="font-bold text-2xl"> Login</h2>
-          <p className="text-sm mt-4">
-            Please enter email and password to login client
-          </p>
-          <form className="flex flex-col grap-4" onSubmit={handleSubmit}>
-            <label className=" mt-3 font-bold text-sm ">username</label>
-            <input
-              className=" p-2 mt-1  border-b-2 outline-none"
-              type="text"
-              name="username"
-              ref={userRef}
-              autoComplete="off"
-              id="username"
-              onChange={(e) => setUserName(e.target.value)}
-              value={username}
-              required
-            ></input>
-            <label className=" mt-3 font-bold text-sm">Password</label>
-            <input
-              className="p-2 mt-1  border-b-2 outline-none"
-              type="password"
-              name="password"
-              ref={userRef}
-              autoComplete="off"
-              onChange={(e) => setPassword(e.target.value)}
-              value={password}
-              id="password"
-              required
-            ></input>
-            <div className=" form-check mt-1">
-              <input
-                class=" rounded-full form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
-                type="checkbox"
-                value=""
-                id="flexCheckDefault"
-              ></input>
-              <label
-                class="form-check-label inline-block text-black font-bold text-sm "
-                for="flexCheckDefault"
-              >
-                Remember me
-              </label>
-            </div>
-            <button className="mt-3 mx-auto w-full bg-blue-700 rounded-xl text-white py-2 hover:scale-110 duration-200">
-              Login
-            </button>
-          </form>
-
-          <div className="mt-10 grid grid-cols-3 items-center text-gray-500">
-            <hr className="outline-gray-700" />
-            <p className="text-center text-sm">OR</p>
-            <hr className="outline-gray-700" />
-          </div>
-          <button className=" justify-center flex mt-5 w-full rounded-xl bg-white border py-2 hover:scale-110 duration-200">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="25"
-              height="25"
-              fill="currentColor"
-              class="bi bi-google "
-              viewBox="0 0 16 16"
-              className="mr-2 "
+    <ThemeProvider theme={theme}>
+      <Grid container component='main' sx={{ height: "100vh" }}>
+        <CssBaseline />
+        <Grid
+          item
+          xs={false}
+          sm={4}
+          md={7}
+          sx={{
+            backgroundImage:
+              "url(https://www.gre.ac.uk/__data/assets/image/0025/119653/gre.jpg)",
+            backgroundRepeat: "no-repeat",
+            backgroundColor: (t) =>
+              t.palette.mode === "light"
+                ? t.palette.grey[50]
+                : t.palette.grey[900],
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        />
+        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+          <Box
+            sx={{
+              my: 8,
+              mx: 4,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+              <LockOutlinedIcon />
+            </Avatar>
+            <Typography component='h1' variant='h5'>
+              Sign in
+            </Typography>
+            <Box
+              component='form'
+              noValidate
+              onSubmit={handleSubmit}
+              sx={{ mt: 1 }}
             >
-              <path d="M15.545 6.558a9.42 9.42 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.689 7.689 0 0 1 5.352 2.082l-2.284 2.284A4.347 4.347 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.792 4.792 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.702 3.702 0 0 0 1.599-2.431H8v-3.08h7.545z" />
-            </svg>
-            Login with google
-          </button>
-          <p className="mt-10 text-xs border-b py-4 ">Forgot your password?</p>
-          <div className="sm: text-xs mt-3 font-bold flex justify-between items-center md:text-sm ">
-            <p className=" md:text-black ">If your don't have an account..</p>
-            <button className="py-2 px-5 bg-green-500 border rounded-xl hover:scale-110 duration-200">
-              <a className="text-white" href="/register">
-                Register
-              </a>
-            </button>
-          </div>
-        </div>
-        <div className="md:block hidden w-1/2 shadow-xl rounded-xl shadow-gray-500 ">
-          <img
-            src="https://sumfinity.com/wp-content/uploads/2017/08/Greenwich-University.jpg"
-            className=" rounded-xl w-auto h-full"
-          ></img>
-        </div>
-      </div>
-    </section>
+              <TextField
+                margin='normal'
+                required
+                fullWidth
+                id='email'
+                label='Email Address'
+                name='email'
+                autoComplete='email'
+                autoFocus
+                onChange={(e) => setUserName(e.target.value)}
+                value={username}
+              />
+              <TextField
+                margin='normal'
+                required
+                fullWidth
+                name='password'
+                label='Password'
+                type='password'
+                id='password'
+                autoComplete='current-password'
+                onChange={(e) => setPassword(e.target.value)}
+                value={password}
+              />
+              <FormControlLabel
+                control={<Checkbox value='remember' color='primary' />}
+                label='Remember me'
+              />
+              <Button
+                type='submit'
+                fullWidth
+                variant='contained'
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Sign In
+              </Button>
+              <Grid container>
+                <Grid item xs>
+                  <Link href='#' variant='body2'>
+                    Forgot password?
+                  </Link>
+                </Grid>
+                <Grid item>
+                  <Link href='/register' variant='body2'>
+                    {"Don't have an account? Sign Up"}
+                  </Link>
+                </Grid>
+              </Grid>
+              <Copyright sx={{ mt: 5 }} />
+            </Box>
+          </Box>
+        </Grid>
+      </Grid>
+    </ThemeProvider>
   );
 };
 export default Login;
