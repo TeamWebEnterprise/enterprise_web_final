@@ -86,6 +86,8 @@ const Feed = () => {
                 comments={item.comments}
                 id={item.id}
                 likes={item.likes}
+                closeIdieaAt={item.closeIdieaAt}
+                closeCommentAt={item.closeCommentAt}
               />
             ))}
             <Box
