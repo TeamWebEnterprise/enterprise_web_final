@@ -30,6 +30,7 @@ export const logout = async (
 ) => {
   dispatch(logoutStart());
   console.log(refreshToken);
+  console.log(accessToken);
   try {
     try {
       await axiosJWT.delete("/auth/logout", {

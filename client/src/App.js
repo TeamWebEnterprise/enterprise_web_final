@@ -4,6 +4,7 @@ import { Home } from "./pages/Home/Home";
 import { Route, Routes } from "react-router-dom";
 import Login from "./pages/Login/Login";
 import { Register } from "./pages/Register/Register";
+import ForgotConfirmMail from "./pages/ForgotPwd/ForgotConfirmMail";
 
 function App() {
   const [mode, setMode] = useState("light");
@@ -26,6 +27,7 @@ function App() {
         />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgotpwdconfirmmail" element={<ForgotConfirmMail/>} />
       </Routes>
     </>
   );
