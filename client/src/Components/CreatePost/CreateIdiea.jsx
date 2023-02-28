@@ -6,22 +6,23 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import TextField from "@mui/material/TextField";
-import FileUploadIcon from "@mui/icons-material/FileUpload";
 import {
   Box,
   Divider,
   Card,
   Avatar,
   CardHeader,
-  IconButton,
   Autocomplete,
   Checkbox,
   Stack,
+  CircularProgress,
 } from "@mui/material";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import * as api from "../../utils/idieasApi";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { CreateAxiosNoDispatch } from "../../createInstance";
+import { useSelector } from "react-redux";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -39,16 +40,62 @@ export default function DialogSlide() {
   const [categories, setCategories] = React.useState([]);
   const [inputPublic, setInputPublic] = React.useState(options[0]);
 
+  /* //handle File Upload
+  const [selectedFile, setSelectedFile] = React.useState();
+  const [isFilePicked, setIsFilePicked] = React.useState(false);
+  const inputFileHandle = (event) => {
+    setSelectedFile(event.target.files);
+    setIsFilePicked(true);
+    console.log(selectedFile);
+  }; */
+
+  const user = useSelector((state) => state.auth.login.currentUser);
+  const axiosJWT = CreateAxiosNoDispatch(user);
+  const accessToken = user?.accessToken;
+  const queryClient = useQueryClient();
+  const { mutate, isLoading: creatingIdiea } = useMutation(
+    ({ content, anonymous, idCategory }) =>
+      api.createIdiea(axiosJWT, accessToken, content, anonymous, idCategory),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["idieas"]);
+        setOpen(false);
+        setContentInput("");
+        setCategories([]);
+        setInputPublic(options[0]);
+      },
+    }
+  );
+
   const handleClickOpen = () => {
     setOpen(true);
   };
+
   const handleClose = () => {
     setOpen(false);
-    console.log(contentInput);
-    categories.forEach((category) => {
-      console.log("category: " + category.categoryName);
+  };
+
+  const handleSubmit = async () => {
+    /* const formData = new FormData();
+    if (isFilePicked) {
+      await formData.append("File", selectedFile);
+      console.log(formData);
+    } */
+    var idCategories = [];
+    await categories.forEach((category) => {
+      idCategories.push(category.id);
     });
-    console.log(inputPublic);
+
+    var anonymous = false;
+    if (inputPublic === "Anonymouse") {
+      anonymous = true;
+    }
+
+    await mutate({
+      content: contentInput,
+      anonymous: String(anonymous),
+      idCategory: idCategories,
+    });
   };
 
   return (
@@ -157,23 +204,36 @@ export default function DialogSlide() {
                 sx={{ width: 300 }}
                 renderInput={(params) => <TextField {...params} />}
               />
-              <Button
+              {/*  <Button
                 flex={1}
                 variant="outlined"
                 color="primary"
-                aria-label="upload picture"
                 component="label"
                 startIcon={<FileUploadIcon />}
               >
                 Document
-                <input hidden accept="image/*" type="file" />
+                <input hidden type="file" onChange={inputFileHandle} />
               </Button>
+              {isFilePicked ? <Box>{selectedFile[0].name}</Box> : <></>} */}
             </Stack>
           </Stack>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Next</Button>
+          <Button onClick={handleSubmit}>Next</Button>
         </DialogActions>
+
+        {creatingIdiea ? (
+          <CircularProgress
+            sx={{
+              position: "fixed",
+              top: "50%",
+              right: "50%",
+              translate: "20px -40px",
+            }}
+          />
+        ) : (
+          <></>
+        )}
       </Dialog>
     </div>
   );

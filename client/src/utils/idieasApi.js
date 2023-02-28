@@ -3,6 +3,33 @@ import axios from "axios";
 const api = axios.create({
   baseURL: "http://localhost:3001/",
 });
+
+export const createIdiea = async (
+  axiosJWT,
+  accessToken,
+  content,
+  anonymous,
+  idCategory
+) => {
+  try {
+    await axiosJWT.post(
+      "/idieas/createidiea",
+      {
+        content: content,
+        anonymous: anonymous,
+        idCategory: idCategory,
+      },
+      {
+        headers: {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      }
+    );
+  } catch (error) {}
+};
+
 export const getIdieas = (orderField, orderBy, page) => {
   if (orderField === "likes") {
     return api.get(`/idieas/all-by-likes?page=${page}`).then((res) => res.data);
