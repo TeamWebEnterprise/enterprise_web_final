@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import RestoreIcon from "@mui/icons-material/Restore";
-import FavoriteIcon from "@mui/icons-material/Favorite";
+import WhatshotIcon from "@mui/icons-material/Whatshot";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 
 import { useQuery } from "@tanstack/react-query";
@@ -55,8 +55,8 @@ const Feed = () => {
           />
           <BottomNavigationAction
             value={"likes"}
-            label="Favorites"
-            icon={<FavoriteIcon />}
+            label="Trending"
+            icon={<WhatshotIcon />}
           />
           <BottomNavigationAction
             value={"createdAt"}
@@ -86,6 +86,8 @@ const Feed = () => {
                 comments={item.comments}
                 id={item.id}
                 likes={item.likes}
+                closeIdieaAt={item.closeIdieaAt}
+                closeCommentAt={item.closeCommentAt}
               />
             ))}
             <Box

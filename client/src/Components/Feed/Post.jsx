@@ -4,16 +4,15 @@ import SmsRoundedIcon from "@mui/icons-material/SmsRounded";
 import RecommendRoundedIcon from "@mui/icons-material/RecommendRounded";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
-import { MoreVert } from "@mui/icons-material";
 import { useState } from "react";
 import Comment from "../../components/Feed/Comment";
 import formatDate from "../../utils/formatDate";
+
 import {
   Avatar,
   Card,
   CardContent,
   CardHeader,
-  IconButton,
   Typography,
   ToggleButtonGroup,
   ToggleButton,
@@ -36,6 +35,7 @@ import { useSelector } from "react-redux";
 import { CreateAxiosNoDispatch } from "../../createInstance";
 import { comment, like } from "../../utils/idieasApi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import CustomizedMenus from "./PostDetail";
 
 const Post = ({
   content,
@@ -44,6 +44,8 @@ const Post = ({
   categories,
   comments,
   numberOfLike,
+  closeIdieaAt,
+  closeCommentAt,
   id,
   likes,
 }) => {
@@ -110,8 +112,10 @@ const Post = ({
       content: inputComment,
       idieaId: id,
     });
+    setOpenListComment(true);
     setOpen(false);
     setCommentAnonymous(false);
+    setInputComment("");
   };
 
   const [open, setOpen] = useState(false);
@@ -120,6 +124,11 @@ const Post = ({
   };
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const [openListComment, setOpenListComment] = useState(false);
+  const handleClickListComments = () => {
+    setOpenListComment(!openListComment);
   };
 
   const [alignment, setAlignment] = useState(resultCheck);
@@ -136,15 +145,16 @@ const Post = ({
           </Avatar>
         }
         action={
-          <IconButton aria-label="settings">
-            <MoreVert />
-          </IconButton>
+          <CustomizedMenus
+            closeIdieaAt={closeIdieaAt}
+            closeComment={closeCommentAt}
+          />
         }
         title={`${name}`}
         subheader={`${formatDate(createAt)}`}
       />
       <CardContent>
-        <Typography fontSize="20px" variant="body2" color="text.secondary">
+        <Typography fontSize="20px" variant="body2" color="text.primary">
           {`${content}`}
         </Typography>
         <Box marginY={1} display="flex">
@@ -183,7 +193,7 @@ const Post = ({
               alignItems: "center",
               justifyContent: "center",
               borderRadius: "100%",
-              height: "16px",
+              height: "19px",
             }}
           >
             <ThumbDownAltRoundedIcon fontSize="4px" />
@@ -199,9 +209,15 @@ const Post = ({
         </Box>
 
         <Box marginX={2}>
-          <Typography fontSize="13px" color="text">
-            {`${comments.length} Comments`}
-          </Typography>{" "}
+          {comments.length > 0 ? (
+            <Typography fontSize="13px" color="text">
+              {`${comments.length} Comments`}
+            </Typography>
+          ) : (
+            <Typography fontSize="13px" color="text">
+              Create comment...
+            </Typography>
+          )}
         </Box>
       </Box>
 
@@ -248,22 +264,30 @@ const Post = ({
         </Grid>
       </Grid>
 
-      <Accordion sx={{ boxShadow: "0", marginX: "20px" }}>
-        <AccordionSummary
-          sx={{ border: "none" }}
-          expandIcon={<ExpandMoreIcon />}
-          id="panel1a-header"
+      {comments.length > 0 ? (
+        <Accordion
+          expanded={openListComment}
+          sx={{ boxShadow: "0", marginX: "20px" }}
         >
-          <Typography fontSize="14px" color="text.secondary">
-            Show comments...
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails sx={{ padding: "0" }}>
-          {comments.map((comment) => (
-            <Comment comment={comment} />
-          ))}
-        </AccordionDetails>
-      </Accordion>
+          <AccordionSummary
+            onClick={handleClickListComments}
+            sx={{ border: "none" }}
+            expandIcon={<ExpandMoreIcon />}
+            id="panel1a-header"
+          >
+            <Typography fontSize="14px" color="text.secondary">
+              Show comments...
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails sx={{ padding: "0" }}>
+            {comments.map((comment) => (
+              <Comment comment={comment} />
+            ))}
+          </AccordionDetails>
+        </Accordion>
+      ) : (
+        <></>
+      )}
 
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Create comment</DialogTitle>
