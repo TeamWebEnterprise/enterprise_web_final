@@ -115,6 +115,7 @@ const Post = ({
     setOpenListComment(true);
     setOpen(false);
     setCommentAnonymous(false);
+    setInputComment("");
   };
 
   const [open, setOpen] = useState(false);

@@ -57,3 +57,9 @@ export const comment = async (
     );
   } catch (error) {}
 };
+
+export const getAllCategory = async () => {
+  try {
+    return api.get("/category/all").then((res) => res.data);
+  } catch (error) {}
+};

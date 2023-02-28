@@ -2,8 +2,8 @@ import { Box, Stack } from "@mui/material";
 import Navbar from "../../components/NavBar/NavBar";
 import Sidebar from "../../components/Sidebar/Siderbar";
 import Feed from "../../components/Feed/Feed";
-import CreatePost from "../../components/CreatePost/CreatePost";
 import Rightbar from "../../components/Rightbar/Rightbar";
+import DialogSlide from "../../components/CreatePost/CreateIdiea";
 import React from "react";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
@@ -32,7 +32,7 @@ export const Home = ({ mode, setMode }) => {
         <Feed />
         <Rightbar />
       </Stack>
-      <CreatePost />
+      <DialogSlide />
     </Box>
   );
 };
