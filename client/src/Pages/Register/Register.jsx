@@ -1,12 +1,15 @@
 import { useRef, useState, useEffect } from "react";
 import axios from "../../api/axios";
 import "./Register.css";
+import TextField from "@mui/material/TextField";
+import { Email } from "@mui/icons-material";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{1,23}$/;
-const PWD_REGEX = /([?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
+const PWD_REGEX =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
 const PHONE_REGEX = /^(?=.*[0-9]).{10,11}$/;
 const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-
 const REGISTER_URL = "/auth/register";
 
 export const Register = () => {
@@ -55,9 +58,13 @@ export const Register = () => {
 
   useEffect(() => {
     const result = PHONE_REGEX.test(phone);
+    setValidPhone(result);
   }, [phone]);
 
-  useEffect(() => {}, [email]);
+  useEffect(() => {
+    const result = EMAIL_REGEX.test(email);
+    setValidEmail(result);
+  }, [email]);
 
   useEffect(() => {
     const check = async () => {
@@ -75,6 +82,7 @@ export const Register = () => {
   useEffect(() => {
     const result = PWD_REGEX.test(password);
     setValidPwd(result);
+    console.log(result);
     const match = password === matchPwd;
     setValidMatch(match);
   }, [password, matchPwd]);
@@ -84,6 +92,7 @@ export const Register = () => {
   }, [username, password, matchPwd]);
 
   const handleSubmit = async (e) => {
+    setLoading(!loading);
     e.preventDefault();
     const v1 = USER_REGEX.test(username);
     const v2 = PWD_REGEX.test(password);
@@ -112,14 +121,13 @@ export const Register = () => {
       );
 
       setSuccess(true);
-      setLoading(true);
     } catch (err) {
       if (err?.response) {
-        setErrMsg("No server Response");
+        setErrMsg("User name phone number or email already exists");
       } else if (err.response?.status === 409) {
         setErrMsg("Username taken");
       } else {
-        setErrMsg("Registration Failed");
+        setErrMsg("Registration Failed ");
       }
       errRef.current.focus();
     }
@@ -128,270 +136,239 @@ export const Register = () => {
     <>
       {success ? (
         <section>
-          <h1 className="text-5xl text-center text-green-600">Success</h1>
-          <p className="text-2xl text-center text-blue-600">
+          <h1 className='text-5xl text-center text-green-600'>Success</h1>
+          <p className='text-2xl text-center text-blue-600'>
             Please check your{" "}
             <a
-              className="text-2xl text-center text-green-600 underline"
-              href="https://mail.google.com/mail/"
+              className='text-2xl text-center text-green-600 underline'
+              href='https://mail.google.com/mail/'
             >
               Mail
             </a>{" "}
             to activate account{" "}
           </p>
           <p>
-            <a className="text-3xl text-center text-green-600" href="/login">
+            <a className='text-3xl text-center text-green-600' href='/login'>
               Login
             </a>
           </p>
         </section>
       ) : (
-        <section className="bg-[#437BE8] min-h-screen items-center justify-center md:p-14 ">
+        <section className='bg-[url("https://th.bing.com/th/id/R.5a6e05753a3209540850409c73286a6a?rik=%2bm%2fC1THL7MbisA&pid=ImgRaw&r=0")] bg-fixed bg-cover min-h-screen items-center justify-center md:p-14 relative '>
           <p
             ref={errRef}
-            className={errMsg ? "setErrMsg + w-screen " : "offscreen"}
-            aria-live="assertive"
+            className={errMsg ? "setErrMsg " : "offscreen"}
+            aria-live='assertive'
           >
             {errMsg}
           </p>
 
-          <div className="flex items-center justify-center">
-            <div className="sm:max-w-2xl ml-5 mr-5 rounded-xl bg-white md:flex max-w-7xl m-10">
-              <div className="md:block hidden p-10 text-center bg-[#FAFAFA] rounded-xl shadow-lg">
-                <h2 className="text-2xl font-bold text-[#2A175B] text-center">
-                  Create new account
-                </h2>
-                <p className="flex gap-2 m-6 text-md text-left">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="w-6 h-6 text-yellow-400"
-                  >
-                    <path d="M10.5 1.875a1.125 1.125 0 012.25 0v8.219c.517.162 1.02.382 1.5.659V3.375a1.125 1.125 0 012.25 0v10.937a4.505 4.505 0 00-3.25 2.373 8.963 8.963 0 014-.935A.75.75 0 0018 15v-2.266a3.368 3.368 0 01.988-2.37 1.125 1.125 0 011.591 1.59 1.118 1.118 0 00-.329.79v3.006h-.005a6 6 0 01-1.752 4.007l-1.736 1.736a6 6 0 01-4.242 1.757H10.5a7.5 7.5 0 01-7.5-7.5V6.375a1.125 1.125 0 012.25 0v5.519c.46-.452.965-.832 1.5-1.141V3.375a1.125 1.125 0 012.25 0v6.526c.495-.1.997-.151 1.5-.151V1.875z" />
-                  </svg>
-                  Create your idea
-                </p>
-                <p className="flex gap-2 m-6 text-md text-left">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="w-6 h-6 text-blue-600"
-                  >
-                    <path d="M7.493 18.75c-.425 0-.82-.236-.975-.632A7.48 7.48 0 016 15.375c0-1.75.599-3.358 1.602-4.634.151-.192.373-.309.6-.397.473-.183.89-.514 1.212-.924a9.042 9.042 0 012.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 00.322-1.672V3a.75.75 0 01.75-.75 2.25 2.25 0 012.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 01-2.649 7.521c-.388.482-.987.729-1.605.729H14.23c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 00-1.423-.23h-.777zM2.331 10.977a11.969 11.969 0 00-.831 4.398 12 12 0 00.52 3.507c.26.85 1.084 1.368 1.973 1.368H4.9c.445 0 .72-.498.523-.898a8.963 8.963 0 01-.924-3.977c0-1.708.476-3.305 1.302-4.666.245-.403-.028-.959-.5-.959H4.25c-.832 0-1.612.453-1.918 1.227z" />
-                  </svg>
-                  Vote
-                </p>
-                <p className="flex gap-2 m-6 text-md text-left">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="w-6 h-6"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M4.848 2.771A49.144 49.144 0 0112 2.25c2.43 0 4.817.178 7.152.52 1.978.292 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.678-3.348 3.97a48.901 48.901 0 01-3.476.383.39.39 0 00-.297.17l-2.755 4.133a.75.75 0 01-1.248 0l-2.755-4.133a.39.39 0 00-.297-.17 48.9 48.9 0 01-3.476-.384c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.68 3.348-3.97zM6.75 8.25a.75.75 0 01.75-.75h9a.75.75 0 010 1.5h-9a.75.75 0 01-.75-.75zm.75 2.25a.75.75 0 000 1.5H12a.75.75 0 000-1.5H7.5z"
-                      clipRule="evenodd"
-                      className="w-6 h-6 text-gray-400"
-                    />
-                  </svg>
-                  Comment
-                </p>
-                <p className="flex gap-2 m-6 text-md text-left">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="w-6 h-6 text-gray-600"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M11.078 2.25c-.917 0-1.699.663-1.85 1.567L9.05 4.889c-.02.12-.115.26-.297.348a7.493 7.493 0 00-.986.57c-.166.115-.334.126-.45.083L6.3 5.508a1.875 1.875 0 00-2.282.819l-.922 1.597a1.875 1.875 0 00.432 2.385l.84.692c.095.078.17.229.154.43a7.598 7.598 0 000 1.139c.015.2-.059.352-.153.43l-.841.692a1.875 1.875 0 00-.432 2.385l.922 1.597a1.875 1.875 0 002.282.818l1.019-.382c.115-.043.283-.031.45.082.312.214.641.405.985.57.182.088.277.228.297.35l.178 1.071c.151.904.933 1.567 1.85 1.567h1.844c.916 0 1.699-.663 1.85-1.567l.178-1.072c.02-.12.114-.26.297-.349.344-.165.673-.356.985-.57.167-.114.335-.125.45-.082l1.02.382a1.875 1.875 0 002.28-.819l.923-1.597a1.875 1.875 0 00-.432-2.385l-.84-.692c-.095-.078-.17-.229-.154-.43a7.614 7.614 0 000-1.139c-.016-.2.059-.352.153-.43l.84-.692c.708-.582.891-1.59.433-2.385l-.922-1.597a1.875 1.875 0 00-2.282-.818l-1.02.382c-.114.043-.282.031-.449-.083a7.49 7.49 0 00-.985-.57c-.183-.087-.277-.227-.297-.348l-.179-1.072a1.875 1.875 0 00-1.85-1.567h-1.843zM12 15.75a3.75 3.75 0 100-7.5 3.75 3.75 0 000 7.5z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  Manager your idea
-                </p>
-                <div className="mt-10">
-                  <p className="text-lg">Your have an account</p>
-                  <a
-                    className=" text-lg font-bold underline text-sky-500"
-                    href="/login"
-                  >
-                    sign in
-                  </a>
-                </div>
-              </div>
+          <div className='flex items-center justify-center'>
+            <div className='sm:max-w-2xl ml-5 mr-5 rounded-xl bg-white md:flex max-w-7xl m-10'>
               <form
-                className="flex flex-col p-10 mr-5 ml-5 md:p-2 max-w-7xl m-10"
+                className='flex flex-col p-10 mr-5 ml-5 md:p-2 max-w-7xl m-10'
                 onSubmit={handleSubmit}
               >
-                <h2 className="text-center text-3xl font-semibold mt-2 mb-2">
+                <h2 className='text-center text-3xl font-semibold mt-2 mb-5'>
                   Sign Up
                 </h2>
-                <div className="sm:flex-none md:flex ">
-                  <input
-                    className="sm: w-full m-0 p-5 pb-2 pl-0 border-b-2 outline-none md: w-1/2 mr-3"
-                    type="email"
-                    autoComplete="off"
+                <div className='sm:flex-none md:flex  gap-2 mb-2'>
+                  <TextField
+                    color={emailFocus && !validEmail ? "error" : "success"}
+                    label={
+                      !emailFocus
+                        ? "email"
+                        : !validEmail
+                        ? "email not validate"
+                        : "email validate"
+                    }
+                    id='outlined-basic'
+                    variant='outlined'
+                    className='sm: w-full m-0 p-5 pb-2 pl-0 border-b-2 outline-none md: w-1/2'
+                    type='email'
                     required
-                    placeholder="email"
                     onChange={(e) => setEmail(e.target.value)}
                     value={email}
                     aria-invalid={validEmail ? "false" : "true"}
-                    aria-describedby="emailnote"
+                    aria-describedby='emailnote'
                     onFocus={() => setEmailFocus(true)}
                     onBlur={() => setEmailFocus(false)}
-                  ></input>
-                  <input
-                    className="sm: w-full m-0 p-5 pb-2 pl-0 border-b-2 outline-none md: w-1/2 mr-3"
-                    type="text"
-                    autoComplete="off"
+                  ></TextField>
+                  <div className='mb-2'> </div>
+                  <TextField
+                    id='outlined-basic'
+                    label='username'
+                    variant='outlined'
+                    className='sm: w-full m-0 p-5 pb-2 pl-0 border-b-2 outline-none md: w-1/2'
+                    type='text'
                     required
                     ref={userRef}
                     onChange={(e) => setUserName(e.target.value)}
                     value={username}
-                    placeholder="username"
+                    placeholder='username'
                     aria-invalid={validName ? "false" : "true"}
-                    aria-describedby="uidnote"
+                    aria-describedby='uidnote'
                     onFocus={() => setUserFocus(true)}
                     onBlur={() => setUserFocus(false)}
-                  ></input>
-
-                  {/* {!validName ? <p>user is already</p>:<p> is't oke</p>} */}
-                  {/* <p
-                    id='confirmnote'
-                    className={
-                      userFocus && !validName
-                        ? " flex-none text-sm text-red-500 p-0.5 relative"
-                        : "register__validpwd--off"
-                    }
-                  >
-                    Must match the first password input field.
-                  </p> */}
+                  ></TextField>
+                  <div className='mb-2'> </div>
                 </div>
-                <div className="sm:flex-none md:flex">
-                  <input
-                    className="sm: w-full m-0 p-5 pb-2 pl-0 border-b-2 outline-none md: w-1/2 mr-3"
-                    type="date"
-                    autoComplete="off"
+                <div className='sm:flex-none md:flex gap-2 mb-2 '>
+                  <TextField
+                    className='sm: w-full m-0 p-5 pb-2 pl-0 border-b-2 outline-none md: w-1/2'
+                    type='date'
+                    autoComplete='off'
                     required
-                    placeholder="dateofbirth"
+                    placeholder='dateofbirth'
                     onChange={(e) => setDateOfBirth(e.target.value)}
                     value={dateOfBirth}
-                  ></input>
-                  <input
-                    className="sm: w-full m-0 p-5 pb-2 pl-0 border-b-2 outline-none md: w-1/2 mr-3"
-                    type="tel"
-                    autoComplete="off"
+                    renderInput={(params) => (
+                      <TextField {...params} helperText={null} />
+                    )}
+                  ></TextField>
+                  <div className='mb-2'> </div>
+                  <TextField
+                    color={phoneFocus && !validPhone ? "error" : "success"}
+                    label={
+                      !phoneFocus
+                        ? "Phone number"
+                        : !validPhone
+                        ? "phone not valid"
+                        : "phone valid"
+                    }
+                    id='outlined-basic'
+                    variant='outlined'
+                    className='sm: w-full m-0 p-5 pb-2 pl-0 border-b-2 outline-none md: w-1/2'
+                    type='tel'
+                    autoComplete='off'
                     required
-                    placeholder="phone"
+                    placeholder='phone'
                     onChange={(e) => setPhone(e.target.value)}
                     value={phone}
                     aria-invalid={validPhone ? "false" : "true"}
-                    aria-describedby="phonenote"
+                    aria-describedby='phonenote'
                     onFocus={() => setPhoneFocus(true)}
                     onBlur={() => setPhoneFocus(false)}
-                  ></input>
+                  ></TextField>
+                  <div className='mb-2'> </div>
                 </div>
-                <div className="sm:flex-none md:flex">
-                  <input
-                    className="sm: w-full m-0 p-5 pb-2 pl-0 border-b-2 outline-none md: w-1/2 mr-3"
-                    type="text"
-                    autoComplete="off"
+                <div className='sm:flex-none md:flex gap-2 mb-2'>
+                  <TextField
+                    id='outlined-basic'
+                    label='First name'
+                    variant='outlined'
+                    className='sm: w-full m-0 p-5 pb-2 pl-0 border-b-2 outline-none md: w-1/2'
+                    type='text'
+                    autoComplete='off'
                     onChange={(e) => setFirstName(e.target.value)}
                     value={firstName}
                     aria-invalid={validFirstName ? "false" : "true"}
-                    aria-describedby="firstnamenote"
+                    aria-describedby='firstnamenote'
                     onFocus={() => setFirstNameFocus(true)}
                     onBlur={() => setFirstNameFocus(false)}
                     required
-                    placeholder="firstname"
-                  ></input>
-                  <input
-                    className="sm: w-full m-0 p-5 pb-2 pl-0 border-b-2 outline-none md: w-1/2 mr-3"
-                    type="text"
-                    autoComplete="off"
+                    placeholder='firstname'
+                  ></TextField>
+                  <div className='mb-2'> </div>
+                  <TextField
+                    id='outlined-basic'
+                    label='Last name'
+                    variant='outlined'
+                    className='sm: w-full m-0 p-5 pb-2 pl-0 border-b-2 outline-none md: w-1/2'
+                    type='text'
+                    autoComplete='off'
                     required
-                    placeholder="lastname"
+                    placeholder='lastname'
                     onChange={(e) => setLastName(e.target.value)}
                     value={lastName}
                     aria-invalid={validLastName ? "false" : "true"}
-                    aria-describedby="lastnamenote"
+                    aria-describedby='lastnamenote'
                     onFocus={() => setLastNameFocus(true)}
                     onBlur={() => setLastNameFocus(false)}
-                  ></input>
+                  ></TextField>
+                  <div className='mb-2'> </div>
                 </div>
 
-                <input
-                  className="w-full p-5 pb-2 pl-0 mr-5 border-b-2 outline-none max-w-xl"
-                  type="text"
-                  autoComplete="off"
+                <TextField
+                  id='outlined-basic'
+                  label='Address'
+                  variant='outlined'
+                  className='w-full p-5 pb-2 pl-0 mr-5 border-b-2 outline-none max-w-xl mb-2'
+                  type='text'
+                  autoComplete='off'
                   required
-                  placeholder="address"
+                  placeholder='address'
                   onChange={(e) => setAddress(e.target.value)}
                   value={address}
-                ></input>
-
-                <input
-                  className="w-full p-5 pb-2 pl-0 mr-3 border-b-2 outline-none"
-                  type="password"
-                  autoComplete="off"
+                ></TextField>
+                <div className='mb-2'> </div>
+                <TextField
+                  color={pwdFocus && !validPwd ? "error" : "success"}
+                  label={
+                    !pwdFocus
+                      ? "password"
+                      : !validPwd
+                      ? "password not validate"
+                      : "password validate"
+                  }
+                  id='outlined-basic'
+                  variant='outlined'
+                  className='w-full p-5 pb-2 pl-0 mr-3 border-b-2 outline-none '
+                  type='password'
+                  autoComplete='off'
                   onChange={(e) => setPassword(e.target.value)}
                   value={password}
                   aria-invalid={validPwd ? "false" : "true"}
-                  aria-describedby="pwdnote"
+                  aria-describedby='pwdnote'
                   onFocus={() => setPwdFocus(true)}
                   onBlur={() => setPwdFocus(false)}
                   required
-                  placeholder="password"
-                ></input>
+                ></TextField>
                 <p
-                  id="pwdnote"
+                  id='pwdnote'
                   className={
                     pwdFocus && !validPwd
-                      ? " text-sm text-red-500 p-0.5 relative"
+                      ? " text-sm text-black p-0.5 relative"
                       : "register__validpwd--off"
                   }
                 >
-                  8 to 24 characters.
+                  6 to 24 characters.
                   <br />
                   Must include uppercase and lowercase letters, a number and a
                   special character.
                   <br />
                   Allowed special characters:{" "}
-                  <span aria-label="exclamation mark">!</span>{" "}
-                  <span aria-label="at symbol">@</span>{" "}
-                  <span aria-label="hashtag">#</span>{" "}
-                  <span aria-label="dollar sign">$</span>{" "}
-                  <span aria-label="percent">%</span>
+                  <span aria-label='exclamation mark'>!</span>{" "}
+                  <span aria-label='at symbol'>@</span>{" "}
+                  <span aria-label='hashtag'>#</span>{" "}
+                  <span aria-label='dollar sign'>$</span>{" "}
+                  <span aria-label='percent'>%</span>
                 </p>
-
-                <input
-                  className="w-full p-5 pb-2 pl-0 mr-3 border-b-2 outline-none"
-                  type="password"
-                  autoComplete="off"
+                <div className='mb-2'> </div>
+                <TextField
+                  color={matchFocus && !matchPwd ? "error" : "success"}
+                  label={
+                    !matchFocus
+                      ? "Confirm Password"
+                      : !matchPwd
+                      ? "Confirm Password not match"
+                      : "Confirm Password  match"
+                  }
+                  id='outlined-basic'
+                  variant='outlined'
+                  className='w-full p-5 pb-2 pl-0 mr-3 border-b-2 outline-none'
+                  type='password'
+                  autoComplete='off'
                   required
-                  placeholder="conform-password"
+                  placeholder='conform-password'
                   onChange={(e) => setMatchPwd(e.target.value)}
                   value={matchPwd}
                   aria-invalid={validMatch ? "false" : "true"}
-                  aria-describedby="confirmnote"
+                  aria-describedby='confirmnote'
                   onFocus={() => setMatchFocus(true)}
                   onBlur={() => setMatchFocus(false)}
-                ></input>
-                <p
-                  id="confirmnote"
-                  className={
-                    matchFocus && !validMatch
-                      ? " flex-none text-sm text-red-500 p-0.5 relative"
-                      : "register__validpwd--off"
-                  }
-                >
-                  Must match the first password input field.
-                </p>
+                ></TextField>
+                <div className='mb-2'> </div>
                 <button
                   disabled={!validPwd || !validMatch ? true : false}
                   className={
@@ -400,7 +377,15 @@ export const Register = () => {
                       : "mt-8 mx-auto w-full bg-blue-700 rounded-xl text-white py-2 hover:scale-110 duration-200"
                   }
                 >
-                  <>{loading ? <p>Loading</p> : <p>Sign Up</p>}</>
+                  <>
+                    {loading ? (
+                      <p >
+                        <CircularProgress className="max-h-4" />
+                      </p>
+                    ) : (
+                      <p>Sign Up</p>
+                    )}
+                  </>
                 </button>
               </form>
             </div>
