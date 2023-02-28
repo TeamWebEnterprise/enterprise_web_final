@@ -23,6 +23,7 @@ import { Role } from 'src/user/entities/role.enum';
 import { EmailverifyService } from 'src/emailverify/emailverify.service';
 import { JwtAuthGuardApi } from './guards/jwt-auth.guard';
 import SetNewPasswordDto from './dto/set-new-password.input';
+import { ForGotPassWordDto } from './dto/forgotpassword-user.input';
 
 @Controller('auth')
 export class AuthController {
@@ -67,10 +68,9 @@ export class AuthController {
     return this.authService.logout(body.refreshToken);
   }
 
-  @UseGuards(JwtAuthGuardApi)
   @Post('forgot-password')
-  async sendMailForResetPassword(@Req() req) {
-    return this.authService.sendMailForResetPassword(req.user.userId);
+  async sendMailForResetPassword(@Body() forGotPassWordDto: ForGotPassWordDto) {
+    return this.authService.sendMailForResetPassword(forGotPassWordDto);
   }
 
   @Get('reset-password/:token')

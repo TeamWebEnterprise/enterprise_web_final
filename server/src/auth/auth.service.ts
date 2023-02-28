@@ -5,6 +5,7 @@ import { User } from '@prisma/client';
 import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcrypt';
 import { MailerService } from '@nestjs-modules/mailer';
+import { ForGotPassWordDto } from './dto/forgotpassword-user.input';
 
 @Injectable()
 export class AuthService {
@@ -114,8 +115,11 @@ export class AuthService {
     );
   }
 
-  async sendMailForResetPassword(userId: number) {
-    const user = await this.userService.findOne(userId);
+  async sendMailForResetPassword(forGotPassWordDto: ForGotPassWordDto) {
+    const user = await this.userService.findByEmail(
+      forGotPassWordDto.emailConfirm,
+    );
+
     if (!user) {
       throw new BadRequestException();
     }

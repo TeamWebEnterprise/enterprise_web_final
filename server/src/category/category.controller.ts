@@ -11,8 +11,6 @@ import { UpdateCategoryDto } from './dto/update-category.input';
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(Role.ADMINSTRATOR, Role.QA_COORDINATOR, Role.QA_MANAGER)
   @Get('all')
   async getAll() {
     return await this.categoryService.findAll();
