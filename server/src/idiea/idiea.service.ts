@@ -14,29 +14,37 @@ export class IdieaService {
     userId: number,
   ): Promise<Idiea> {
     const { idCategory, ...inputCreateIdiea } = createIdieaDto;
+    var closeCommentAt = new Date();
+    closeCommentAt.setDate(closeCommentAt.getDate() + 3);
+    var closeIdieaAt = new Date();
+    closeIdieaAt.setDate(closeIdieaAt.getDate() + 1);
 
     const newIdiea = await this.prisma.idiea.create({
       data: {
         ...inputCreateIdiea,
         anonymous: Boolean(createIdieaDto.anonymous === 'true'),
+        closeCommentAt: closeCommentAt.toJSON(),
+        closeIdieaAt: closeIdieaAt.toJSON(),
         userId: userId,
       },
     });
 
-    idCategory.forEach(async (id) => {
-      await this.prisma.idiea.update({
-        where: {
-          id: newIdiea.id,
-        },
-        data: {
-          categories: {
-            connect: {
-              id: Number(id),
+    if (idCategory) {
+      idCategory.forEach(async (id) => {
+        await this.prisma.idiea.update({
+          where: {
+            id: newIdiea.id,
+          },
+          data: {
+            categories: {
+              connect: {
+                id: Number(id),
+              },
             },
           },
-        },
+        });
       });
-    });
+    }
 
     return newIdiea;
   }
