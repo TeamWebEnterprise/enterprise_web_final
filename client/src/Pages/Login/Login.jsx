@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../redux/apiRequest";
 import * as React from "react";
 import Avatar from "@mui/material/Avatar";
@@ -16,6 +16,8 @@ import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Alert from "@mui/material/Alert";
+import Stack from "@mui/material/Stack";
 
 const Login = () => {
   const userRef = useRef();
@@ -24,11 +26,9 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   React.useEffect(() => {}, [username, password]);
-
+  const err = useSelector((state) => state.auth.login.error);
   const handleSubmit = async (e) => {
-    console.log(username, password);
     e.preventDefault();
     const newUser = {
       username: username,
@@ -36,6 +36,7 @@ const Login = () => {
     };
     loginUser(newUser, dispatch, navigate);
   };
+
   const theme = createTheme();
   function Copyright(props) {
     return (
@@ -56,6 +57,15 @@ const Login = () => {
   }
   return (
     <ThemeProvider theme={theme}>
+      {err ? (
+        <Stack sx={{ width: "100%" }} spacing={2}>
+          <Alert variant='outlined' severity='error'>
+            email or password invalid!!!!
+          </Alert>{" "}
+        </Stack>
+      ) : (
+        <Box></Box>
+      )}
       <Grid container component='main' sx={{ height: "100vh" }}>
         <CssBaseline />
         <Grid
@@ -135,7 +145,7 @@ const Login = () => {
               </Button>
               <Grid container>
                 <Grid item xs>
-                  <Link href='#' variant='body2'>
+                  <Link href='/forgotpwdconfirmmail' variant='body2'>
                     Forgot password?
                   </Link>
                 </Grid>

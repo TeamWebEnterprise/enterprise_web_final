@@ -9,6 +9,8 @@ import {
   logoutFailed,
   logoutSuccess,
 } from "./authSlice";
+import loginMsg from '../pages/Login/Login'
+
 
 export const loginUser = async (user, dispatch, navigate) => {
   dispatch(loginStart());
@@ -30,6 +32,7 @@ export const logout = async (
 ) => {
   dispatch(logoutStart());
   console.log(refreshToken);
+  console.log(accessToken);
   try {
     try {
       await axiosJWT.delete("/auth/logout", {
