@@ -18,11 +18,10 @@ export class IdieaService {
     closeCommentAt.setDate(closeCommentAt.getDate() + 3);
     var closeIdieaAt = new Date();
     closeIdieaAt.setDate(closeIdieaAt.getDate() + 1);
-
     const newIdiea = await this.prisma.idiea.create({
       data: {
         ...inputCreateIdiea,
-        anonymous: Boolean(createIdieaDto.anonymous === 'true'),
+        anonymous: Boolean(createIdieaDto.anonymous == 'true'),
         closeCommentAt: closeCommentAt.toJSON(),
         closeIdieaAt: closeIdieaAt.toJSON(),
         userId: userId,

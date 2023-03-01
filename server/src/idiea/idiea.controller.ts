@@ -41,13 +41,16 @@ export class IdieaController {
     );
 
     //create new Document and connect to this Idiea
-    files.forEach(async (file) => {
-      await this.fileService.uploadFileWithIdieaPost(
-        file.buffer,
-        file.originalname,
-        newIdiea.id,
-      );
-    });
+    if (files) {
+      files.forEach(async (file) => {
+        await this.fileService.uploadFileWithIdieaPost(
+          file.buffer,
+          file.originalname,
+          newIdiea.id,
+        );
+      });
+    }
+
     //send email notify
     await this.emailService.sendMailNotifyForCreateNewIdiea({
       userId: req.user.userId,
