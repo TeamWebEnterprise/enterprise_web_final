@@ -20,8 +20,6 @@ import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 
 const Login = () => {
-  const userRef = useRef();
-  const errRef = useRef();
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
@@ -111,10 +109,10 @@ const Login = () => {
                 margin='normal'
                 required
                 fullWidth
-                id='email'
-                label='Email Address'
-                name='email'
-                autoComplete='email'
+                id='username'
+                label='username'
+                name='username'
+                autoComplete='username'
                 autoFocus
                 onChange={(e) => setUserName(e.target.value)}
                 value={username}

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "../api/axios";
-
+import { displaydata } from "../pages/Register/Register";
 import {
   loginStart,
   loginFailed,
@@ -9,8 +9,6 @@ import {
   logoutFailed,
   logoutSuccess,
 } from "./authSlice";
-import loginMsg from '../pages/Login/Login'
-
 
 export const loginUser = async (user, dispatch, navigate) => {
   dispatch(loginStart());
@@ -23,6 +21,14 @@ export const loginUser = async (user, dispatch, navigate) => {
   }
 };
 
+export const checkRegister = async (username, email, phone, dispatch) => {
+  const response = await axios.post("/auth/checkregister", {
+    username: username,
+    email: email,
+    phone: phone,
+  });
+};
+
 export const logout = async (
   dispatch,
   navigate,
@@ -31,8 +37,6 @@ export const logout = async (
   axiosJWT
 ) => {
   dispatch(logoutStart());
-  console.log(refreshToken);
-  console.log(accessToken);
   try {
     try {
       await axiosJWT.delete("/auth/logout", {

@@ -5,6 +5,7 @@ import { Route, Routes } from "react-router-dom";
 import Login from "./pages/Login/Login";
 import { Register } from "./pages/Register/Register";
 import ForgotConfirmMail from "./pages/ForgotPwd/ForgotConfirmMail";
+import { Success } from "./pages/Register/Success";
 
 function App() {
   const [mode, setMode] = useState("light");
@@ -18,16 +19,17 @@ function App() {
     <>
       <Routes>
         <Route
-          path="/"
+          path='/'
           element={
             <ThemeProvider theme={darkTheme}>
               <Home theme={darkTheme} setMode={setMode} mode={mode} />
             </ThemeProvider>
           }
         />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/forgotpwdconfirmmail" element={<ForgotConfirmMail/>} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/register' element={<Register />} />
+        <Route path='/forgotpwdconfirmmail' element={<ForgotConfirmMail />} />
+        <Route path='/success' element={<Success />} />
       </Routes>
     </>
   );

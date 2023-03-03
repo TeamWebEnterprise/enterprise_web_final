@@ -2,8 +2,10 @@ import { useRef, useState, useEffect } from "react";
 import axios from "../../api/axios";
 import "./Register.css";
 import TextField from "@mui/material/TextField";
-import { Email } from "@mui/icons-material";
 import CircularProgress from "@mui/material/CircularProgress";
+//import { checkRegister } from "../../redux/apiRequest";
+import { useDispatch, useSelector } from "react-redux";
+
 
 const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{1,23}$/;
 const PWD_REGEX =
@@ -12,11 +14,22 @@ const PHONE_REGEX = /^(?=.*[0-9]).{10,11}$/;
 const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 const REGISTER_URL = "/auth/register";
 
+// export const displaydata = async (data) => {
+//   const checkEmail = data.acceptEmailCheck;
+//   const checkUserName = data.acceptUserNameCheck;
+//   const checkPhone = data.acceptPhoneCheck;
+  
+// };
+
+
 export const Register = () => {
   const userRef = useRef();
   const errRef = useRef();
   const [loading, setLoading] = useState(false);
 
+  const dispatch = useDispatch();
+
+  
   const [firstName, setFirstName] = useState("");
   const [validFirstName, setValidFirstName] = useState(false);
   const [firstNameFocus, setFirstNameFocus] = useState(false);
@@ -30,16 +43,19 @@ export const Register = () => {
   const [phone, setPhone] = useState("");
   const [validPhone, setValidPhone] = useState(false);
   const [phoneFocus, setPhoneFocus] = useState(false);
+  const[checkPhone,setCheckPhone] = useState(true);
 
   const [dateOfBirth, setDateOfBirth] = useState(Date);
 
   const [email, setEmail] = useState("");
   const [validEmail, setValidEmail] = useState(false);
   const [emailFocus, setEmailFocus] = useState(false);
+  const [checkEmail, setCheckEmail] = useState(true);
 
   const [username, setUserName] = useState("");
   const [validName, setValidName] = useState(false);
   const [userFocus, setUserFocus] = useState(false);
+  const[checkUsername,setCheckUsername] = useState(true);
 
   const [password, setPassword] = useState("");
   const [validPwd, setValidPwd] = useState(false);
@@ -67,24 +83,33 @@ export const Register = () => {
   }, [email]);
 
   useEffect(() => {
-    const check = async () => {
-      try {
-        await axios.post("/auth/checkregister", JSON.stringify({ username }), {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        });
-      } catch (err) {
-        setValidName(true);
-      }
-    };
-  }, [username]);
+    checkRegister(username, email, phone);
+  }, [username, email, phone]);
 
+  const checkRegister = async (username, email, phone) => {
+    const response = await axios.post("/auth/checkregister", {
+      username: username,
+      email: email,
+      phone: phone,
+    });
+    setCheckUsername(response.data.acceptUsernameCheck)
+    setCheckEmail(response.data.acceptEmailCheck)
+    setCheckPhone(response.data.acceptPhoneCheck)
+
+    
+    console.log("mail "+checkEmail)
+    console.log("phone "+checkPhone)
+    
+
+    
+  };
   useEffect(() => {
     const result = PWD_REGEX.test(password);
     setValidPwd(result);
     console.log(result);
     const match = password === matchPwd;
     setValidMatch(match);
+    console.log(matchPwd);
   }, [password, matchPwd]);
 
   useEffect(() => {
@@ -135,23 +160,40 @@ export const Register = () => {
   return (
     <>
       {success ? (
-        <section>
-          <h1 className='text-5xl text-center text-green-600'>Success</h1>
-          <p className='text-2xl text-center text-blue-600'>
-            Please check your{" "}
-            <a
-              className='text-2xl text-center text-green-600 underline'
-              href='https://mail.google.com/mail/'
-            >
-              Mail
-            </a>{" "}
-            to activate account{" "}
-          </p>
-          <p>
-            <a className='text-3xl text-center text-green-600' href='/login'>
-              Login
-            </a>
-          </p>
+        <section className=' flex justify-center items-center bg-slate-200 min-h-screen'>
+          <div className=' bg-white shadow-xl max-w-xl p-14 item-center mx-auto rounded-md ml-5 mr-5'>
+            <div className=' bg-emerald-200 rounded-full m-14 mt-8 w-48 h-48 mx-auto relative'>
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                fill='none'
+                viewBox='0 0 24 24'
+                strokeWidth={1.5}
+                stroke='currentColor'
+                className='w-48 h-48 flex mx-auto text-green-600 '
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  d='M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z'
+                />
+              </svg>
+            </div>
+            <div>
+              <h1 className='text-4xl text-center text-green-600 font-normal  mb-5'>
+                Success
+              </h1>
+              <p className='text-xl text-center text-blue-600'>
+                Please check your{" "}
+                <a
+                  className='text-xl text-center text-green-600 underline'
+                  href='https://mail.google.com/mail/'
+                >
+                  mail
+                </a>{" "}
+                to activate account{" "}
+              </p>
+            </div>
+          </div>
         </section>
       ) : (
         <section className='bg-[url("https://th.bing.com/th/id/R.5a6e05753a3209540850409c73286a6a?rik=%2bm%2fC1THL7MbisA&pid=ImgRaw&r=0")] bg-fixed bg-cover min-h-screen items-center justify-center md:p-14 relative '>
@@ -174,8 +216,8 @@ export const Register = () => {
                 </h2>
                 <div className='sm:flex-none md:flex  gap-2 mb-2'>
                   <TextField
-                    color={emailFocus && !validEmail ? "error" : "success"}
-                    label={
+                    color={emailFocus && !validEmail||!checkEmail ? "error" : "success"}
+                    label={!checkEmail ?"Email already exists":
                       !emailFocus
                         ? "email"
                         : !validEmail
@@ -196,8 +238,9 @@ export const Register = () => {
                   ></TextField>
                   <div className='mb-2'> </div>
                   <TextField
+                    color={userFocus && !checkUsername ? "error" : "success"}
                     id='outlined-basic'
-                    label='username'
+                    label={!checkUsername?"Username already exists":!userFocus?"User name":"User name"}
                     variant='outlined'
                     className='sm: w-full m-0 p-5 pb-2 pl-0 border-b-2 outline-none md: w-1/2'
                     type='text'
@@ -228,10 +271,10 @@ export const Register = () => {
                   ></TextField>
                   <div className='mb-2'> </div>
                   <TextField
-                    color={phoneFocus && !validPhone ? "error" : "success"}
+                    color={ phoneFocus && !validPhone || !checkPhone ? "error" : "success"}
                     label={
                       !phoneFocus
-                        ? "Phone number"
+                        ? "Phone number":!checkPhone ? "Phone already exists" 
                         : !validPhone
                         ? "phone not valid"
                         : "phone valid"
@@ -242,7 +285,6 @@ export const Register = () => {
                     type='tel'
                     autoComplete='off'
                     required
-                    placeholder='phone'
                     onChange={(e) => setPhone(e.target.value)}
                     value={phone}
                     aria-invalid={validPhone ? "false" : "true"}
@@ -346,11 +388,11 @@ export const Register = () => {
                 </p>
                 <div className='mb-2'> </div>
                 <TextField
-                  color={matchFocus && !matchPwd ? "error" : "success"}
+                  color={matchFocus && !validMatch ? "error" : "success"}
                   label={
                     !matchFocus
                       ? "Confirm Password"
-                      : !matchPwd
+                      : !validMatch
                       ? "Confirm Password not match"
                       : "Confirm Password  match"
                   }
@@ -369,24 +411,22 @@ export const Register = () => {
                   onBlur={() => setMatchFocus(false)}
                 ></TextField>
                 <div className='mb-2'> </div>
-                <button
-                  disabled={!validPwd || !validMatch ? true : false}
-                  className={
-                    !validPwd || !validMatch
-                      ? "mt-8 mx-auto w-full bg-gray-300 rounded-xl text-white py-2"
-                      : "mt-8 mx-auto w-full bg-blue-700 rounded-xl text-white py-2 hover:scale-110 duration-200"
-                  }
-                >
-                  <>
-                    {loading ? (
-                      <p >
-                        <CircularProgress className="max-h-4" />
-                      </p>
-                    ) : (
-                      <p>Sign Up</p>
-                    )}
-                  </>
-                </button>
+                {loading ? (
+                  <p className=' flex mx-auto'>
+                    <CircularProgress />
+                  </p>
+                ) : (
+                  <button
+                    disabled={!validPwd || !validMatch || !checkEmail || !checkPhone || !checkUsername ? true : false}
+                    className={
+                      !validPwd || !validMatch || !checkEmail || !checkPhone || !checkUsername
+                        ? "mt-8 mx-auto w-full bg-gray-300 rounded-xl text-white py-2"
+                        : "mt-8 mx-auto w-full bg-blue-700 rounded-xl text-white py-2 hover:scale-110 duration-200"
+                    }
+                  >
+                    Sign Up
+                  </button>
+                )}
               </form>
             </div>
           </div>
@@ -395,3 +435,4 @@ export const Register = () => {
     </>
   );
 };
+export default Register;
