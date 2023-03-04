@@ -6,7 +6,6 @@ import CircularProgress from "@mui/material/CircularProgress";
 //import { checkRegister } from "../../redux/apiRequest";
 import { useDispatch, useSelector } from "react-redux";
 
-
 const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{1,23}$/;
 const PWD_REGEX =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
@@ -18,9 +17,8 @@ const REGISTER_URL = "/auth/register";
 //   const checkEmail = data.acceptEmailCheck;
 //   const checkUserName = data.acceptUserNameCheck;
 //   const checkPhone = data.acceptPhoneCheck;
-  
-// };
 
+// };
 
 export const Register = () => {
   const userRef = useRef();
@@ -29,7 +27,6 @@ export const Register = () => {
 
   const dispatch = useDispatch();
 
-  
   const [firstName, setFirstName] = useState("");
   const [validFirstName, setValidFirstName] = useState(false);
   const [firstNameFocus, setFirstNameFocus] = useState(false);
@@ -43,7 +40,7 @@ export const Register = () => {
   const [phone, setPhone] = useState("");
   const [validPhone, setValidPhone] = useState(false);
   const [phoneFocus, setPhoneFocus] = useState(false);
-  const[checkPhone,setCheckPhone] = useState(true);
+  const [checkPhone, setCheckPhone] = useState(true);
 
   const [dateOfBirth, setDateOfBirth] = useState(Date);
 
@@ -55,7 +52,7 @@ export const Register = () => {
   const [username, setUserName] = useState("");
   const [validName, setValidName] = useState(false);
   const [userFocus, setUserFocus] = useState(false);
-  const[checkUsername,setCheckUsername] = useState(true);
+  const [checkUsername, setCheckUsername] = useState(true);
 
   const [password, setPassword] = useState("");
   const [validPwd, setValidPwd] = useState(false);
@@ -92,16 +89,12 @@ export const Register = () => {
       email: email,
       phone: phone,
     });
-    setCheckUsername(response.data.acceptUsernameCheck)
-    setCheckEmail(response.data.acceptEmailCheck)
-    setCheckPhone(response.data.acceptPhoneCheck)
+    setCheckUsername(response.data.acceptUsernameCheck);
+    setCheckEmail(response.data.acceptEmailCheck);
+    setCheckPhone(response.data.acceptPhoneCheck);
 
-    
-    console.log("mail "+checkEmail)
-    console.log("phone "+checkPhone)
-    
-
-    
+    console.log("mail " + checkEmail);
+    console.log("phone " + checkPhone);
   };
   useEffect(() => {
     const result = PWD_REGEX.test(password);
@@ -216,13 +209,19 @@ export const Register = () => {
                 </h2>
                 <div className='sm:flex-none md:flex  gap-2 mb-2'>
                   <TextField
-                    color={emailFocus && !validEmail||!checkEmail ? "error" : "success"}
-                    label={!checkEmail ?"Email already exists":
-                      !emailFocus
+                    color={
+                      (emailFocus && !validEmail) || !checkEmail
+                        ? "error"
+                        : "success"
+                    }
+                    label={
+                      !checkEmail
+                        ? "Email already exists"
+                        : !emailFocus
                         ? "email"
                         : !validEmail
-                        ? "email not validate"
-                        : "email validate"
+                        ? "email invalid"
+                        : "email valid"
                     }
                     id='outlined-basic'
                     variant='outlined'
@@ -240,7 +239,13 @@ export const Register = () => {
                   <TextField
                     color={userFocus && !checkUsername ? "error" : "success"}
                     id='outlined-basic'
-                    label={!checkUsername?"Username already exists":!userFocus?"User name":"User name"}
+                    label={
+                      !checkUsername
+                        ? "Username already exists"
+                        : !userFocus
+                        ? "User name"
+                        : "User name"
+                    }
                     variant='outlined'
                     className='sm: w-full m-0 p-5 pb-2 pl-0 border-b-2 outline-none md: w-1/2'
                     type='text'
@@ -271,12 +276,18 @@ export const Register = () => {
                   ></TextField>
                   <div className='mb-2'> </div>
                   <TextField
-                    color={ phoneFocus && !validPhone || !checkPhone ? "error" : "success"}
+                    color={
+                      (phoneFocus && !validPhone) || !checkPhone
+                        ? "error"
+                        : "success"
+                    }
                     label={
                       !phoneFocus
-                        ? "Phone number":!checkPhone ? "Phone already exists" 
+                        ? "Phone number"
+                        : !checkPhone
+                        ? "Phone already exists"
                         : !validPhone
-                        ? "phone not valid"
+                        ? "phone invalid"
                         : "phone valid"
                     }
                     id='outlined-basic'
@@ -350,8 +361,8 @@ export const Register = () => {
                     !pwdFocus
                       ? "password"
                       : !validPwd
-                      ? "password not validate"
-                      : "password validate"
+                      ? "password invalid"
+                      : "password valid"
                   }
                   id='outlined-basic'
                   variant='outlined'
@@ -417,9 +428,21 @@ export const Register = () => {
                   </p>
                 ) : (
                   <button
-                    disabled={!validPwd || !validMatch || !checkEmail || !checkPhone || !checkUsername ? true : false}
+                    disabled={
+                      !validPwd ||
+                      !validMatch ||
+                      !checkEmail ||
+                      !checkPhone ||
+                      !checkUsername
+                        ? true
+                        : false
+                    }
                     className={
-                      !validPwd || !validMatch || !checkEmail || !checkPhone || !checkUsername
+                      !validPwd ||
+                      !validMatch ||
+                      !checkEmail ||
+                      !checkPhone ||
+                      !checkUsername
                         ? "mt-8 mx-auto w-full bg-gray-300 rounded-xl text-white py-2"
                         : "mt-8 mx-auto w-full bg-blue-700 rounded-xl text-white py-2 hover:scale-110 duration-200"
                     }
