@@ -128,7 +128,7 @@ export class AuthService {
 
     const token = sign(payload, process.env.JWT_RESETPASSWORD_TOKEN_SECRET);
 
-    const url = `${process.env.RESET_PASSWORD_URL}/${token}`;
+    const url = `${process.env.RESET_PASSWORD_URL}?token=${token}`;
 
     return this.mailerService
       .sendMail({

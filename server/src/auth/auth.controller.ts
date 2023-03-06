@@ -8,6 +8,7 @@ import {
   Ip,
   Param,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -73,13 +74,11 @@ export class AuthController {
     return this.authService.sendMailForResetPassword(forGotPassWordDto);
   }
 
-  @Get('reset-password/:token')
-  resetPassWordResendToken(@Param('token') token) {
-    return { resetPassWordToken: token };
-  }
-
   @Post('set-newpassword')
-  async setNewPassword(@Body() setNewPasswordDto: SetNewPasswordDto) {
-    return await this.userService.setNewPassword(setNewPasswordDto);
+  async setNewPassword(
+    @Body() setNewPasswordDto: SetNewPasswordDto,
+    @Query('token') token: string,
+  ) {
+    return await this.userService.setNewPassword(setNewPasswordDto, token);
   }
 }

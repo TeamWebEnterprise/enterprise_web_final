@@ -216,15 +216,12 @@ export class UserService {
     });
   }
 
-  async setNewPassword(setNewPasswordDto: SetNewPasswordDto) {
+  async setNewPassword(setNewPasswordDto: SetNewPasswordDto, token: string) {
     if (setNewPasswordDto.password !== setNewPasswordDto.passwordConfirm) {
       throw new BadRequestException('Password confirm not match');
     }
 
-    const payload = verify(
-      setNewPasswordDto.token,
-      process.env.JWT_RESETPASSWORD_TOKEN_SECRET,
-    );
+    const payload = verify(token, process.env.JWT_RESETPASSWORD_TOKEN_SECRET);
 
     if (typeof payload === 'string') {
       throw new BadRequestException('Invalid Token');
