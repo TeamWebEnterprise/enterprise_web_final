@@ -1,9 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpCode,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { Idiea } from '@prisma/client';
 import { Exception } from 'handlebars';
 import { PrismaService } from 'prisma/prisma.service';
+import { disconnect } from 'process';
 import { CreateIdieaDto } from './dto/create-idiea.dto';
 import { CreateLikeDto } from './dto/create-like.input';
+import { DeleteIdieaDto } from './dto/delete-idiea.input';
+import { UpdateIdieaDto } from './dto/update-idiea.input';
 
 @Injectable()
 export class IdieaService {
@@ -249,6 +258,119 @@ export class IdieaService {
       }
     } catch (e) {
       throw new Exception('cant not like');
+    }
+  }
+
+  async updateIdiea(updateIdieaDto: UpdateIdieaDto) {
+    try {
+      let updatedIdiea = await this.prisma.idiea.update({
+        where: { id: Number(updateIdieaDto.idieaId) },
+        data: {
+          content: updateIdieaDto.content,
+          anonymous: Boolean(updateIdieaDto.anonymous == 'true'),
+          closeIdieaAt: updateIdieaDto.closeIdieaAt,
+        },
+      });
+
+      if (updateIdieaDto.idCategory) {
+        updatedIdiea = await this.prisma.idiea.update({
+          where: { id: Number(updateIdieaDto.idieaId) },
+          data: {
+            categories: {
+              deleteMany: {},
+            },
+          },
+        });
+
+        updateIdieaDto.idCategory.forEach(async (id) => {
+          await this.prisma.idiea.update({
+            where: {
+              id: updatedIdiea.id,
+            },
+            data: {
+              categories: {
+                connect: {
+                  id: Number(id),
+                },
+              },
+            },
+          });
+        });
+      }
+
+      return updatedIdiea;
+    } catch (error) {
+      console.log(error);
+      throw new HttpException('Bad request', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  deleteAllDocument(idieaId: number) {
+    try {
+      return this.prisma.idiea.update({
+        where: {
+          id: Number(idieaId),
+        },
+        data: {
+          documents: {
+            updateMany: {
+              data: {
+                active: false,
+              },
+              where: {
+                idieaId: idieaId,
+              },
+            },
+          },
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      throw new HttpException(
+        'Cant not delete Document',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  async deleteIdiea(deleteIdieaDto: DeleteIdieaDto) {
+    await this.prisma.like.updateMany({
+      where: {
+        idieaId: Number(deleteIdieaDto.idieaId),
+      },
+      data: { active: false },
+    });
+
+    await this.prisma.comment.updateMany({
+      where: {
+        idieaId: Number(deleteIdieaDto.idieaId),
+      },
+      data: { active: false },
+    });
+
+    return this.prisma.idiea.update({
+      where: { id: Number(deleteIdieaDto.idieaId) },
+      data: {
+        active: false,
+      },
+    });
+  }
+
+  async checkUserIsOwner(userId: number, idieaId: number) {
+    console.log('checked user id');
+    console.log(' user id' + userId);
+    console.log('Idiea id' + idieaId);
+
+    const currentIdiea = await this.prisma.idiea.findFirst({
+      where: {
+        id: Number(idieaId),
+      },
+    });
+
+    if (currentIdiea.userId == Number(userId)) {
+      return true;
+    } else {
+      return false;
     }
   }
 }

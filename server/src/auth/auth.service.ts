@@ -97,7 +97,7 @@ export class AuthService {
         },
         process.env.ACCESS_SECRET,
         {
-          expiresIn: '15s',
+          expiresIn: '60s',
         },
       ),
     };
@@ -133,10 +133,10 @@ export class AuthService {
     return this.mailerService
       .sendMail({
         to: user.email,
-        from: 'quocldgcd191316@fpt.edu.vn',
+        from: 'khoavvgcd191275@fpt.edu.vn',
         subject: 'Reset password for IdieaApp acount',
-        text: 'Reset password',
-        html: `<b>Reset password</b></br><p>Hi ${user.lastName}, Your recently requested to reset your password for your AppIdiea account. Click the button below to reset it..</p></br><a href="${url}">Reset your password</a>`,
+        template: './welcome.hbs',
+        context: {},
       })
       .then(() => {})
       .catch(() => {});

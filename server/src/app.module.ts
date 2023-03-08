@@ -23,9 +23,9 @@ import { PrismaModule } from './prisma/prisma.module';
     IdieaModule,
     MailerModule.forRoot({
       transport:
-        'smtps://quocldgcd191316@fpt.edu.vn:kbgbahsswqbttznd@smtp.gmail.com',
+        'smtps://khoavvgcd191275@fpt.edu.vn:Vovankhoa191275@@smtp.gmail.com',
       defaults: {
-        from: '"nest-modules" <quocldgcd191316@fpt.edu.vn>',
+        from: 'khoavvgcd191275@fpt.edu.vn',
       },
       template: {
         dir: __dirname + '/templates/email',
