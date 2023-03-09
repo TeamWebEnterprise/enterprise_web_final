@@ -4,3 +4,8 @@ export enum Role {
   STAFF = 'Staff',
   ADMINSTRATOR = 'Adminstrator',
 }
+
+export enum DepartmentPosition {
+  QA_MANAGER = 'Quality Assurance Manager',
+  QA_COORDINATOR = 'QA Coordinator',
+}

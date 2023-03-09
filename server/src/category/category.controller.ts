@@ -17,21 +17,21 @@ export class CategoryController {
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(Role.ADMINSTRATOR, Role.QA_COORDINATOR, Role.QA_MANAGER)
+  @Roles(Role.ADMINSTRATOR, Role.QA_MANAGER)
   @Post('create')
   createCategory(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoryService.createNewCategory(createCategoryDto);
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(Role.ADMINSTRATOR, Role.QA_COORDINATOR, Role.QA_MANAGER)
+  @Roles(Role.ADMINSTRATOR, Role.QA_MANAGER)
   @Post('update')
   updateCategory(@Body() updateCategoryDto: UpdateCategoryDto) {
     return this.categoryService.updateCategory(updateCategoryDto);
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(Role.ADMINSTRATOR, Role.QA_COORDINATOR, Role.QA_MANAGER)
+  @Roles(Role.ADMINSTRATOR, Role.QA_MANAGER)
   @Post('delete')
   deleteCategory(@Body() { id }) {
     return this.categoryService.deleteCategory(id);
