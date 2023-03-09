@@ -25,15 +25,15 @@ model User {
   cretedAt         DateTime @default(now())
   active           Boolean  @default(true)
 
-  roles         String[]      @default(["Staff"])
-  Like          Like[]        @relation("userLike")
-  Comment       Comment[]     @relation("userComment")
-  Department    Department?   @relation("department", fields: [departmentId], references: [id])
+  roles         String[]       @default(["Staff"])
+  Like          Like[]         @relation("userLike")
+  Comment       Comment[]      @relation("userComment")
+  Department    Department?    @relation("department", fields: [departmentId], references: [id])
   departmentId  Int?
-  QADepartment  QADepartment? @relation("qa")
-  avatar        AvatarImage?  @relation("avatar", fields: [avatarImageId], references: [id])
-  avatarImageId Int?          @unique
-  Idiea         Idiea[]       @relation("idieas")
+  QADepartment  QADepartment[] @relation("qa")
+  avatar        AvatarImage?   @relation("avatar", fields: [avatarImageId], references: [id])
+  avatarImageId Int?           @unique
+  Idiea         Idiea[]        @relation("idieas")
 }
 
 model AvatarImage {
@@ -45,21 +45,23 @@ model AvatarImage {
 }
 
 model Department {
-  id             Int           @id @default(autoincrement())
+  id             Int            @id @default(autoincrement())
   defartmentName String
-  qADepartment   QADepartment?
-  active         Boolean       @default(true)
-  user           User[]        @relation("department")
+  qADepartment   QADepartment[]
+  active         Boolean        @default(true)
+  user           User[]         @relation("department")
 }
 
 model QADepartment {
-  id           Int        @id @default(autoincrement())
-  position     String     @default("QA")
-  active       Boolean    @default(true)
-  epartment    Department @relation(fields: [departmentId], references: [id])
-  departmentId Int        @unique
-  user         User       @relation("qa", fields: [userId], references: [id])
-  userId       Int        @unique
+  id       Int     @id @default(autoincrement())
+  position String  @default("QA")
+  active   Boolean @default(true)
+
+  department   Department @relation(fields: [departmentId], references: [id])
+  departmentId Int
+
+  user   User @relation("qa", fields: [userId], references: [id])
+  userId Int
 }
 
 model Idiea {

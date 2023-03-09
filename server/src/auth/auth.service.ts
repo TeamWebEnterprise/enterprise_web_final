@@ -5,6 +5,7 @@ import { User } from '@prisma/client';
 import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcrypt';
 import { MailerService } from '@nestjs-modules/mailer';
+import { ForGotPassWordDto } from './dto/forgotpassword-user.input';
 
 @Injectable()
 export class AuthService {
@@ -96,7 +97,7 @@ export class AuthService {
         },
         process.env.ACCESS_SECRET,
         {
-          expiresIn: '15s',
+          expiresIn: '6000s',
         },
       ),
     };
@@ -114,8 +115,11 @@ export class AuthService {
     );
   }
 
-  async sendMailForResetPassword(userId: number) {
-    const user = await this.userService.findOne(userId);
+  async sendMailForResetPassword(forGotPassWordDto: ForGotPassWordDto) {
+    const user = await this.userService.findByEmail(
+      forGotPassWordDto.emailConfirm,
+    );
+
     if (!user) {
       throw new BadRequestException();
     }
@@ -124,15 +128,15 @@ export class AuthService {
 
     const token = sign(payload, process.env.JWT_RESETPASSWORD_TOKEN_SECRET);
 
-    const url = `${process.env.RESET_PASSWORD_URL}/${token}`;
+    const url = `${process.env.RESET_PASSWORD_URL}?token=${token}`;
 
     return this.mailerService
       .sendMail({
         to: user.email,
-        from: 'quocldgcd191316@fpt.edu.vn',
+        from: 'khoavvgcd191275@fpt.edu.vn',
         subject: 'Reset password for IdieaApp acount',
-        text: 'Reset password',
-        html: `<b>Reset password</b></br><p>Hi ${user.lastName}, Your recently requested to reset your password for your AppIdiea account. Click the button below to reset it..</p></br><a href="${url}">Reset your password</a>`,
+        template: './welcome.hbs',
+        context: {},
       })
       .then(() => {})
       .catch(() => {});

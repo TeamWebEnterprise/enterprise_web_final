@@ -5,6 +5,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/roles.guard';
 import { Role } from './entities/role.enum';
 import { UpdateUserDto } from './dto/update-user-admin.input';
+import { SetQAManagerDto } from './dto/set-qa-manager.input';
 
 @Controller('user')
 export class UserController {
@@ -29,5 +30,19 @@ export class UserController {
   @Roles(Role.ADMINSTRATOR)
   async deleteUser(@Body() { userId }) {
     return this.userService.deleteUserByAmin(userId);
+  }
+
+  @Post('set-qa-manager')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMINSTRATOR)
+  async setQAManager(@Body() setQAManagerDto: SetQAManagerDto) {
+    return this.userService.setQAManager(setQAManagerDto);
+  }
+
+  @Post('set-qa-coordinator')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMINSTRATOR)
+  async setQACoordinator(@Body() setQAManagerDto: SetQAManagerDto) {
+    return this.userService.setQACoordinator(setQAManagerDto);
   }
 }

@@ -8,6 +8,7 @@ import {
   Ip,
   Param,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -23,6 +24,7 @@ import { Role } from 'src/user/entities/role.enum';
 import { EmailverifyService } from 'src/emailverify/emailverify.service';
 import { JwtAuthGuardApi } from './guards/jwt-auth.guard';
 import SetNewPasswordDto from './dto/set-new-password.input';
+import { ForGotPassWordDto } from './dto/forgotpassword-user.input';
 
 @Controller('auth')
 export class AuthController {
@@ -62,24 +64,21 @@ export class AuthController {
     return this.authService.refresh(body.refreshToken);
   }
 
-  @Delete('logout')
+  @Post('logout')
   async logout(@Body() body: RefreshTokenDto) {
     return this.authService.logout(body.refreshToken);
   }
 
-  @UseGuards(JwtAuthGuardApi)
   @Post('forgot-password')
-  async sendMailForResetPassword(@Req() req) {
-    return this.authService.sendMailForResetPassword(req.user.userId);
-  }
-
-  @Get('reset-password/:token')
-  resetPassWordResendToken(@Param('token') token) {
-    return { resetPassWordToken: token };
+  async sendMailForResetPassword(@Body() forGotPassWordDto: ForGotPassWordDto) {
+    return this.authService.sendMailForResetPassword(forGotPassWordDto);
   }
 
   @Post('set-newpassword')
-  async setNewPassword(@Body() setNewPasswordDto: SetNewPasswordDto) {
-    return await this.userService.setNewPassword(setNewPasswordDto);
+  async setNewPassword(
+    @Body() setNewPasswordDto: SetNewPasswordDto,
+    @Query('token') token: string,
+  ) {
+    return await this.userService.setNewPassword(setNewPasswordDto, token);
   }
 }
