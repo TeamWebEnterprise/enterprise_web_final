@@ -33,7 +33,7 @@ export class CategoryController {
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.ADMINSTRATOR, Role.QA_MANAGER)
   @Post('delete')
-  deleteCategory(@Body() { id }) {
+  deleteCategory(@Body() id: number) {
     return this.categoryService.deleteCategory(id);
   }
 }

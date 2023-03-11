@@ -79,9 +79,14 @@ export class UserService {
       throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
     }
     try {
-      const password = await bcrypt.hash(createUserInput.password, 10);
+      const { departmentId, password, ...createInput } = createUserInput;
+      const passwordHash = await bcrypt.hash(createUserInput.password, 10);
       return this.prisma.user.create({
-        data: { ...createUserInput, password: password },
+        data: {
+          ...createInput,
+          password: passwordHash,
+          departmentId: Number(departmentId),
+        },
       });
     } catch {
       (e) => {

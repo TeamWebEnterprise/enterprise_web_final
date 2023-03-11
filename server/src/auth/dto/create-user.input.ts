@@ -25,4 +25,7 @@ export class CreateUserInput {
   dateOfBirth?: Date;
 
   cretedAt?: Date;
+
+  @IsNotEmpty()
+  departmentId: number;
 }
