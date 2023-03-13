@@ -28,8 +28,9 @@ function App() {
         />
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
-        <Route path='/forgotpwdconfirmmail' element={<ForgotConfirmMail />} />
+        <Route path='/auth/set-newpassword' element={<ForgotConfirmMail />} />
         <Route path='/success' element={<Success />} />
+        
       </Routes>
     </>
   );

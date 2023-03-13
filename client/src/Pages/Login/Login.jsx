@@ -25,7 +25,10 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   React.useEffect(() => {}, [username, password]);
-  const err = useSelector((state) => state.auth.login.error);
+  const [err,setErr] = useState(false)
+  const checkErr = useSelector((state) => state.auth.login.error);
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newUser = {
@@ -33,6 +36,7 @@ const Login = () => {
       password: password,
     };
     loginUser(newUser, dispatch, navigate);
+    setTimeout(setErr(checkErr), 5000);
   };
 
   const theme = createTheme();
@@ -56,8 +60,8 @@ const Login = () => {
   return (
     <ThemeProvider theme={theme}>
       {err ? (
-        <Stack sx={{ width: "100%" }} spacing={2}>
-          <Alert variant='outlined' severity='error'>
+        <Stack className=" absolute" sx={{ width: "100%" }} spacing={2}>
+          <Alert variant='filled' severity='error'>
             email or password invalid!!!!
           </Alert>{" "}
         </Stack>
@@ -143,7 +147,7 @@ const Login = () => {
               </Button>
               <Grid container>
                 <Grid item xs>
-                  <Link href='/forgotpwdconfirmmail' variant='body2'>
+                  <Link href='/auth/set-newpassword' variant='body2'>
                     Forgot password?
                   </Link>
                 </Grid>

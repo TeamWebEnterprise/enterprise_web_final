@@ -7,12 +7,13 @@
 }
 
 .box_email{
-    background-color:rgba(255, 255, 255, 0.7);
-    max-width: 800px;
+    background:transparent;
+    width: 700px;
     margin: auto;
-    border-radius: 15px;
+    border: 2px solid rgba(255,255,255, .5);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
     justify-content: center;
-    box-shadow: 3px;
-    
+    box-shadow: 0 0;
     padding: 0 20px 70px;
 }

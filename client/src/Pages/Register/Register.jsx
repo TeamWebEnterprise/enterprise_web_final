@@ -3,8 +3,11 @@ import axios from "../../api/axios";
 import "./Register.css";
 import TextField from "@mui/material/TextField";
 import CircularProgress from "@mui/material/CircularProgress";
-//import { checkRegister } from "../../redux/apiRequest";
 import { useDispatch, useSelector } from "react-redux";
+import Select from "@mui/material/Select";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
 
 const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{1,23}$/;
 const PWD_REGEX =
@@ -12,13 +15,6 @@ const PWD_REGEX =
 const PHONE_REGEX = /^(?=.*[0-9]).{10,11}$/;
 const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 const REGISTER_URL = "/auth/register";
-
-// export const displaydata = async (data) => {
-//   const checkEmail = data.acceptEmailCheck;
-//   const checkUserName = data.acceptUserNameCheck;
-//   const checkPhone = data.acceptPhoneCheck;
-
-// };
 
 export const Register = () => {
   const userRef = useRef();
@@ -62,8 +58,12 @@ export const Register = () => {
   const [validMatch, setValidMatch] = useState(false);
   const [matchFocus, setMatchFocus] = useState(false);
 
+  const [departments, setDepartments] = useState([]);
+  const [userDepartment, setUserDepartment] = useState("");
+
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
+  console.log("check departments", departments);
 
   useEffect(() => {
     userRef.current.focus();
@@ -82,6 +82,10 @@ export const Register = () => {
   useEffect(() => {
     checkRegister(username, email, phone);
   }, [username, email, phone]);
+
+  useEffect(() => {
+    console.log(userDepartment);
+  }, [userDepartment]);
 
   const checkRegister = async (username, email, phone) => {
     const response = await axios.post("/auth/checkregister", {
@@ -131,6 +135,7 @@ export const Register = () => {
           phone,
           address,
           dateOfBirth: birth,
+          departmentId: userDepartment,
         }),
         {
           headers: { "Content-Type": "application/json" },
@@ -150,6 +155,16 @@ export const Register = () => {
       errRef.current.focus();
     }
   };
+
+  const getDepartment = async () => {
+    const departmentData = await axios.get("/department/all");
+    setDepartments(departmentData.data);
+  };
+  useEffect(() => {
+    getDepartment();
+    console.log(departments);
+  }, []);
+
   return (
     <>
       {success ? (
@@ -189,7 +204,7 @@ export const Register = () => {
           </div>
         </section>
       ) : (
-        <section className='bg-[url("https://th.bing.com/th/id/R.5a6e05753a3209540850409c73286a6a?rik=%2bm%2fC1THL7MbisA&pid=ImgRaw&r=0")] bg-fixed bg-cover min-h-screen items-center justify-center md:p-14 relative '>
+        <section className='bg-[url("https://th.bing.com/th/id/R.5a6e05753a3209540850409c73286a6a?rik=%2bm%2fC1THL7MbisA&pid=ImgRaw&r=0")] bg-fixed bg-cover min-h-screen flex items-center justify-center md:p-14 relative '>
           <p
             ref={errRef}
             className={errMsg ? "setErrMsg " : "offscreen"}
@@ -201,7 +216,7 @@ export const Register = () => {
           <div className='flex items-center justify-center'>
             <div className='sm:max-w-2xl ml-5 mr-5 rounded-xl bg-white md:flex max-w-7xl m-10'>
               <form
-                className='flex flex-col p-10 mr-5 ml-5 md:p-2 max-w-7xl m-10'
+                className='flex flex-col  mr-5 ml-5 md:p-2 max-w-7xl m-10'
                 onSubmit={handleSubmit}
               >
                 <h2 className='text-center text-3xl font-semibold mt-2 mb-5'>
@@ -409,7 +424,7 @@ export const Register = () => {
                   }
                   id='outlined-basic'
                   variant='outlined'
-                  className='w-full p-5 pb-2 pl-0 mr-3 border-b-2 outline-none'
+                  className='w-full p-5 pb-2 pl-0 mr-3 border-b-2 outline-none mb-2'
                   type='password'
                   autoComplete='off'
                   required
@@ -421,6 +436,26 @@ export const Register = () => {
                   onFocus={() => setMatchFocus(true)}
                   onBlur={() => setMatchFocus(false)}
                 ></TextField>
+                <div className='mb-2'> </div>
+                <FormControl fullWidth className=' mt-2'>
+                  <InputLabel id='demo-simple-select-label'>
+                    Department
+                  </InputLabel>
+                  <Select
+                    labelId='demo-simple-select-label'
+                    id='demo-simple-select'
+                    value={userDepartment}
+                    label='Department'
+                    onChange={(e) => setUserDepartment(e.target.value)}
+                  >
+                    {departments?.map((department) => (
+                      <MenuItem key={department.id} value={department.id}>
+                        {department.defartmentName}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
                 <div className='mb-2'> </div>
                 {loading ? (
                   <p className=' flex mx-auto'>
