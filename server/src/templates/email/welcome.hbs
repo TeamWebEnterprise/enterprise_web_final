@@ -1,54 +1,57 @@
-<div style="display: flex; align-items: center; justify-content: center">
-  <div
-    style="
-      border: 1px solid #d8d8d8;
-      padding: 60px;
-      margin: 40px;
-      min-width: 300px;
-      min-height: 300px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-    "
-  >
-    <div style="display: flex; align-items: center; justify-content: center">
-      <img
-        style="width: 20%; opacity: 0.8"
-        src="https://cdn-icons-png.flaticon.com/512/2808/2808383.png"
-        alt=""
-      />
-    </div>
-    <h1 style="font-size: 18px; text-align: center">Hello User Name</h1>
-
-    <p style="font-size: 14px; width: 80%">
-      Your recently requested to reset your password for your IStation account.
-      Click the button below to reset it.
-    </p>
-
+<html>
+  <div style="display: flex; align-items: center; justify-content: center; flex-direction: column;">
     <div
       style="
+        border: 1px solid #d8d8d8;
+        padding: 60px;
+        margin: 40px;
+        min-width: 300px;
+        min-height: 300px;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 20px;
-        border-top: 1px dashed #d8d8d8;
-        width: 100%;
+        flex-direction: column;
       "
     >
-      <a
+      <div style="display: flex; align-items: center; justify-content: center">
+        <img
+          style="width: 20%; opacity: 0.8"
+          src="https://cdn-icons-png.flaticon.com/512/2808/2808383.png"
+          alt=""
+        />
+      </div>
+      <h1 style="font-size: 18px; text-align: center">Hello {{name}}</h1>
+  
+      <p style="font-size: 14px; width: 80%">
+        Your recently requested to reset your password for your IStation account.
+        Click the button below to reset it.
+      </p>
+  
+      <div
         style="
-          background-color: #1668a7;
-          font-weight: bold;
-          color: white;
-          padding: 10px 20px;
-          border: none;
-          text-decoration: none;
-          border-radius: 1px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 20px;
+          border-top: 1px dashed #d8d8d8;
+          width: 100%;
         "
-        href="http://localhost:3001"
-        >Reset your password</a
       >
+        <a
+          style="
+            background-color: #1668a7;
+            font-weight: bold;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            text-decoration: none;
+            border-radius: 1px;
+          "
+          href="{{link}}"
+          >Reset your password</a
+        >
+      </div>
+      
     </div>
   </div>
-</div>
+</html>

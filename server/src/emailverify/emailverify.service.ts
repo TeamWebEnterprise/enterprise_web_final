@@ -3,13 +3,22 @@ import { sign, verify } from 'jsonwebtoken';
 import { MailerService } from '@nestjs-modules/mailer';
 import { UserService } from 'src/user/user.service';
 import { SendMailNotifyForCreateNewIdieaDto } from './dto/send-mail-notify-for-idiea.input';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 
 @Injectable()
 export class EmailverifyService {
   constructor(
     private mailerService: MailerService,
     private userService: UserService,
-  ) {}
+  ) {
+    new HandlebarsAdapter(undefined, {
+      inlineCssEnabled: true,
+      inlineCssOptions: {
+        url: ' ',
+        preserveMediaQueries: true,
+      },
+    });
+  }
   async sendEmailVerify(email: string, lastName: string) {
     const payload = { email };
 
