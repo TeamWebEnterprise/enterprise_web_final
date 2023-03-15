@@ -10,8 +10,3 @@ export class AddComment {
   @IsNotEmpty()
   idieaId: number;
 }
-
-export class UserName extends AddComment {
-  @IsNotEmpty()
-  userName: string;
-}

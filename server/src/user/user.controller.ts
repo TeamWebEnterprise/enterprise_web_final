@@ -6,6 +6,7 @@ import { RolesGuard } from 'src/roles.guard';
 import { Role } from './entities/role.enum';
 import { UpdateUserDto } from './dto/update-user-admin.input';
 import { SetQAManagerDto } from './dto/set-qa-manager.input';
+import { SetUserDepartmentDto } from './dto/set-user-department.input';
 
 @Controller('user')
 export class UserController {
@@ -44,5 +45,12 @@ export class UserController {
   @Roles(Role.ADMINSTRATOR)
   async setQACoordinator(@Body() setQAManagerDto: SetQAManagerDto) {
     return this.userService.setQACoordinator(setQAManagerDto);
+  }
+
+  @Post('update-user-department')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMINSTRATOR, Role.QA_MANAGER)
+  setUserDepartment(@Body() setUserDepartmentDto: SetUserDepartmentDto) {
+    return this.userService.setUserDepartment(setUserDepartmentDto);
   }
 }
