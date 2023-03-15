@@ -270,22 +270,31 @@ export class IdieaService {
           anonymous: Boolean(updateIdieaDto.anonymous == 'true'),
           closeIdieaAt: updateIdieaDto.closeIdieaAt,
         },
+        include: {
+          categories: true,
+        },
       });
 
       if (updateIdieaDto.idCategory) {
-        updatedIdiea = await this.prisma.idiea.update({
-          where: { id: Number(updateIdieaDto.idieaId) },
-          data: {
-            categories: {
-              deleteMany: {},
+        updatedIdiea.categories.forEach(async (category) => {
+          await this.prisma.idiea.update({
+            where: {
+              id: Number(updatedIdiea.id),
             },
-          },
+            data: {
+              categories: {
+                disconnect: {
+                  id: Number(category.id),
+                },
+              },
+            },
+          });
         });
 
         updateIdieaDto.idCategory.forEach(async (id) => {
           await this.prisma.idiea.update({
             where: {
-              id: updatedIdiea.id,
+              id: Number(updatedIdiea.id),
             },
             data: {
               categories: {
@@ -306,6 +315,7 @@ export class IdieaService {
   }
 
   deleteAllDocument(idieaId: number) {
+    console.log('delete file');
     try {
       return this.prisma.idiea.update({
         where: {
@@ -318,7 +328,7 @@ export class IdieaService {
                 active: false,
               },
               where: {
-                idieaId: idieaId,
+                idieaId: Number(idieaId),
               },
             },
           },
