@@ -18,7 +18,7 @@ import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
-
+import "./Login.css"
 const Login = () => {
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
@@ -71,13 +71,12 @@ const Login = () => {
       <Grid container component='main' sx={{ height: "100vh" }}>
         <CssBaseline />
         <Grid
+          className="bg_login bg-cover bg-fixed"
           item
           xs={false}
           sm={4}
           md={7}
           sx={{
-            backgroundImage:
-              "url(https://www.gre.ac.uk/__data/assets/image/0025/119653/gre.jpg)",
             backgroundRepeat: "no-repeat",
             backgroundColor: (t) =>
               t.palette.mode === "light"
@@ -147,7 +146,7 @@ const Login = () => {
               </Button>
               <Grid container>
                 <Grid item xs>
-                  <Link href='/auth/set-newpassword' variant='body2'>
+                  <Link href='/confirmmail' variant='body2'>
                     Forgot password?
                   </Link>
                 </Grid>
