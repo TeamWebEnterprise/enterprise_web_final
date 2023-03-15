@@ -24,6 +24,7 @@ import { DeleteIdieaDto } from './dto/delete-idiea.input';
 import { Roles } from 'src/decorater/roles.decorator';
 import { RolesGuard } from 'src/roles.guard';
 import { Role } from 'src/user/entities/role.enum';
+import { MakeIdieaPublishDto } from './dto/make-publish-idiea.input';
 
 @Controller('idieas')
 export class IdieaController {
@@ -147,5 +148,12 @@ export class IdieaController {
     }
 
     return this.idieaService.deleteIdiea(deleteIdieaDto);
+  }
+
+  @UseGuards(JwtAuthGuardApi, RolesGuard)
+  @Post('publish')
+  @Roles(Role.STAFF)
+  publishIdiea(@Body() makeIdieaPublishDto: MakeIdieaPublishDto) {
+    return this.idieaService.makePublishIdiea(makeIdieaPublishDto);
   }
 }

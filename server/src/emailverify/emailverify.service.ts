@@ -4,6 +4,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { UserService } from 'src/user/user.service';
 import { SendMailNotifyForCreateNewIdieaDto } from './dto/send-mail-notify-for-idiea.input';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { SendMailForPubLishIdieaDto } from './dto/send-mail-notify-for-publish.input';
 
 @Injectable()
 export class EmailverifyService {
@@ -87,10 +88,37 @@ export class EmailverifyService {
         from: 'quocldgcd191316@fpt.edu.vn',
         subject: 'CREATE IDIEA SUCCESSFULLY',
         text: 'IdieaApp',
-        html: `<b>Congratulations! Your idea has been created....</b></br><p>Hi ${user.lastName}, Summarize your post</p>
+        html: `<b>Congratulations! Your idea has been create and waiting for publish</b></br><p>Hi ${user.lastName}, Summarize your post</p>
         </br><p>Content: ${sendMailNotifyForCreateNewIdieaDto.content}<p>
         </br><p>Close commnet at: ${sendMailNotifyForCreateNewIdieaDto.closeCommentAt}<p>
         </br><p>Close edit at: ${sendMailNotifyForCreateNewIdieaDto.closeIdieaAt}<p>
+        `,
+      })
+      .then(() => {})
+      .catch(() => {});
+  }
+
+  async sendMailForPublishIdiea(
+    sendMailForPubLishIdieaDto: SendMailForPubLishIdieaDto,
+  ) {
+    const user = await this.userService.findOne(
+      sendMailForPubLishIdieaDto.userId,
+    );
+
+    if (!user) {
+      throw new BadRequestException();
+    }
+
+    return this.mailerService
+      .sendMail({
+        to: user.email,
+        from: 'quocldgcd191316@fpt.edu.vn',
+        subject: 'CREATE IDIEA SUCCESSFULLY',
+        text: 'IdieaApp',
+        html: `<b>Congratulations! Your idea has been published</b></br><p>Hi ${user.lastName}, Summarize your post</p>
+        </br><p>Content: ${sendMailForPubLishIdieaDto.content}<p>
+        </br><p>Close commnet at: ${sendMailForPubLishIdieaDto.closeCommentAt}<p>
+        </br><p>Close edit at: ${sendMailForPubLishIdieaDto.closeIdieaAt}<p>
         `,
       })
       .then(() => {})

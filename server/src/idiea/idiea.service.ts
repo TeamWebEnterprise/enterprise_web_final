@@ -1,22 +1,20 @@
-import {
-  BadRequestException,
-  HttpCode,
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Idiea } from '@prisma/client';
 import { Exception } from 'handlebars';
 import { PrismaService } from 'prisma/prisma.service';
-import { disconnect } from 'process';
+import { EmailverifyService } from 'src/emailverify/emailverify.service';
 import { CreateIdieaDto } from './dto/create-idiea.dto';
 import { CreateLikeDto } from './dto/create-like.input';
 import { DeleteIdieaDto } from './dto/delete-idiea.input';
+import { MakeIdieaPublishDto } from './dto/make-publish-idiea.input';
 import { UpdateIdieaDto } from './dto/update-idiea.input';
 
 @Injectable()
 export class IdieaService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private emailService: EmailverifyService,
+  ) {}
 
   async createNewIdiea(
     createIdieaDto: CreateIdieaDto,
@@ -117,6 +115,7 @@ export class IdieaService {
         skip: (page - 1) * 5,
         where: {
           active: true,
+          publish: true,
         },
       });
 
@@ -197,6 +196,7 @@ export class IdieaService {
         skip: (page - 1) * 5,
         where: {
           active: true,
+          publish: true,
         },
       });
 
@@ -357,10 +357,6 @@ export class IdieaService {
   }
 
   async checkUserIsOwner(userId: number, idieaId: number) {
-    console.log('checked user id');
-    console.log(' user id' + userId);
-    console.log('Idiea id' + idieaId);
-
     const currentIdiea = await this.prisma.idiea.findFirst({
       where: {
         id: Number(idieaId),
@@ -371,6 +367,37 @@ export class IdieaService {
       return true;
     } else {
       return false;
+    }
+  }
+
+  async makePublishIdiea(makeIdieaPublishDto: MakeIdieaPublishDto) {
+    try {
+      const idiea = await this.prisma.idiea.update({
+        where: {
+          id: Number(makeIdieaPublishDto.idieaId),
+        },
+        data: {
+          publish: true,
+        },
+        include: {
+          user: {
+            select: {
+              email: true,
+              id: true,
+            },
+          },
+        },
+      });
+
+      await this.emailService.sendMailForPublishIdiea({
+        userId: idiea.user.id,
+        content: idiea.content,
+        closeIdieaAt: idiea.closeIdieaAt,
+        closeCommentAt: idiea.closeCommentAt,
+      });
+      return idiea;
+    } catch (error) {
+      throw new HttpException('cant set', HttpStatus.BAD_REQUEST);
     }
   }
 }

@@ -1,12 +1,7 @@
 import {
   Body,
   Controller,
-  Delete,
-  Get,
-  HttpException,
-  HttpStatus,
   Ip,
-  Param,
   Post,
   Query,
   Req,
@@ -19,10 +14,7 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { CreateUserInput } from './dto/create-user.input';
 import { UserService } from 'src/user/user.service';
 import { CheckUserInput } from './dto/check-user.input';
-import { Roles } from 'src/decorater/roles.decorator';
-import { Role } from 'src/user/entities/role.enum';
 import { EmailverifyService } from 'src/emailverify/emailverify.service';
-import { JwtAuthGuardApi } from './guards/jwt-auth.guard';
 import SetNewPasswordDto from './dto/set-new-password.input';
 import { ForGotPassWordDto } from './dto/forgotpassword-user.input';
 

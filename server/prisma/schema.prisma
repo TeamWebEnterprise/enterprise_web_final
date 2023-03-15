@@ -72,6 +72,7 @@ model Idiea {
   closeIdieaAt   DateTime?
   closeCommentAt DateTime?
   anonymous      Boolean
+  publish        Boolean    @default(false)
   active         Boolean    @default(true)
   documents      Document[] @relation("document")
   categories     Category[]
