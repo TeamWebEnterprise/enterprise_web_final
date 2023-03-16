@@ -1,17 +1,41 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
+import { EmailverifyService } from 'src/emailverify/emailverify.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { AddComment, UpdateComment } from './dto';
 
 @Injectable()
 export class CommentService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    private prismaService: PrismaService,
+    private emailService: EmailverifyService,
+  ) {}
+
   async addComment(addComment: AddComment, userId: number) {
     const createComment = await this.prismaService.comment.create({
       data: {
         ...addComment,
         userId,
       },
+      include: {
+        idiea: {
+          include: {
+            user: {
+              select: {
+                id: true,
+              },
+            },
+          },
+        },
+      },
     });
+
+    this.emailService.sendNotifyForComment({
+      userId: createComment.idiea.user.id,
+      userCommentId: userId,
+      content: createComment.content,
+      createdAt: createComment.createdAt,
+    });
+
     return createComment;
   }
   async getACommentById(commentId: number) {

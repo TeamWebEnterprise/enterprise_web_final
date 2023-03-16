@@ -15,6 +15,7 @@ import { throwError } from 'rxjs';
 import { UpdateUserDto } from './dto/update-user-admin.input';
 import { SetQAManagerDto } from './dto/set-qa-manager.input';
 import { DepartmentPosition, Role } from './entities/role.enum';
+import { SetUserDepartmentDto } from './dto/set-user-department.input';
 
 @Injectable()
 export class UserService {
@@ -79,9 +80,14 @@ export class UserService {
       throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
     }
     try {
-      const password = await bcrypt.hash(createUserInput.password, 10);
+      const { departmentId, password, ...createInput } = createUserInput;
+      const passwordHash = await bcrypt.hash(createUserInput.password, 10);
       return this.prisma.user.create({
-        data: { ...createUserInput, password: password },
+        data: {
+          ...createInput,
+          password: passwordHash,
+          departmentId: Number(departmentId),
+        },
       });
     } catch {
       (e) => {
@@ -434,6 +440,21 @@ export class UserService {
           userId: Number(setQAManagerDto.userId),
           departmentId: Number(setQAManagerDto.departmentId),
           position: DepartmentPosition.QA_COORDINATOR,
+        },
+      });
+    } catch (error) {
+      throw new HttpException("can't set", HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  setUserDepartment(setUserDepartmentDto: SetUserDepartmentDto) {
+    try {
+      return this.prisma.user.update({
+        where: {
+          id: Number(setUserDepartmentDto.userId),
+        },
+        data: {
+          departmentId: Number(setUserDepartmentDto.departmentId),
         },
       });
     } catch (error) {

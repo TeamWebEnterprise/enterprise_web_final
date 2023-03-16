@@ -24,6 +24,7 @@ import { DeleteIdieaDto } from './dto/delete-idiea.input';
 import { Roles } from 'src/decorater/roles.decorator';
 import { RolesGuard } from 'src/roles.guard';
 import { Role } from 'src/user/entities/role.enum';
+import { MakeIdieaPublishDto } from './dto/make-publish-idiea.input';
 
 @Controller('idieas')
 export class IdieaController {
@@ -98,12 +99,17 @@ export class IdieaController {
     @UploadedFiles() files: Express.Multer.File[],
     @Req() req,
   ) {
-    if (req.user.roles.include(Role.STAFF)) {
+    const checkAdmin = req.user.roles.some((role) => {
+      return ['Adminstrator', 'Quality Assurance Manager'].includes(role);
+    });
+
+    if (checkAdmin == false) {
       const check = await this.idieaService.checkUserIsOwner(
         req.user.userId,
         updateIdieaDto.idieaId,
       );
-      if (check) {
+
+      if (check == false) {
         throw new HttpException(
           'Un Authorizer, not your own idiea or you are not Admin',
           HttpStatus.UNAUTHORIZED,
@@ -115,7 +121,9 @@ export class IdieaController {
 
     //make new documents
     if (files) {
-      this.idieaService.deleteAllDocument(updateIdieaDto.idieaId);
+      console.log('edit file');
+      await this.idieaService.deleteAllDocument(updateIdieaDto.idieaId);
+
       files.forEach(async (file) => {
         await this.fileService.uploadFileWithIdieaPost(
           file.buffer,
@@ -147,5 +155,12 @@ export class IdieaController {
     }
 
     return this.idieaService.deleteIdiea(deleteIdieaDto);
+  }
+
+  @UseGuards(JwtAuthGuardApi, RolesGuard)
+  @Post('publish')
+  @Roles(Role.STAFF)
+  publishIdiea(@Body() makeIdieaPublishDto: MakeIdieaPublishDto) {
+    return this.idieaService.makePublishIdiea(makeIdieaPublishDto);
   }
 }

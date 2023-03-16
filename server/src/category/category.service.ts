@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { CreateCategoryDto } from './dto/create-category.input';
 import { UpdateCategoryDto } from './dto/update-category.input';
@@ -37,6 +42,24 @@ export class CategoryService {
 
   async deleteCategory(categoryId: number) {
     try {
+      const existingIdieaInCategory = this.prisma.category.findFirst({
+        where: {
+          id: Number(categoryId),
+        },
+        include: {
+          idieas: true,
+        },
+      });
+
+      console.log();
+
+      if (existingIdieaInCategory.idieas.length < 1) {
+        throw new HttpException(
+          'Category cant be delete',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
       return this.prisma.category.update({
         where: {
           id: Number(categoryId),
@@ -46,7 +69,8 @@ export class CategoryService {
         },
       });
     } catch (error) {
-      return BadRequestException;
+      console.log(error);
+      throw new HttpException('Bad req', HttpStatus.BAD_REQUEST);
     }
   }
 }

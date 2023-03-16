@@ -14,6 +14,7 @@ import { CategoryModule } from './category/category.module';
 import path from 'path';
 import { CommentModule } from './comment/comment.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { DepartmentModule } from './department/department.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { PrismaModule } from './prisma/prisma.module';
     CategoryModule,
     CommentModule,
     PrismaModule,
+    DepartmentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

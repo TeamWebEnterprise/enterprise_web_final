@@ -136,7 +136,10 @@ export class AuthService {
         from: 'khoavvgcd191275@fpt.edu.vn',
         subject: 'Reset password for IdieaApp acount',
         template: './welcome.hbs',
-        context: {},
+        context: {
+          name: user.lastName,
+          link: url,
+        },
       })
       .then(() => {})
       .catch(() => {});
