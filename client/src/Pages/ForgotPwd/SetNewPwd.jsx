@@ -16,8 +16,8 @@ export const SetNewPwd = () => {
   const [validConfirmPassword, setValidConfirmPassword] = useState(false);
   const handlechancepassword = async (e) => {
     try {
-      await axios.post(
-        `/auth/set-newpassword?token=${token}`,
+      await fetch(
+        `http://localhost:3001/auth/set-newpassword?token=${token}`,
         JSON.stringify({
           password: password,
           passwordConfirm: confirmPassword,
@@ -86,7 +86,7 @@ export const SetNewPwd = () => {
           value={confirmPassword}
         />
 
-        <button className=' w-full bg-[#1976d2] font-sans h-14 text-white text-xl border-black rounded-md border-2 items-center justify-center px-5 mt-2 hover:scale-105 shadow-xl  active:scale-100'>
+        <button className=' w-full bg-[#1976d2] font-sans h-14 text-white text-xl border-black rounded-md border-2 items-center justify-center px-5 mt-2y hover:scale-105 shadow-xl  active:scale-100'>
           Submit
         </button>
       </Box>

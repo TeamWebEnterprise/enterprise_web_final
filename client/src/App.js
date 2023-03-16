@@ -5,7 +5,7 @@ import { Route, Routes } from "react-router-dom";
 import Login from "./pages/Login/Login";
 import { Register } from "./pages/Register/Register";
 import ForgotConfirmMail from "./pages/ForgotPwd/ForgotConfirmMail";
-import { Success } from "./pages/Register/Success";
+import { Success, SuccessVerifyMail } from "./pages/Register/Success";
 import { SetNewPwd } from "./pages/ForgotPwd/SetNewPwd";
 
 function App() {
@@ -30,9 +30,8 @@ function App() {
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
         <Route path='/confirmmail' element={<ForgotConfirmMail />} />
-        <Route path='/success' element={<Success />} />
+        <Route path='/emailverify' element={<SuccessVerifyMail />} />
         <Route path='/auth/set-newpassword' element={<SetNewPwd />} />
-        
       </Routes>
     </>
   );

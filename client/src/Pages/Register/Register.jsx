@@ -124,9 +124,11 @@ export const Register = () => {
       return;
     }
     try {
-      await axios.post(
-        REGISTER_URL,
-        JSON.stringify({
+      await fetch("http://localhost:3001/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+        body: JSON.stringify({
           username,
           password,
           firstName,
@@ -137,14 +139,10 @@ export const Register = () => {
           dateOfBirth: birth,
           departmentId: userDepartment,
         }),
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        }
-      );
-
+      });
       setSuccess(true);
     } catch (err) {
+      setLoading(!loading);
       if (err?.response) {
         setErrMsg("User name phone number or email already exists");
       } else if (err.response?.status === 409) {

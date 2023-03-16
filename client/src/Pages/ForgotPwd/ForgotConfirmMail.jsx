@@ -13,17 +13,16 @@ const ForgotConfirmMail = () => {
   const handleconfirmmail = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "/auth/forgot-password",
-        JSON.stringify({
+      const response = await fetch("http://localhost:3001/auth/forgot-password",{
+        method:'POST',
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+        body:JSON.stringify({
           emailConfirm: email,
         }),
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        }
+      }
       );
-      console.log(response.data);
+      console.log(response);
       setShowCreatePwd(!showCreatePwd);
     } catch (err) {
       if (err?.response?.status === 400) {

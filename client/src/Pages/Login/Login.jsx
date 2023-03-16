@@ -18,16 +18,15 @@ import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
-import "./Login.css"
+import "./Login.css";
 const Login = () => {
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
   React.useEffect(() => {}, [username, password]);
-  const [err,setErr] = useState(false)
+  const [err, setErr] = useState(false);
   const checkErr = useSelector((state) => state.auth.login.error);
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -60,7 +59,7 @@ const Login = () => {
   return (
     <ThemeProvider theme={theme}>
       {err ? (
-        <Stack className=" absolute" sx={{ width: "100%" }} spacing={2}>
+        <Stack className=' absolute' sx={{ width: "100%" }} spacing={2}>
           <Alert variant='filled' severity='error'>
             email or password invalid!!!!
           </Alert>{" "}
@@ -71,7 +70,7 @@ const Login = () => {
       <Grid container component='main' sx={{ height: "100vh" }}>
         <CssBaseline />
         <Grid
-          className="bg_login bg-cover bg-fixed"
+          className='bg_login bg-cover bg-fixed'
           item
           xs={false}
           sm={4}
