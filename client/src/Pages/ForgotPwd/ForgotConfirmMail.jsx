@@ -4,12 +4,12 @@ import TextField from "@mui/material/TextField";
 import "./forgotpwd.css";
 import axios from "../../api/axios";
 const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+const PWD_REGEX = /([?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
 const ForgotConfirmMail = () => {
   const [email, setEmail] = useState("");
 
   const [showCreatePwd, setShowCreatePwd] = useState(true);
-
   const handleconfirmmail = async (e) => {
     e.preventDefault();
     try {

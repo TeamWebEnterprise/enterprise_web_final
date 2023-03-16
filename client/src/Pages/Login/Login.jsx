@@ -27,7 +27,6 @@ const Login = () => {
   React.useEffect(() => {}, [username, password]);
   const [err, setErr] = useState(false);
   const checkErr = useSelector((state) => state.auth.login.error);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newUser = {

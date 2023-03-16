@@ -215,6 +215,7 @@ export const Register = () => {
             <div className='sm:max-w-2xl ml-5 mr-5 rounded-xl bg-white md:flex max-w-7xl m-10'>
               <form
                 className='flex flex-col  mr-5 ml-5 md:p-2 max-w-7xl m-10'
+
                 onSubmit={handleSubmit}
               >
                 <h2 className='text-center text-3xl font-semibold mt-2 mb-5'>
@@ -235,6 +236,7 @@ export const Register = () => {
                         : !validEmail
                         ? "email invalid"
                         : "email valid"
+
                     }
                     id='outlined-basic'
                     variant='outlined'

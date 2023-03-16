@@ -7,7 +7,6 @@ import { Register } from "./pages/Register/Register";
 import ForgotConfirmMail from "./pages/ForgotPwd/ForgotConfirmMail";
 import { Success, SuccessVerifyMail } from "./pages/Register/Success";
 import { SetNewPwd } from "./pages/ForgotPwd/SetNewPwd";
-
 function App() {
   const [mode, setMode] = useState("light");
 
