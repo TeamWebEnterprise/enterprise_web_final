@@ -18,16 +18,15 @@ import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
-
+import "./Login.css";
 const Login = () => {
-  const userRef = useRef();
-  const errRef = useRef();
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
   React.useEffect(() => {}, [username, password]);
-  const err = useSelector((state) => state.auth.login.error);
+  const [err, setErr] = useState(false);
+  const checkErr = useSelector((state) => state.auth.login.error);
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newUser = {
@@ -35,6 +34,7 @@ const Login = () => {
       password: password,
     };
     loginUser(newUser, dispatch, navigate);
+    setTimeout(setErr(checkErr), 5000);
   };
 
   const theme = createTheme();
@@ -58,8 +58,8 @@ const Login = () => {
   return (
     <ThemeProvider theme={theme}>
       {err ? (
-        <Stack sx={{ width: "100%" }} spacing={2}>
-          <Alert variant='outlined' severity='error'>
+        <Stack className=' absolute' sx={{ width: "100%" }} spacing={2}>
+          <Alert variant='filled' severity='error'>
             email or password invalid!!!!
           </Alert>{" "}
         </Stack>
@@ -69,13 +69,12 @@ const Login = () => {
       <Grid container component='main' sx={{ height: "100vh" }}>
         <CssBaseline />
         <Grid
+          className='bg_login bg-cover bg-fixed'
           item
           xs={false}
           sm={4}
           md={7}
           sx={{
-            backgroundImage:
-              "url(https://www.gre.ac.uk/__data/assets/image/0025/119653/gre.jpg)",
             backgroundRepeat: "no-repeat",
             backgroundColor: (t) =>
               t.palette.mode === "light"
@@ -111,10 +110,10 @@ const Login = () => {
                 margin='normal'
                 required
                 fullWidth
-                id='email'
-                label='Email Address'
-                name='email'
-                autoComplete='email'
+                id='username'
+                label='username'
+                name='username'
+                autoComplete='username'
                 autoFocus
                 onChange={(e) => setUserName(e.target.value)}
                 value={username}
@@ -145,7 +144,7 @@ const Login = () => {
               </Button>
               <Grid container>
                 <Grid item xs>
-                  <Link href='/forgotpwdconfirmmail' variant='body2'>
+                  <Link href='/confirmmail' variant='body2'>
                     Forgot password?
                   </Link>
                 </Grid>

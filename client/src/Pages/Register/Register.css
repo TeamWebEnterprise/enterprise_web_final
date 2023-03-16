@@ -10,3 +10,11 @@
     color: aliceblue;
     
 }
+.homeshadow{
+    box-shadow: 0 5px 0 #454545;
+    transition: .5s;
+}
+.homeshadow:active{
+    box-shadow: none;
+    transform: translateY(5px) ; 
+}

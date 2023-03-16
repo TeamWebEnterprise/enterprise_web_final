@@ -38,6 +38,12 @@ const authSlice = createSlice({
     refreshSucess: (state, action) => {
       state.login.currentUser = action.payload;
     },
+    checkRegisterStart: (state) => {
+      state.checkRegister.isFetching = true;
+    },
+    checkRegisterSuccess: (state,action) => {
+      state.checkRegister.userInput =action.payload;
+    },
   },
 });
 
