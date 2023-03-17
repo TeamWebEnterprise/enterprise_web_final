@@ -203,7 +203,7 @@ export const Register = () => {
           </div>
         </section>
       ) : (
-        <section className=' h-[100vh] bg-[url("https://th.bing.com/th/id/R.5a6e05753a3209540850409c73286a6a?rik=%2bm%2fC1THL7MbisA&pid=ImgRaw&r=0")] bg-fixed bg-cover min-h-screen flex items-center justify-center md:p-14 relative '>
+        <section className="bg-[url('https://weeek.net/uploads/blog/32f3c2e0b9b9811cba1aca3aa279b8c9.png')] bg-right-bottom bg-no-repeat  h-[100vh] min-h-screen bg-[length:500px] flex items-center justify-center md:p-14 relative ">
           <p
             ref={errRef}
             className={errMsg ? "setErrMsg " : "offscreen"}
@@ -221,7 +221,7 @@ export const Register = () => {
                 <h2 className="text-center text-3xl font-semibold mt-2 mb-5">
                   Sign Up
                 </h2>
-                <div className="sm:flex-none md:flex  gap-2 mb-2">
+                <div className="sm:flex-none md:flex flex space-x-3  mb-2">
                   <TextField
                     color={
                       (emailFocus && !validEmail) || !checkEmail
@@ -249,7 +249,6 @@ export const Register = () => {
                     onFocus={() => setEmailFocus(true)}
                     onBlur={() => setEmailFocus(false)}
                   ></TextField>
-                  <div className="mb-2"> </div>
                   <TextField
                     color={userFocus && !checkUsername ? "error" : "success"}
                     id="outlined-basic"
@@ -273,9 +272,8 @@ export const Register = () => {
                     onFocus={() => setUserFocus(true)}
                     onBlur={() => setUserFocus(false)}
                   ></TextField>
-                  <div className="mb-2"> </div>
                 </div>
-                <div className="sm:flex-none md:flex gap-2 mb-2 ">
+                <div className="sm:flex-none md:flex mb-2 flex space-x-3 ">
                   <TextField
                     className="sm: w-full m-0 p-5 pb-2 pl-0 border-b-2 outline-none md: w-1/2"
                     type="date"
@@ -288,7 +286,6 @@ export const Register = () => {
                       <TextField {...params} helperText={null} />
                     )}
                   ></TextField>
-                  <div className="mb-2"> </div>
                   <TextField
                     color={
                       (phoneFocus && !validPhone) || !checkPhone
@@ -317,9 +314,8 @@ export const Register = () => {
                     onFocus={() => setPhoneFocus(true)}
                     onBlur={() => setPhoneFocus(false)}
                   ></TextField>
-                  <div className="mb-2"> </div>
                 </div>
-                <div className="sm:flex-none md:flex gap-2 mb-2">
+                <div className="sm:flex-none md:flex mb-2 flex space-x-3 ">
                   <TextField
                     id="outlined-basic"
                     label="First name"
@@ -336,7 +332,6 @@ export const Register = () => {
                     required
                     placeholder="firstname"
                   ></TextField>
-                  <div className="mb-2"> </div>
                   <TextField
                     id="outlined-basic"
                     label="Last name"
@@ -353,7 +348,6 @@ export const Register = () => {
                     onFocus={() => setLastNameFocus(true)}
                     onBlur={() => setLastNameFocus(false)}
                   ></TextField>
-                  <div className="mb-2"> </div>
                 </div>
 
                 <TextField
@@ -459,8 +453,8 @@ export const Register = () => {
                       !checkEmail ||
                       !checkPhone ||
                       !checkUsername
-                        ? "mt-8 mx-auto w-full bg-gray-300 rounded-sm text-white py-2"
-                        : "mt-8 mx-auto w-full bg-blue-700 rounded-sm text-white py-2 hover:scale-110 duration-200"
+                        ? "mt-3 mx-auto w-full bg-gray-300 rounded-sm text-white py-2"
+                        : "mt-3 mx-auto w-full bg-blue-700 rounded-sm text-white py-2 hover:scale-110 duration-200"
                     }
                   >
                     Sign Up
