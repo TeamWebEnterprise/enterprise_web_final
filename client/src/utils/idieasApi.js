@@ -21,9 +21,7 @@ export const createIdiea = async (
       },
       {
         headers: {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
+          Authorization: `Bearer ${accessToken}`,
         },
       }
     );
