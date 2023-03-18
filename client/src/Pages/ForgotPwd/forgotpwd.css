@@ -8,12 +8,29 @@
 
 .box_email{
     background:transparent;
-    width: 700px;
-    margin: auto;
-    border: 2px solid rgba(255,255,255, .5);
     backdrop-filter: blur(20px);
-    border-radius: 20px;
-    justify-content: center;
     box-shadow: 0 0;
-    padding: 0 20px 70px;
+    padding: 50px;
+}
+
+.bg_email-confirm{
+    background-image: url('../../../public/images/email-marketing.png');
+    background-position: left;
+    background-size: 60%;
+    background-repeat: no-repeat;
+}
+.btn_submit{
+    box-shadow: 0 5px 0 #454545;
+    transition: .5s;
+}
+.btn_submit:active{
+    box-shadow: none;
+    transform: translateY(5px) ;
+}
+.email_confirm-icon{
+    background-image: url('https://icons8.com/icon/91986/mail-account');
+}
+
+.bg_reset-pwd{
+    background-image: url('../../../public/images/reset-pwd.png');
 }

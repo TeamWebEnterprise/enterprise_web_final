@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState ,useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../redux/apiRequest";
@@ -19,14 +19,25 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 import "./Login.css";
+
 const Login = () => {
+  const user = useSelector((state) => state.auth.login.currentUser);
+  const navigate = useNavigate();
+
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  React.useEffect(() => {}, [username, password]);
+
+  useEffect(() => {}, [username, password]);
   const [err, setErr] = useState(false);
   const checkErr = useSelector((state) => state.auth.login.error);
+
+  useEffect(() => {
+    if (user != null) {
+      navigate("/");
+    }
+    
+  }, []);
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newUser = {
