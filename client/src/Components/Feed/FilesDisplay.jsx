@@ -2,6 +2,7 @@ import { Box, Typography, Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import "./FileDownload.css";
 import DownloadIcon from "@mui/icons-material/Download";
+import Paper from "@mui/material/Paper";
 
 const Item = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -30,7 +31,7 @@ const FilesDisplay = ({ files }) => {
           borderTop: "0.5px dashed #CFCFCF",
         }}
         gridTemplateColumns={{
-          xl: "repeat(6, 1fr)",
+          xl: "repeat(5, 1fr)",
           lg: "repeat(4, 1fr)",
           md: "repeat(3, 1fr)",
           xs: "repeat(3, 1fr)",
@@ -117,27 +118,28 @@ const FilesDisplay = ({ files }) => {
             </Box>
             <Box
               sx={{
+                width: "0px",
+                height: "0px",
+                borderTop: "15px solid rgb(83, 134, 207)",
+                borderRight: "15px solid transparent ",
+                position: "absolute",
+                bottom: "-1px",
+                right: "-1px",
+                zIndex: "3",
+              }}
+            ></Box>
+            <Paper
+              sx={{
                 width: "15px",
                 height: "15px",
                 position: "absolute",
                 bottom: "-1px",
                 right: "-1px",
-                background: "rgb(83, 134, 207)",
                 zIndex: "2",
+                borderRadius: "0px",
+                boxShadow: "none",
               }}
-            ></Box>
-            <Box
-              sx={{
-                width: "0px",
-                height: "0px",
-                borderBottom: "15px solid white",
-                borderLeft: "15px solid transparent ",
-                position: "absolute",
-                bottom: "-1px",
-                right: "-1px",
-                zIndex: "2",
-              }}
-            ></Box>
+            ></Paper>
             <Box
               sx={{
                 width: "0px",
