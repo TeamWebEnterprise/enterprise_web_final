@@ -187,6 +187,7 @@ export class IdieaService {
               active: true,
             },
           },
+          documents: true,
         },
         orderBy: {
           likes: {

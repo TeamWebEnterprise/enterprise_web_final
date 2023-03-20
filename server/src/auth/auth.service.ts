@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import RefreshToken from './entities/refresh-token.entity';
 import { sign, verify } from 'jsonwebtoken';
 import { User } from '@prisma/client';
@@ -70,6 +75,13 @@ export class AuthService {
     values: { userAgent: string; ipAddress: string },
   ): Promise<{ accessToken: string; refreshToken: string } | undefined> {
     const user = await this.userService.findByUsername(username);
+    if (user.isEmailValidated == false) {
+      throw new HttpException(
+        'Validate your email first',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
     return this.newRefreshAndAccessToken(user, values);
   }
 
@@ -120,9 +132,12 @@ export class AuthService {
     const user = await this.userService.findByEmail(
       forGotPassWordDto.emailConfirm,
     );
-
     if (!user) {
-      throw new BadRequestException();
+      throw new HttpException('Un authorize', HttpStatus.UNAUTHORIZED);
+    }
+
+    if (user.isEmailValidated == false) {
+      throw new HttpException('Un authorize', HttpStatus.UNAUTHORIZED);
     }
 
     const payload = { email: user.email };
