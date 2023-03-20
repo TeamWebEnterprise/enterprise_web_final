@@ -13,7 +13,6 @@ const Item = styled(Box)(({ theme }) => ({
 
 const getName = (s, n) => {
   const index = String(s).indexOf(",,");
-  console.log(index);
   return String(s).substring(Number(index) + 2, index + Number(n));
 };
 const getType = (s) => {
@@ -31,8 +30,8 @@ const FilesDisplay = ({ files }) => {
           borderTop: "0.5px dashed #CFCFCF",
         }}
         gridTemplateColumns={{
-          xl: "repeat(8, 1fr)",
-          lg: "repeat(6, 1fr)",
+          xl: "repeat(6, 1fr)",
+          lg: "repeat(4, 1fr)",
           md: "repeat(3, 1fr)",
           xs: "repeat(3, 1fr)",
         }}

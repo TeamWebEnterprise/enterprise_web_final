@@ -188,7 +188,6 @@ const Post = ({
           >
             {numberOfLike.like}
           </Typography>
-
           <Box
             sx={{
               backgroundColor: "red",

@@ -74,6 +74,7 @@ export default function DialogSlide() {
         setContentInput("");
         setCategories([]);
         setInputPublic(options[0]);
+        setSelectedFile([]);
       },
     }
   );
