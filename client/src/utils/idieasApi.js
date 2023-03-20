@@ -9,22 +9,26 @@ export const createIdiea = async (
   accessToken,
   content,
   anonymous,
-  idCategory
+  idCategory,
+  files
 ) => {
   try {
-    await axiosJWT.post(
-      "/idieas/createidiea",
-      {
-        content: content,
-        anonymous: anonymous,
-        idCategory: idCategory,
+    let formData = new FormData();
+    formData.append("content", content);
+    formData.append("anonymous", anonymous);
+    idCategory.forEach((id) => {
+      formData.append("idCategory[]", id);
+    });
+    for (let i = 0; i < files.length; i++) {
+      formData.append("files[]", files[i]);
+    }
+
+    await axiosJWT.post("/idieas/createidiea", formData, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "multipart/form-data",
       },
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
+    });
   } catch (error) {}
 };
 

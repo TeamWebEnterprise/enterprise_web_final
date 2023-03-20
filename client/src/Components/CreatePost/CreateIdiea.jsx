@@ -18,6 +18,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import * as api from "../../utils/idieasApi";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -31,31 +32,41 @@ const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 export default function DialogSlide() {
-  const { data: categoriesOptionsData, isFetching: isFetchingCategory } =
-    useQuery(["categories"], () => api.getAllCategory());
+  const user = useSelector((state) => state.auth.login.currentUser);
+  const axiosJWT = CreateAxiosNoDispatch(user);
+  const accessToken = user?.accessToken;
+  const queryClient = useQueryClient();
 
   const [open, setOpen] = React.useState(false);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
 
-  const [contentInput, setContentInput] = React.useState("");
+  const { data: categoriesOptionsData, isFetching: isFetchingCategory } =
+    useQuery(["categories"], () => api.getAllCategory());
   const [categories, setCategories] = React.useState([]);
+  const [contentInput, setContentInput] = React.useState("");
   const [inputPublic, setInputPublic] = React.useState(options[0]);
 
-  /* //handle File Upload
   const [selectedFile, setSelectedFile] = React.useState();
   const [isFilePicked, setIsFilePicked] = React.useState(false);
   const inputFileHandle = (event) => {
     setSelectedFile(event.target.files);
     setIsFilePicked(true);
-    console.log(selectedFile);
-  }; */
-
-  const user = useSelector((state) => state.auth.login.currentUser);
-  const axiosJWT = CreateAxiosNoDispatch(user);
-  const accessToken = user?.accessToken;
-  const queryClient = useQueryClient();
+  };
   const { mutate, isLoading: creatingIdiea } = useMutation(
-    ({ content, anonymous, idCategory }) =>
-      api.createIdiea(axiosJWT, accessToken, content, anonymous, idCategory),
+    ({ content, anonymous, idCategory, files }) =>
+      api.createIdiea(
+        axiosJWT,
+        accessToken,
+        content,
+        anonymous,
+        idCategory,
+        files
+      ),
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["idieas"]);
@@ -66,21 +77,7 @@ export default function DialogSlide() {
       },
     }
   );
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   const handleSubmit = async () => {
-    /* const formData = new FormData();
-    if (isFilePicked) {
-      await formData.append("File", selectedFile);
-      console.log(formData);
-    } */
     var idCategories = [];
     await categories.forEach((category) => {
       idCategories.push(category.id);
@@ -95,6 +92,7 @@ export default function DialogSlide() {
       content: contentInput,
       anonymous: String(anonymous),
       idCategory: idCategories,
+      files: selectedFile,
     });
   };
 
@@ -204,7 +202,7 @@ export default function DialogSlide() {
                 sx={{ width: 300 }}
                 renderInput={(params) => <TextField {...params} />}
               />
-              {/*  <Button
+              <Button
                 flex={1}
                 variant="outlined"
                 color="primary"
@@ -212,9 +210,9 @@ export default function DialogSlide() {
                 startIcon={<FileUploadIcon />}
               >
                 Document
-                <input hidden type="file" onChange={inputFileHandle} />
+                <input hidden multiple type="file" onChange={inputFileHandle} />
               </Button>
-              {isFilePicked ? <Box>{selectedFile[0].name}</Box> : <></>} */}
+              {isFilePicked ? <Box>{selectedFile[0].name}</Box> : <></>}
             </Stack>
           </Stack>
         </DialogContent>

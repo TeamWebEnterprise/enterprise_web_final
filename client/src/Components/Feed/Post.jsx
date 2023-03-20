@@ -36,6 +36,7 @@ import { CreateAxiosNoDispatch } from "../../createInstance";
 import { comment, like } from "../../utils/idieasApi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import CustomizedMenus from "./PostDetail";
+import FilesDisplay from "./FilesDisplay";
 
 const Post = ({
   content,
@@ -48,6 +49,7 @@ const Post = ({
   closeCommentAt,
   id,
   likes,
+  files,
 }) => {
   const user = useSelector((state) => state.auth.login.currentUser);
   const accessToken = user?.accessToken;
@@ -168,6 +170,9 @@ const Post = ({
           ))}
         </Box>
       </CardContent>
+
+      {files.length > 0 ? <FilesDisplay files={files} /> : <></>}
+
       <Box sx={{ display: "flex" }}>
         <Box
           flex={1}

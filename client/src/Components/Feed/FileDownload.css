@@ -1,0 +1,4 @@
+.download-file-box:hover .download-file {
+  display: block;
+  transition: all 0.3;
+}
