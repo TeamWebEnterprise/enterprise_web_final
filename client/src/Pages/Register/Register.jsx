@@ -87,9 +87,7 @@ export const Register = () => {
     checkRegister(username, email, phone);
   });
 
-  useEffect(() => {
-    console.log(userDepartment);
-  }, [userDepartment]);
+  useEffect(() => {}, [userDepartment]);
 
   const checkRegister = async (username, email, phone) => {
     const response = await axios.post("/auth/checkregister", {
@@ -100,17 +98,12 @@ export const Register = () => {
     setCheckUsername(response.data.acceptUsernameCheck);
     setCheckEmail(response.data.acceptEmailCheck);
     setCheckPhone(response.data.acceptPhoneCheck);
-
-    console.log("mail " + checkEmail);
-    console.log("phone " + checkPhone);
   };
   useEffect(() => {
     const result = PWD_REGEX.test(password);
     setValidPwd(result);
-    console.log(result);
     const match = password === matchPwd;
     setValidMatch(match);
-    console.log(matchPwd);
   }, [password, matchPwd]);
 
   useEffect(() => {

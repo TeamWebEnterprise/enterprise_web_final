@@ -12,12 +12,13 @@ const Item = styled(Box)(({ theme }) => ({
 }));
 
 const getName = (s, n) => {
-  return String(s).substring(0, Number(n));
+  const index = String(s).indexOf(",,");
+  console.log(index);
+  return String(s).substring(Number(index) + 2, index + Number(n));
 };
 const getType = (s) => {
-  const indexDash = String(s).indexOf("-");
   const index = String(s).indexOf(".");
-  return String(s).substring(index + 1, indexDash);
+  return String(s).substring(index + 1);
 };
 
 const FilesDisplay = ({ files }) => {
