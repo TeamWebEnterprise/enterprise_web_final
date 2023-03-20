@@ -32,9 +32,27 @@ export const createIdiea = async (
   } catch (error) {}
 };
 
-export const getIdieas = (orderField, orderBy, page) => {
+export const getIdieas = (orderField, orderBy, page, userId) => {
   if (orderField === "likes") {
     return api.get(`/idieas/all-by-likes?page=${page}`).then((res) => res.data);
+  }
+
+  if (orderField === "point") {
+    return api
+      .get(`/idieas/get-idiea-by-point?page=${page}`)
+      .then((res) => res.data);
+  }
+
+  if (orderField === "comments") {
+    return api
+      .get(`/idieas/idieas-lastest-comment?page=${page}`)
+      .then((res) => res.data);
+  }
+
+  if (orderField === "own") {
+    return api
+      .get(`/idieas/all-idieas-by-user?page=${page}&userid=${userId}`)
+      .then((res) => res.data);
   }
 
   return api
