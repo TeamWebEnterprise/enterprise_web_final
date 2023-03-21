@@ -16,6 +16,7 @@ import { saveAs } from "file-saver";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import DownloadForOfflineIcon from "@mui/icons-material/DownloadForOffline";
+import LinearProgress from "@mui/material/LinearProgress";
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -79,6 +80,7 @@ export default function CustomizedMenus({
 
   const downloadResourcesOnClick = async () => {
     setLoading(true);
+    setTimeout(2000);
     try {
       const zip = new JSZip();
       const remoteZips = documents.map(async (file) => {
@@ -99,7 +101,6 @@ export default function CustomizedMenus({
         .catch(() => {
           setLoading(false);
         });
-      setLoading(false);
       setAnchorEl(null);
     } catch (error) {
       setLoading(false);
@@ -151,15 +152,16 @@ export default function CustomizedMenus({
         </MenuItem>
       </StyledMenu>
       {loading == true ? (
-        <Box sx={{ display: "flex" }}>
-          <CircularProgress
-            sx={{
-              position: "fixed",
-              top: "50%",
-              right: "50%",
-              translate: "20px -40px",
-            }}
-          />
+        <Box
+          sx={{
+            width: "100%",
+            position: "fixed",
+            top: "64px",
+            left: "0px",
+            zIndex: "100",
+          }}
+        >
+          <LinearProgress />
         </Box>
       ) : (
         <></>
