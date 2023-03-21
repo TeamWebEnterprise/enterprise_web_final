@@ -48,6 +48,7 @@ const Post = ({
   closeIdieaAt,
   closeCommentAt,
   id,
+  userId,
   likes,
   files,
 }) => {
@@ -142,28 +143,31 @@ const Post = ({
     <Card sx={{ marginBottom: 5 }}>
       <CardHeader
         avatar={
-          <Avatar sx={{ bgcolor: "red" }} aria-label="recipe">
+          <Avatar sx={{ bgcolor: "red" }} aria-label='recipe'>
             U
           </Avatar>
         }
         action={
           <CustomizedMenus
+            userId={userId}
+            idieaId={id}
             closeIdieaAt={closeIdieaAt}
             closeComment={closeCommentAt}
+            content={content}
           />
         }
         title={`${name}`}
         subheader={`${formatDate(createAt)}`}
       />
       <CardContent>
-        <Typography fontSize="20px" variant="body2" color="text.primary">
+        <Typography fontSize='20px' variant='body2' color='text.primary'>
           {`${content}`}
         </Typography>
-        <Box marginY={1} display="flex">
+        <Box marginY={1} display='flex'>
           {categories.map((item) => (
             <Typography
-              fontSize="14px"
-              color="primary.light"
+              fontSize='14px'
+              color='primary.light'
               marginRight={1}
               key={item.id}
             >{`#${item.categoryName}`}</Typography>
@@ -179,12 +183,12 @@ const Post = ({
           marginX={2}
           sx={{ display: "flex", alignItems: "center" }}
         >
-          <RecommendRoundedIcon color="primary" />
+          <RecommendRoundedIcon color='primary' />
           <Typography
             marginX={0.5}
-            fontSize="13px"
-            lineHeight="24px"
-            color="text"
+            fontSize='13px'
+            lineHeight='24px'
+            color='text'
           >
             {numberOfLike.like}
           </Typography>
@@ -201,13 +205,13 @@ const Post = ({
               height: "19px",
             }}
           >
-            <ThumbDownAltRoundedIcon fontSize="4px" />
+            <ThumbDownAltRoundedIcon fontSize='4px' />
           </Box>
           <Typography
             marginX={0.5}
-            fontSize="13px"
-            lineHeight="24px"
-            color="text"
+            fontSize='13px'
+            lineHeight='24px'
+            color='text'
           >
             {numberOfLike.dislike}
           </Typography>
@@ -215,28 +219,28 @@ const Post = ({
 
         <Box marginX={2}>
           {comments.length > 0 ? (
-            <Typography fontSize="13px" color="text">
+            <Typography fontSize='13px' color='text'>
               {`${comments.length} Comments`}
             </Typography>
           ) : (
-            <Typography fontSize="13px" color="text">
+            <Typography fontSize='13px' color='text'>
               Create comment...
             </Typography>
           )}
         </Box>
       </Box>
 
-      <Divider variant="fullWidth" style={{ margin: "20px 20px 0px 20px" }} />
+      <Divider variant='fullWidth' style={{ margin: "20px 20px 0px 20px" }} />
 
-      <Grid container display="flex">
+      <Grid container display='flex'>
         <Grid item xs={8}>
           <ToggleButtonGroup
-            fullWidth="100%"
-            color="primary"
+            fullWidth='100%'
+            color='primary'
             value={alignment}
             exclusive
             onChange={handleAlignment}
-            aria-label="text alignment"
+            aria-label='text alignment'
           >
             <ToggleButton
               onClick={handleLike}
@@ -256,11 +260,11 @@ const Post = ({
           </ToggleButtonGroup>
         </Grid>
         <Grid item xs={4}>
-          <Box display="flex">
+          <Box display='flex'>
             <ToggleButton
               sx={{ border: "none" }}
-              fullWidth="100%"
-              aria-label="share"
+              fullWidth='100%'
+              aria-label='share'
               onClick={handleClickOpen}
             >
               <SmsRoundedIcon />
@@ -278,9 +282,9 @@ const Post = ({
             onClick={handleClickListComments}
             sx={{ border: "none" }}
             expandIcon={<ExpandMoreIcon />}
-            id="panel1a-header"
+            id='panel1a-header'
           >
-            <Typography fontSize="14px" color="text.secondary">
+            <Typography fontSize='14px' color='text.secondary'>
               Show comments...
             </Typography>
           </AccordionSummary>
@@ -300,15 +304,15 @@ const Post = ({
           <DialogContentText>
             Leave your comments in the box below...
           </DialogContentText>
-          <Box display="flex">
+          <Box display='flex'>
             <TextField
               fullWidth
-              size="small"
+              size='small'
               autoFocus
-              margin="dense"
-              id="name"
-              label="Content"
-              variant="standard"
+              margin='dense'
+              id='name'
+              label='Content'
+              variant='standard'
               value={inputComment}
               onChange={(e) => {
                 setInputComment(e.target.value);

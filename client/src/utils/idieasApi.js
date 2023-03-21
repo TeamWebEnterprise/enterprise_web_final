@@ -92,3 +92,40 @@ export const getAllCategory = async () => {
     return api.get("/category/all").then((res) => res.data);
   } catch (error) {}
 };
+
+export const editIdiea = async (axiosJWT, accessToken, idieaId, content) => {
+  try {
+    await axiosJWT.post(
+      "/idieas/update",
+      {
+        idieaId: idieaId,
+        content: content,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteIdiea = async (axiosJWT, accessToken, idieaId) => {
+  try {
+    await axiosJWT.post(
+      "/idieas/delete",
+      {
+        idieaId: idieaId,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+  } catch (error) {
+    throw error;
+  }
+};

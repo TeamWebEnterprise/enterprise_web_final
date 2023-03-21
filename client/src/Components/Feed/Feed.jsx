@@ -85,6 +85,7 @@ const Feed = () => {
                 numberOfLike={countLike(item.likes)}
                 comments={item.comments}
                 id={item.id}
+                userId={item.userId}
                 likes={item.likes}
                 closeIdieaAt={item.closeIdieaAt}
                 closeCommentAt={item.closeCommentAt}
