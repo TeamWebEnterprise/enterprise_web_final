@@ -159,7 +159,7 @@ export class IdieaController {
 
   @UseGuards(JwtAuthGuardApi, RolesGuard)
   @Post('publish')
-  @Roles(Role.STAFF)
+  @Roles(Role.QA_COORDINATOR)
   publishIdiea(@Body() makeIdieaPublishDto: MakeIdieaPublishDto) {
     return this.idieaService.makePublishIdiea(makeIdieaPublishDto);
   }

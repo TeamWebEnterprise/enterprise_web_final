@@ -10,7 +10,7 @@ export class DepartmentService {
     return this.prisma.department.findMany();
   }
 
-  private async checkCoordinatorIsOwnerOfDepartment(
+  /* private async checkCoordinatorIsOwnerOfDepartment(
     selectIdieaDepartmentDto: SelectIdieaDepartmentDto,
   ): Promise<Boolean> {
     try {
@@ -30,29 +30,59 @@ export class DepartmentService {
     } catch (error) {
       throw new HttpException('cant find', HttpStatus.BAD_REQUEST);
     }
-  }
+  } */
 
   async selectIdieaUnPublished(
     selectIdieaDepartmentDto: SelectIdieaDepartmentDto,
   ) {
     try {
-      if (
-        (await this.checkCoordinatorIsOwnerOfDepartment(
-          selectIdieaDepartmentDto,
-        )) == true
-      ) {
-        return this.prisma.idiea.findMany({
-          where: {
-            user: {
-              departmentId: Number(selectIdieaDepartmentDto.departmentId),
-            },
-            publish: false,
+      const QA = await this.prisma.qADepartment.findFirst({
+        where: {
+          userId: Number(selectIdieaDepartmentDto.userId),
+        },
+      });
+
+      const departmentId = QA.departmentId;
+
+      const result = await this.prisma.idiea.findMany({
+        where: {
+          user: {
+            departmentId: Number(departmentId),
           },
-        });
-      }
+          publish: false,
+          active: true,
+        },
+        include: {
+          _count: {
+            select: {
+              documents: true,
+            },
+          },
+          user: {
+            select: {
+              firstName: true,
+              lastName: true,
+            },
+          },
+          documents: true,
+          categories: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+
+      result.forEach((idiea) => {
+        if (idiea.anonymous) {
+          idiea.user.firstName = 'Anonymous';
+          idiea.user.lastName = '';
+        }
+      });
+
+      return result;
     } catch (error) {
       throw new HttpException(
-        'You are not QA coordinator of this department',
+        'You are not QA coordinator',
         HttpStatus.UNAUTHORIZED,
       );
     }

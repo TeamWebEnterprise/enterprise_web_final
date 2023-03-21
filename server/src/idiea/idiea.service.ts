@@ -676,6 +676,19 @@ export class IdieaService {
 
     result = await result.slice((page - 1) * 5, (page - 1) * 5 + 5);
 
+    result.forEach((idiea) => {
+      if (idiea.anonymous) {
+        idiea.user.firstName = 'Anonymous';
+        idiea.user.lastName = '';
+      }
+      idiea.comments.forEach((comment) => {
+        if (comment.anonymous) {
+          comment.user.firstName = 'Anonymous';
+          comment.user.lastName = '';
+        }
+      });
+    });
+
     return { idieas: result, pages: pages };
   }
 }

@@ -20,14 +20,10 @@ export class DepartmentController {
 
   @UseGuards(JwtAuthGuardApi, RolesGuard)
   @Roles(Role.QA_COORDINATOR)
-  @Get('all-department-id-un-published')
-  getAllIdieaDepartmentUnPublished(
-    @Query('departmentid') departmentId: number,
-    @Req() req,
-  ) {
+  @Get('all-department-un-published')
+  getAllIdieaDepartmentUnPublished(@Req() req) {
     return this.departmentService.selectIdieaUnPublished({
       userId: req.user.userId,
-      departmentId: departmentId,
     });
   }
 }

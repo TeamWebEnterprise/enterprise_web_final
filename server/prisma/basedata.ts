@@ -216,3 +216,5 @@ export const BASE_USER = [
     ],
   },
 ];
+
+export const BASE_DEPARTMENT = [{}];
