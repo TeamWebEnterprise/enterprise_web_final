@@ -103,6 +103,7 @@ const Feed = () => {
                 closeIdieaAt={item.closeIdieaAt}
                 closeCommentAt={item.closeCommentAt}
                 files={item.documents}
+                documents={item.documents}
               />
             ))}
             <Box

@@ -10,6 +10,12 @@ import LockClockIcon from "@mui/icons-material/LockClock";
 import SpeakerNotesOffIcon from "@mui/icons-material/SpeakerNotesOff";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import formatDate from "../../utils/formatDate";
+import JSZip from "jszip";
+import { useState } from "react";
+import { saveAs } from "file-saver";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
+import DownloadForOfflineIcon from "@mui/icons-material/DownloadForOffline";
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -58,6 +64,7 @@ export default function CustomizedMenus({
   idieaId,
   closeIdieaAt,
   closeComment,
+  documents,
 }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -66,6 +73,37 @@ export default function CustomizedMenus({
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const [loading, setLoading] = useState(false);
+
+  const downloadResourcesOnClick = async () => {
+    setLoading(true);
+    try {
+      const zip = new JSZip();
+      const remoteZips = documents.map(async (file) => {
+        const response = await fetch(file.url);
+        const data = await response.blob();
+        zip.file(`${file.key}`, data);
+
+        return data;
+      });
+
+      Promise.all(remoteZips)
+        .then(async () => {
+          await zip.generateAsync({ type: "blob" }).then((content) => {
+            saveAs(content, "documents.zip");
+          });
+          setLoading(false);
+        })
+        .catch(() => {
+          setLoading(false);
+        });
+      setLoading(false);
+      setAnchorEl(null);
+    } catch (error) {
+      setLoading(false);
+    }
   };
 
   return (
@@ -94,6 +132,10 @@ export default function CustomizedMenus({
           <HighlightOffIcon />
           Delete
         </MenuItem>
+        <MenuItem onClick={downloadResourcesOnClick} disableRipple>
+          <DownloadForOfflineIcon />
+          Download documents
+        </MenuItem>
         <Divider sx={{ my: 0.5 }} />
         <MenuItem onClick={handleClose} disableRipple>
           <LockClockIcon />
@@ -108,6 +150,20 @@ export default function CustomizedMenus({
             : "This post haven't set close comment time"}
         </MenuItem>
       </StyledMenu>
+      {loading == true ? (
+        <Box sx={{ display: "flex" }}>
+          <CircularProgress
+            sx={{
+              position: "fixed",
+              top: "50%",
+              right: "50%",
+              translate: "20px -40px",
+            }}
+          />
+        </Box>
+      ) : (
+        <></>
+      )}
     </div>
   );
 }

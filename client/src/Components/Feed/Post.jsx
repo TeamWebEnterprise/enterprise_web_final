@@ -50,6 +50,7 @@ const Post = ({
   id,
   likes,
   files,
+  documents,
 }) => {
   const user = useSelector((state) => state.auth.login.currentUser);
   const accessToken = user?.accessToken;
@@ -150,6 +151,7 @@ const Post = ({
           <CustomizedMenus
             closeIdieaAt={closeIdieaAt}
             closeComment={closeCommentAt}
+            documents={documents}
           />
         }
         title={`${name}`}

@@ -32,6 +32,10 @@ export const createIdiea = async (
   } catch (error) {}
 };
 
+export const getTopIdieas = () => {
+  return api.get(`/idieas/get-idiea-by-point?page=1`).then((res) => res.data);
+};
+
 export const getIdieas = (orderField, orderBy, page, userId) => {
   if (orderField === "likes") {
     return api.get(`/idieas/all-by-likes?page=${page}`).then((res) => res.data);

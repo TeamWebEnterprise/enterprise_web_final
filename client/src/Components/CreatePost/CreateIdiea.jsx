@@ -24,6 +24,7 @@ import * as api from "../../utils/idieasApi";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CreateAxiosNoDispatch } from "../../createInstance";
 import { useSelector } from "react-redux";
+import PermMediaIcon from "@mui/icons-material/PermMedia";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -103,12 +104,13 @@ export default function DialogSlide() {
         sx={{
           position: "fixed",
           bottom: 20,
-          left: { xs: "calc(50% - 25px)", md: 30 },
+          left: { xs: "calc(50% - 88px)", md: 30 },
+          fontWeight: "bold",
         }}
         variant="outlined"
         onClick={handleClickOpen}
       >
-        CREATE NEW POST
+        CREATE NEW IDIEA
       </Button>
       <Dialog
         open={open}
@@ -213,7 +215,13 @@ export default function DialogSlide() {
                 Document
                 <input hidden multiple type="file" onChange={inputFileHandle} />
               </Button>
-              {isFilePicked ? <Box>{selectedFile[0].name}</Box> : <></>}
+              {isFilePicked ? (
+                <Box>
+                  <PermMediaIcon />
+                </Box>
+              ) : (
+                <></>
+              )}
             </Stack>
           </Stack>
         </DialogContent>
