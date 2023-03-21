@@ -1,12 +1,13 @@
 export const BASE_USER = [
   {
-    username: 'username1',
+    id: 1,
+    username: 'admin',
     firstName: 'Quoc',
     lastName: 'Le',
     email: 'quocle1admin1@gmail.com',
     phone: '0833767621',
     address: 'Viet Nam',
-    roles: ['Adminstrator'],
+    roles: ['Adminstrator', 'QA Coordinator'],
     Idiea: [
       {
         content:
@@ -36,13 +37,14 @@ export const BASE_USER = [
     ],
   },
   {
-    username: 'username2',
+    id: 2,
+    username: 'manager',
     firstName: 'Quoc',
     lastName: 'Le',
     email: 'quocle1admin2@gmail.com',
     phone: '0833767622',
     address: 'Viet Nam',
-    roles: ['Staff'],
+    roles: ['Staff', 'QA Coordinator', 'Quality Assurance Manager'],
     Idiea: [
       {
         content:
@@ -72,13 +74,14 @@ export const BASE_USER = [
     ],
   },
   {
+    id: 3,
     username: 'username3',
     firstName: 'Quoc',
     lastName: 'Le',
     email: 'quocle1admin3@gmail.com',
     phone: '0833767623',
     address: 'Viet Nam',
-    roles: ['Staff'],
+    roles: ['Staff', 'QA Coordinator'],
     Idiea: [
       {
         content:
@@ -108,13 +111,14 @@ export const BASE_USER = [
     ],
   },
   {
+    id: 4,
     username: 'username4',
     firstName: 'Quoc',
     lastName: 'Le',
     email: 'quocle1admin4@gmail.com',
     phone: '0833767624',
     address: 'Viet Nam',
-    roles: ['Staff'],
+    roles: ['Staff', 'QA Coordinator'],
     Idiea: [
       {
         content:
@@ -144,13 +148,14 @@ export const BASE_USER = [
     ],
   },
   {
+    id: 5,
     username: 'username5',
     firstName: 'Quoc',
     lastName: 'Le',
     email: 'quocle1admin5@gmail.com',
     phone: '0833767625',
     address: 'Viet Nam',
-    roles: ['Staff'],
+    roles: ['Staff', 'QA Coordinator'],
     Idiea: [
       {
         content:
@@ -180,13 +185,14 @@ export const BASE_USER = [
     ],
   },
   {
-    username: 'username7',
+    id: 6,
+    username: 'username6',
     firstName: 'Quoc',
     lastName: 'Le',
     email: 'quocle1admin7@gmail.com',
     phone: '0833767627',
     address: 'Viet Nam',
-    roles: ['Staff'],
+    roles: ['Staff', 'QA Coordinator'],
     Idiea: [
       {
         content:
@@ -217,4 +223,20 @@ export const BASE_USER = [
   },
 ];
 
-export const BASE_DEPARTMENT = [{}];
+export const BASE_DEPARTMENT = [
+  { id: 1, departmentName: 'Admin Department', active: true },
+  { id: 2, departmentName: 'Nestjs Department', active: true },
+  { id: 3, departmentName: 'Blockchain Department', active: true },
+  { id: 4, departmentName: 'Nodejs Department', active: true },
+  { id: 5, departmentName: 'Reactjs Department', active: true },
+  { id: 6, departmentName: 'Docker Department', active: true },
+];
+
+export const BASE_CATEGORIES = [
+  { categoryName: 'BlockChain' },
+  { categoryName: 'Data' },
+  { categoryName: 'News' },
+  { categoryName: 'Tips' },
+  { categoryName: 'AI' },
+  { categoryName: 'Web App' },
+];
