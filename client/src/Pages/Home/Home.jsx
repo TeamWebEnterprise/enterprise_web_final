@@ -26,13 +26,19 @@ export const Home = ({ mode, setMode }) => {
       bgcolor={"background.default"}
       color={"text.primary"}
     >
-      <Navbar />
-      <Stack direction="row" justifyContent="space-between">
-        <Sidebar setMode={setMode} mode={mode} />
-        <Feed />
-        <Rightbar />
-      </Stack>
-      <DialogSlide />
+      {user == null ? (
+        <></>
+      ) : (
+        <>
+          <Navbar />
+          <Stack direction="row" justifyContent="space-between">
+            <Sidebar setMode={setMode} mode={mode} />
+            <Feed />
+            <Rightbar />
+          </Stack>
+          <DialogSlide />
+        </>
+      )}
     </Box>
   );
 };
