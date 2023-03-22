@@ -1,10 +1,16 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import RefreshToken from './entities/refresh-token.entity';
 import { sign, verify } from 'jsonwebtoken';
 import { User } from '@prisma/client';
 import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcrypt';
 import { MailerService } from '@nestjs-modules/mailer';
+import { ForGotPassWordDto } from './dto/forgotpassword-user.input';
 
 @Injectable()
 export class AuthService {
@@ -44,7 +50,7 @@ export class AuthService {
       roles: refreshToken.roles,
     };
 
-    return sign(accessToken, process.env.ACCESS_SECRET, { expiresIn: '1h' });
+    return sign(accessToken, process.env.ACCESS_SECRET, { expiresIn: '15s' });
   }
 
   private retrieveRefreshToken(
@@ -69,13 +75,20 @@ export class AuthService {
     values: { userAgent: string; ipAddress: string },
   ): Promise<{ accessToken: string; refreshToken: string } | undefined> {
     const user = await this.userService.findByUsername(username);
+    if (user.isEmailValidated == false) {
+      throw new HttpException(
+        'Validate your email first',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
     return this.newRefreshAndAccessToken(user, values);
   }
 
   private async newRefreshAndAccessToken(
     user: User,
     values: { userAgent: string; ipAddress: string },
-  ): Promise<{ accessToken: string; refreshToken: string }> {
+  ): Promise<{ accessToken: string; refreshToken: string; roles: any }> {
     const refreshObject = new RefreshToken({
       id:
         this.refreshTokens.length === 0
@@ -96,13 +109,14 @@ export class AuthService {
         },
         process.env.ACCESS_SECRET,
         {
-          expiresIn: '15m',
+          expiresIn: '6000s',
         },
       ),
+      roles: user.roles,
     };
   }
 
-  async logout(refreshStr): Promise<string> {
+  async logout(refreshStr): Promise<void> {
     const refreshToken = await this.retrieveRefreshToken(refreshStr);
 
     if (!refreshToken) {
@@ -112,28 +126,36 @@ export class AuthService {
     this.refreshTokens = this.refreshTokens.filter(
       (refreshToken) => refreshToken.id !== refreshToken.id,
     );
-    return "Logout Success!"
   }
 
-  async sendMailForResetPassword(userId: number) {
-    const user = await this.userService.findOne(userId);
+  async sendMailForResetPassword(forGotPassWordDto: ForGotPassWordDto) {
+    const user = await this.userService.findByEmail(
+      forGotPassWordDto.emailConfirm,
+    );
     if (!user) {
-      throw new BadRequestException();
+      throw new HttpException('Un authorize', HttpStatus.UNAUTHORIZED);
+    }
+
+    if (user.isEmailValidated == false) {
+      throw new HttpException('Un authorize', HttpStatus.UNAUTHORIZED);
     }
 
     const payload = { email: user.email };
 
     const token = sign(payload, process.env.JWT_RESETPASSWORD_TOKEN_SECRET);
 
-    const url = `${process.env.RESET_PASSWORD_URL}/${token}`;
+    const url = `${process.env.RESET_PASSWORD_URL}?token=${token}`;
 
     return this.mailerService
       .sendMail({
         to: user.email,
-        from: 'quocldgcd191316@fpt.edu.vn',
+        from: 'khoavvgcd191275@fpt.edu.vn',
         subject: 'Reset password for IdieaApp acount',
-        text: 'Reset password',
-        html: `<b>Reset password</b></br><p>Hi ${user.lastName}, Your recently requested to reset your password for your AppIdiea account. Click the button below to reset it..</p></br><a href="${url}">Reset your password</a>`,
+        template: './welcome.hbs',
+        context: {
+          name: user.lastName,
+          link: url,
+        },
       })
       .then(() => {})
       .catch(() => {});
