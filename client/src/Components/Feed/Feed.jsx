@@ -9,7 +9,10 @@ import {
 import React, { useState } from "react";
 import RestoreIcon from "@mui/icons-material/Restore";
 import WhatshotIcon from "@mui/icons-material/Whatshot";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
+import CommentBankIcon from "@mui/icons-material/CommentBank";
+import AutoGraphIcon from "@mui/icons-material/AutoGraph";
+import { useSelector } from "react-redux";
+import PortraitIcon from "@mui/icons-material/Portrait";
 
 import { useQuery } from "@tanstack/react-query";
 import * as api from "../../utils/idieasApi";
@@ -17,13 +20,14 @@ import countLike from "../../utils/countLike";
 import Post from "./Post";
 
 const Feed = () => {
+  const user = useSelector((state) => state.auth.login.currentUser);
   const [orderField, setOrderField] = useState("createdAt");
   const [orderBy, setOrderBy] = useState("desc");
   const [page, setPage] = useState(1);
 
   const { data, isLoading, error } = useQuery(
-    ["idieas", orderField, orderBy, page],
-    () => api.getIdieas(orderField, orderBy, page)
+    ["idieas", orderField, orderBy, page, user.id],
+    () => api.getIdieas(orderField, orderBy, page, user.id)
   );
 
   const scrollToTop = () => {
@@ -59,9 +63,19 @@ const Feed = () => {
             icon={<WhatshotIcon />}
           />
           <BottomNavigationAction
-            value={"createdAt"}
-            label="Department"
-            icon={<LocationOnIcon />}
+            value={"point"}
+            label="Top"
+            icon={<AutoGraphIcon />}
+          />
+          <BottomNavigationAction
+            value={"comments"}
+            label="Comments"
+            icon={<CommentBankIcon />}
+          />
+          <BottomNavigationAction
+            value={"own"}
+            label="Own"
+            icon={<PortraitIcon />}
           />
         </BottomNavigation>
       </Box>
@@ -75,7 +89,7 @@ const Feed = () => {
           </Stack>
         ) : (
           <>
-            {data?.map((item) => (
+            {data.idieas?.map((item) => (
               <Post
                 key={item.id}
                 content={item.content}
@@ -85,9 +99,12 @@ const Feed = () => {
                 numberOfLike={countLike(item.likes)}
                 comments={item.comments}
                 id={item.id}
+                userId={item.userId}
                 likes={item.likes}
                 closeIdieaAt={item.closeIdieaAt}
                 closeCommentAt={item.closeCommentAt}
+                files={item.documents}
+                documents={item.documents}
               />
             ))}
             <Box
@@ -105,7 +122,7 @@ const Feed = () => {
                   }}
                   onClick={scrollToTop}
                   page={page}
-                  count={10}
+                  count={data.pages}
                   variant="outlined"
                   shape="rounded"
                 />

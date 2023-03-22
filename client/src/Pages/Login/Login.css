@@ -1,5 +1,6 @@
-.bg_login{
-    background-image: url('../../../public/images/bg-login-gre.jpg') ;
-    
-    
+.bg_login {
+  background-image: url("https://www.learningwithbiz.com/wp-content/uploads/2020/03/power-of-teamwork.png");
+  background-position: left;
+  background-size: 60%;
+  background-repeat: no-repeat;
 }
