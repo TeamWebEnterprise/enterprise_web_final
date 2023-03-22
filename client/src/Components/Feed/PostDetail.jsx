@@ -14,10 +14,23 @@ import JSZip from "jszip";
 import { useState } from "react";
 import { saveAs } from "file-saver";
 import CircularProgress from "@mui/material/CircularProgress";
-import Box from "@mui/material/Box";
 import DownloadForOfflineIcon from "@mui/icons-material/DownloadForOffline";
 import LinearProgress from "@mui/material/LinearProgress";
-
+import { useSelector } from "react-redux";
+import axios from "../../api/axios";
+import Post from "./Post";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Button from "@mui/material/Button";
+import * as api from "../../utils/idieasApi.js";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { CreateAxiosNoDispatch } from "../../createInstance";
 const StyledMenu = styled((props) => (
   <Menu
     elevation={0}
@@ -66,14 +79,99 @@ export default function CustomizedMenus({
   closeIdieaAt,
   closeComment,
   documents,
+  userId,
+  content,
 }) {
+  const currentId = useSelector((state) => state.auth.login.currentUser.id);
+  const user = useSelector((state) => state.auth.login.currentUser);
+  const axiosJWT = CreateAxiosNoDispatch(user);
+  const accessToken = useSelector(
+    (state) => state.auth.login.currentUser.accessToken
+  );
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const [openEdit, setOpenEdit] = React.useState(false);
+  const [newContent, setNewContent] = React.useState(content);
+  const handleClickOpenEdit = () => {
+    if (currentId === userId) {
+      setOpenEdit(true);
+    } else {
+      toast.warning("you don't have permission to delete this idea !", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+    }
+  };
+
+  const queryClient = useQueryClient();
+  const { mutate, isLoading } = useMutation(
+    ({ axiosJWT, accessToken, idieaId, content }) => {
+      return api.editIdiea(axiosJWT, accessToken, idieaId, content);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["idieas"]);
+        setAnchorEl(null);
+      },
+    }
+  );
+
+  const { mutate: mutateDelete } = useMutation(
+    ({ axiosJWT, accessToken, idieaId }) => {
+      return api.deleteIdiea(axiosJWT, accessToken, idieaId);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["idieas"]);
+        setAnchorEl(null);
+      },
+    }
+  );
+
+  const handleCloseEdit = () => {
+    setOpenEdit(false);
+  };
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+  const handleDelete = async (e) => {
+    // "http://localhost:3001/idieas/delete"
+    if (currentId === userId) {
+      try {
+        mutateDelete({
+          idieaId: idieaId,
+          accessToken: accessToken,
+          axiosJWT: axiosJWT,
+        });
+        toast.success("Delete your idea success !", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      } catch {
+        toast.error("Delete your idea false !", {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+      }
+    } else {
+      toast.warning("you don't have permission to delete this idea !", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+    }
+    handleClose();
+  };
+
+  const handleEdit = async (e) => {
+    try {
+      mutate({
+        idieaId: idieaId,
+        accessToken: accessToken,
+        content: newContent,
+        axiosJWT: axiosJWT,
+      });
+      handleCloseEdit();
+    } catch {}
   };
 
   const [loading, setLoading] = useState(false);
@@ -109,6 +207,30 @@ export default function CustomizedMenus({
 
   return (
     <div>
+      <Dialog open={openEdit} onClose={handleCloseEdit}>
+        <DialogTitle>Edit your post content</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            welcome come to edit idiea if your finish click save to done change
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="content"
+            label="content"
+            type="text"
+            fullWidth
+            variant="standard"
+            onChange={(e) => setNewContent(e.target.value)}
+            value={newContent}
+            defaultValue="Default Value"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseEdit}>Cancel</Button>
+          <Button onClick={handleEdit}>Save</Button>
+        </DialogActions>
+      </Dialog>
       <IconButton
         sx={{ opacity: "0.3", borderRadius: "10px" }}
         aria-label="infor"
@@ -125,11 +247,11 @@ export default function CustomizedMenus({
         open={open}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleClose} disableRipple>
+        <MenuItem onClick={handleClickOpenEdit} disableRipple>
           <EditIcon />
           Edit
         </MenuItem>
-        <MenuItem onClick={handleClose} disableRipple>
+        <MenuItem onClick={handleDelete} disableRipple>
           <HighlightOffIcon />
           Delete
         </MenuItem>

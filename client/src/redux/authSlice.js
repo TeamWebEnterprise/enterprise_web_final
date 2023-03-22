@@ -44,6 +44,8 @@ const authSlice = createSlice({
     checkRegisterSuccess: (state,action) => {
       state.checkRegister.userInput =action.payload;
     },
+    
+    
   },
 });
 

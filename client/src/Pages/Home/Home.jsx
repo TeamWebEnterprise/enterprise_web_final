@@ -8,6 +8,8 @@ import React from "react";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 export const Home = ({ mode, setMode }) => {
   const user = useSelector((state) => state.auth.login.currentUser);
   const navigate = useNavigate();

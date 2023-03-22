@@ -48,6 +48,7 @@ const Post = ({
   closeIdieaAt,
   closeCommentAt,
   id,
+  userId,
   likes,
   files,
   documents,
@@ -149,9 +150,12 @@ const Post = ({
         }
         action={
           <CustomizedMenus
+            userId={userId}
+            idieaId={id}
             closeIdieaAt={closeIdieaAt}
             closeComment={closeCommentAt}
             documents={documents}
+            content={content}
           />
         }
         title={`${name}`}
