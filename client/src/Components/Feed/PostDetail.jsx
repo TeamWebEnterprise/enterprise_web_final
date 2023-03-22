@@ -13,12 +13,9 @@ import formatDate from "../../utils/formatDate";
 import JSZip from "jszip";
 import { useState } from "react";
 import { saveAs } from "file-saver";
-import CircularProgress from "@mui/material/CircularProgress";
 import DownloadForOfflineIcon from "@mui/icons-material/DownloadForOffline";
 import LinearProgress from "@mui/material/LinearProgress";
 import { useSelector } from "react-redux";
-import axios from "../../api/axios";
-import Post from "./Post";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import TextField from "@mui/material/TextField";
@@ -31,6 +28,7 @@ import Button from "@mui/material/Button";
 import * as api from "../../utils/idieasApi.js";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CreateAxiosNoDispatch } from "../../createInstance";
+import { Box } from "@mui/material";
 const StyledMenu = styled((props) => (
   <Menu
     elevation={0}
