@@ -1,0 +1,130 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["selectRelationCount", "filteredRelationCount"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               Int      @id @default(autoincrement())
+  username         String   @unique
+  password         String
+  firstName        String
+  lastName         String
+  email            String   @unique
+  isEmailValidated Boolean  @default(false)
+  phone            String   @unique
+  address          String
+  dateOfBirth      DateTime @default(now())
+  cretedAt         DateTime @default(now())
+  active           Boolean  @default(true)
+
+  roles         String[]       @default(["Staff"])
+  Like          Like[]         @relation("userLike")
+  Comment       Comment[]      @relation("userComment")
+  Department    Department?    @relation("department", fields: [departmentId], references: [id])
+  departmentId  Int?
+  QADepartment  QADepartment[] @relation("qa")
+  avatar        AvatarImage?   @relation("avatar", fields: [avatarImageId], references: [id])
+  avatarImageId Int?           @unique
+  Idiea         Idiea[]        @relation("idieas")
+}
+
+model AvatarImage {
+  id     Int     @id @default(autoincrement())
+  key    String
+  url    String
+  active Boolean @default(true)
+  User   User?   @relation("avatar")
+}
+
+model Department {
+  id             Int            @id @default(autoincrement())
+  defartmentName String
+  qADepartment   QADepartment[]
+  active         Boolean        @default(true)
+  user           User[]         @relation("department")
+}
+
+model QADepartment {
+  id       Int     @id @default(autoincrement())
+  position String  @default("QA")
+  active   Boolean @default(true)
+
+  department   Department @relation(fields: [departmentId], references: [id])
+  departmentId Int
+
+  user   User @relation("qa", fields: [userId], references: [id])
+  userId Int
+}
+
+model Idiea {
+  id             Int        @id @default(autoincrement())
+  content        String
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  closeIdieaAt   DateTime?
+  closeCommentAt DateTime?
+  anonymous      Boolean
+  publish        Boolean    @default(false)
+  active         Boolean    @default(true)
+  documents      Document[] @relation("document")
+  categories     Category[]
+  likes          Like[]     @relation("idieaLike")
+  comments       Comment[]  @relation("idieaComment")
+  user           User       @relation("idieas", fields: [userId], references: [id])
+  userId         Int
+}
+
+model Document {
+  id      Int     @id @default(autoincrement())
+  key     String
+  url     String
+  public  Boolean @default(true)
+  active  Boolean @default(true)
+  Idiea   Idiea?  @relation("document", fields: [idieaId], references: [id])
+  idieaId Int?
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  anonymous Boolean
+  createdAt DateTime @default(now())
+  active    Boolean  @default(true)
+  user      User     @relation("userComment", fields: [userId], references: [id])
+  userId    Int
+  idiea     Idiea    @relation("idieaComment", fields: [idieaId], references: [id])
+  idieaId   Int
+}
+
+model Like {
+  id       Int     @id @default(autoincrement())
+  positive Boolean @default(true)
+  active   Boolean @default(true)
+  user     User    @relation("userLike", fields: [userId], references: [id])
+  userId   Int
+  idiea    Idiea   @relation("idieaLike", fields: [idieaId], references: [id])
+  idieaId  Int
+
+  @@unique([userId, idieaId])
+}
+
+model Category {
+  id           Int     @id @default(autoincrement())
+  categoryName String
+  description  String?
+  active       Boolean @default(true)
+  idieas       Idiea[]
+}
+
+model RefeshToken {
+  id    Int    @id @default(autoincrement())
+  token String
+}
