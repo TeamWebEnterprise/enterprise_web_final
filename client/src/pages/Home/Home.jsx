@@ -1,5 +1,5 @@
 import { Box, Stack } from "@mui/material";
-import Navbar from "../../components/NavBar/NavBar";
+import Navbar from "../../components/Navbar/NavBar";
 import Sidebar from "../../components/Sidebar/Siderbar";
 import Feed from "../../components/Feed/Feed";
 import Rightbar from "../../components/Rightbar/Rightbar";

@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Stack } from "@mui/material";
-import Navbar from "../../components/NavBar/NavBar";
+import Navbar from "../../components/Navbar/NavBar";
 import Sidebar from "../../components/Sidebar/Siderbar";
 import Feed from "../../components/Feed/Feed";
 import Rightbar from "../../components/Rightbar/Rightbar";
@@ -36,7 +36,7 @@ export const Department = ({ mode, setMode }) => {
             Authorization: `Bearer ${accessToken}`,
           },
         })
-        .then((res) => res.data)
+        .then((res) => res.data),
   );
 
   return (
