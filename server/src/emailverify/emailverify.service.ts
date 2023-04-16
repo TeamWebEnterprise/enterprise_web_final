@@ -32,7 +32,7 @@ export class EmailverifyService {
       },
     );
 
-    const url = `${process.env.EMAIL_CONFIRMATION_URL}/${token}`;
+    const url = `${process.env.EMAIL_CONFIRMATION_URL}?token=${token}`;
 
     return this.mailerService
       .sendMail({

@@ -159,8 +159,26 @@ export class IdieaController {
 
   @UseGuards(JwtAuthGuardApi, RolesGuard)
   @Post('publish')
-  @Roles(Role.STAFF)
+  @Roles(Role.QA_COORDINATOR)
   publishIdiea(@Body() makeIdieaPublishDto: MakeIdieaPublishDto) {
     return this.idieaService.makePublishIdiea(makeIdieaPublishDto);
+  }
+
+  @Get('get-idiea-by-point')
+  getAllIdieasByLikePoint(@Query('page', ParseIntPipe) page: number) {
+    return this.idieaService.getAllIdieasByLikePoint(page);
+  }
+
+  @Get('idieas-lastest-comment')
+  getAllIdieasByLastestComment(@Query('page', ParseIntPipe) page: number) {
+    return this.idieaService.getAllIdieaByLastestComment(page);
+  }
+
+  @Get('all-idieas-by-user')
+  getAllIdieasByUser(
+    @Query('page', ParseIntPipe) page: number,
+    @Query('userid', ParseIntPipe) userId: number,
+  ) {
+    return this.idieaService.getAllIdieasByUser(page, userId);
   }
 }

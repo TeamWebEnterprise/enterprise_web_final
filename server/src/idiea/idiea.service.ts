@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Idiea } from '@prisma/client';
+import { IoTThingsGraph } from 'aws-sdk';
 import { Exception } from 'handlebars';
 import { PrismaService } from 'prisma/prisma.service';
 import { EmailverifyService } from 'src/emailverify/emailverify.service';
@@ -107,19 +108,22 @@ export class IdieaService {
               active: true,
             },
           },
+          documents: true,
         },
         orderBy: {
           [orderField]: orderBy,
         },
-        take: 5,
-        skip: (page - 1) * 5,
         where: {
           active: true,
           publish: true,
         },
       });
 
-      getAllIdieas.forEach((idiea) => {
+      let result = [];
+
+      result = await getAllIdieas.slice((page - 1) * 5, (page - 1) * 5 + 5);
+
+      result.forEach((idiea) => {
         if (idiea.anonymous) {
           idiea.user.firstName = 'Anonymous';
           idiea.user.lastName = '';
@@ -132,9 +136,19 @@ export class IdieaService {
         });
       });
 
-      return getAllIdieas;
+      return { idieas: result, pages: this.getPagesNum(getAllIdieas.length) };
     } catch (e) {
       throw new Exception('Cant not get');
+    }
+  }
+
+  private getPagesNum(pages: number) {
+    if (pages <= 5) {
+      return 1;
+    } else if (pages % 5 == 0) {
+      return pages / 5;
+    } else {
+      return (pages - (pages % 5)) / 5 + 1;
     }
   }
 
@@ -186,21 +200,24 @@ export class IdieaService {
               active: true,
             },
           },
+          documents: true,
         },
         orderBy: {
           likes: {
             _count: 'desc',
           },
         },
-        take: 5,
-        skip: (page - 1) * 5,
         where: {
           active: true,
           publish: true,
         },
       });
 
-      getAllIdieas.forEach((idiea) => {
+      let result = [];
+
+      result = await getAllIdieas.slice((page - 1) * 5, (page - 1) * 5 + 5);
+
+      result.forEach((idiea) => {
         if (idiea.anonymous) {
           idiea.user.firstName = 'Anonymous';
           idiea.user.lastName = '';
@@ -213,7 +230,7 @@ export class IdieaService {
         });
       });
 
-      return getAllIdieas;
+      return { idieas: result, pages: this.getPagesNum(getAllIdieas.length) };
     } catch (e) {
       throw new Exception('Cant not get');
     }
@@ -409,5 +426,269 @@ export class IdieaService {
     } catch (error) {
       throw new HttpException('cant set', HttpStatus.BAD_REQUEST);
     }
+  }
+
+  async getAllIdieasByLikePoint(page: number) {
+    const allIdieasLikeCount = await this.prisma.idiea.findMany({
+      include: {
+        _count: {
+          select: {
+            likes: {
+              where: {
+                positive: true,
+                active: true,
+              },
+            },
+          },
+        },
+        likes: {
+          where: {
+            active: true,
+          },
+        },
+        comments: {
+          include: {
+            user: true,
+          },
+          where: {
+            active: true,
+          },
+        },
+        documents: {
+          where: {
+            active: true,
+          },
+        },
+        categories: {
+          where: {
+            active: true,
+          },
+        },
+        user: true,
+      },
+      where: {
+        active: true,
+        publish: true,
+      },
+    });
+
+    const allIdieaDislikeCount = await this.prisma.idiea.findMany({
+      select: {
+        id: true,
+        _count: {
+          select: {
+            likes: {
+              where: {
+                positive: false,
+                active: true,
+              },
+            },
+          },
+        },
+      },
+      where: {
+        active: true,
+        publish: true,
+      },
+    });
+
+    let result = [];
+
+    for (let i = 0; i < allIdieasLikeCount.length; i++) {
+      const newItem = {
+        ...allIdieasLikeCount[i],
+        totalPoint:
+          allIdieasLikeCount[i]._count.likes -
+          allIdieaDislikeCount[i]._count.likes,
+      };
+      result[i] = await newItem;
+    }
+
+    result = await result.sort((a, b) => b.totalPoint - a.totalPoint);
+
+    const pages = this.getPagesNum(result.length);
+
+    result = await result.slice((page - 1) * 5, (page - 1) * 5 + 5);
+
+    result.forEach((idiea) => {
+      if (idiea.anonymous) {
+        idiea.user.firstName = 'Anonymous';
+        idiea.user.lastName = '';
+      }
+      idiea.comments.forEach((comment) => {
+        if (comment.anonymous) {
+          comment.user.firstName = 'Anonymous';
+          comment.user.lastName = '';
+        }
+      });
+    });
+
+    return { idieas: result, pages: pages };
+  }
+
+  async getAllIdieaByLastestComment(page: number) {
+    const allIdieas = await this.prisma.idiea.findMany({
+      where: {
+        publish: true,
+        active: true,
+      },
+      include: {
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+        categories: {
+          select: {
+            categoryName: true,
+            id: true,
+          },
+          where: {
+            active: true,
+          },
+        },
+        comments: {
+          select: {
+            id: true,
+            content: true,
+            createdAt: true,
+            anonymous: true,
+            user: {
+              select: {
+                lastName: true,
+                firstName: true,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: 'desc',
+          },
+          where: {
+            active: true,
+          },
+        },
+        likes: {
+          select: {
+            userId: true,
+            positive: true,
+          },
+          where: {
+            active: true,
+          },
+        },
+        documents: true,
+      },
+    });
+
+    let result = [];
+    result = await allIdieas.filter((idiea) => idiea.comments.length != 0);
+
+    result = await result.sort((a, b) => {
+      const date1 = new Date(a.comments[0].createdAt);
+      const date2 = new Date(b.comments[0].createdAt);
+      if (date1 > date2) {
+        return -1;
+      } else if (date1 < date2) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+    const pages = this.getPagesNum(result.length);
+
+    result = await result.slice((page - 1) * 5, (page - 1) * 5 + 5);
+
+    result.forEach((idiea) => {
+      if (idiea.anonymous) {
+        idiea.user.firstName = 'Anonymous';
+        idiea.user.lastName = '';
+      }
+      idiea.comments.forEach((comment) => {
+        if (comment.anonymous) {
+          comment.user.firstName = 'Anonymous';
+          comment.user.lastName = '';
+        }
+      });
+    });
+
+    return { idieas: result, pages: pages };
+  }
+
+  async getAllIdieasByUser(page: number, userId: number) {
+    const allIdieas = await this.prisma.idiea.findMany({
+      where: {
+        userId: Number(userId),
+        publish: true,
+        active: true,
+      },
+      include: {
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+        categories: {
+          select: {
+            categoryName: true,
+            id: true,
+          },
+          where: {
+            active: true,
+          },
+        },
+        comments: {
+          select: {
+            id: true,
+            content: true,
+            createdAt: true,
+            anonymous: true,
+            user: {
+              select: {
+                lastName: true,
+                firstName: true,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: 'desc',
+          },
+          where: {
+            active: true,
+          },
+        },
+        likes: {
+          select: {
+            userId: true,
+            positive: true,
+          },
+          where: {
+            active: true,
+          },
+        },
+        documents: true,
+      },
+    });
+
+    let result = allIdieas;
+    const pages = this.getPagesNum(result.length);
+
+    result = await result.slice((page - 1) * 5, (page - 1) * 5 + 5);
+
+    result.forEach((idiea) => {
+      if (idiea.anonymous) {
+        idiea.user.firstName = 'Anonymous';
+        idiea.user.lastName = '';
+      }
+      idiea.comments.forEach((comment) => {
+        if (comment.anonymous) {
+          comment.user.firstName = 'Anonymous';
+          comment.user.lastName = '';
+        }
+      });
+    });
+
+    return { idieas: result, pages: pages };
   }
 }

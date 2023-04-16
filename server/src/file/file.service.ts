@@ -36,7 +36,7 @@ export class FileService {
       .upload({
         Bucket: process.env.AWS_PUBLIC_BUCKET_KEY,
         Body: dataBuffer,
-        Key: `${uuid()}-${filename}`,
+        Key: `${uuid()},,${filename}`,
         ACL: 'public-read',
       })
       .promise();
