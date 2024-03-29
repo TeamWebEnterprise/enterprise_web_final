@@ -473,7 +473,8 @@ export class IdieaService {
     });
 
     const allIdieaDislikeCount = await this.prisma.idiea.findMany({
-      include: {
+      select: {
+        id: true,
         _count: {
           select: {
             likes: {
@@ -484,12 +485,6 @@ export class IdieaService {
             },
           },
         },
-        likes: {
-          where: {
-            positive: false,
-            active: true,
-          },
-        },
       },
       where: {
         active: true,
@@ -497,25 +492,14 @@ export class IdieaService {
       },
     });
 
-    if (allIdieaDislikeCount.length !== allIdieasLikeCount.length) {
-      throw new HttpException('errorr', HttpStatus.BAD_REQUEST);
-    }
     let result = [];
 
     for (let i = 0; i < allIdieasLikeCount.length; i++) {
-      let count = 0;
-      let countDislike = 0;
-      allIdieasLikeCount[i].likes.forEach((like) => {
-        if (like.positive == true) {
-          count++;
-        } else {
-          countDislike++;
-        }
-      });
-
       const newItem = {
         ...allIdieasLikeCount[i],
-        totalPoint: count - countDislike,
+        totalPoint:
+          allIdieasLikeCount[i]._count.likes -
+          allIdieaDislikeCount[i]._count.likes,
       };
       result[i] = await newItem;
     }
